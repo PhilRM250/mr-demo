@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Springfield Recreation — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #185FA5;
+    --blue-mid: #378ADD;
+    --blue-light: #E6F1FB;
+    --blue-border: #B5D4F4;
+    --blue-dark: #0C447C;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-tertiary: #9CA3AF;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F9FAFB;
+    --bg-tertiary: #F3F4F6;
+    --border: rgba(0,0,0,0.09);
+    --border-med: rgba(0,0,0,0.14);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --green: #3B6D11; --green-bg: #EAF3DE;
+    --amber: #854F0B; --amber-bg: #FAEEDA;
+    --red: #A32D2D; --red-bg: #FCEBEB;
+    --purple: #534AB7; --purple-bg: #EEEDFE;
+    --teal: #0F6E56; --teal-bg: #E1F5EE;
+  }
+
+  body {
+    font-family: var(--font);
+    font-size: 15px;
+    color: var(--text-primary);
+    background: #EEF2F7;
+    min-height: 100vh;
+  }
+
+  /* ─── TOP CHROME ─── */
+  .top-chrome {
+    background: var(--blue-dark);
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .chrome-brand {
+    padding: 14px 24px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chrome-brand .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--blue-mid);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #fff;
+  }
+  .chrome-brand span { opacity: 0.65; font-weight: 400; }
+  .chrome-tabs { display: flex; }
+  .chrome-tab {
+    padding: 0 24px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .chrome-tab i { font-size: 17px; }
+  .chrome-tab:hover { color: rgba(255,255,255,0.85); }
+  .chrome-tab.active {
+    color: #fff;
+    border-bottom-color: #7BBCF0;
+    background: rgba(255,255,255,0.06);
+  }
+  .chrome-badge {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  /* ─── VIEWS ─── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ════════════════════════════════
+     PUBLIC / RESIDENT PORTAL
+  ════════════════════════════════ */
+  .public-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px 48px;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .device-frame {
+    width: 390px;
+    flex-shrink: 0;
+    background: var(--bg-primary);
+    border-radius: 36px;
+    overflow: hidden;
+    border: 8px solid #1C2B3A;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    position: sticky;
+    top: 80px;
+  }
+  .device-notch {
+    background: #1C2B3A;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notch-pill {
+    width: 100px; height: 10px;
+    background: #0A1520;
+    border-radius: var(--radius-pill);
+  }
+  .device-screen { overflow: hidden; }
+
+  .pub-header {
+    background: var(--blue);
+    padding: 14px 16px 16px;
+  }
+  .pub-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .pub-logo { font-size: 16px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .pub-logo span { opacity: 0.7; font-weight: 400; }
+  .pub-icons { display: flex; gap: 12px; color: #fff; }
+  .pub-icons i { font-size: 22px; cursor: pointer; }
+  .pub-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 9px 12px;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+  }
+  .pub-search i { font-size: 16px; }
+
+  .pub-nav {
+    display: flex;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+  }
+  .pub-nav-btn {
+    flex: 1;
+    padding: 8px 4px 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .pub-nav-btn i { font-size: 22px; }
+  .pub-nav-btn.active { color: var(--blue); }
+
+  .pub-content {
+    background: var(--bg-tertiary);
+    min-height: 560px;
+    padding: 14px;
+    overflow-y: auto;
+    max-height: 600px;
+  }
+
+  .pub-section { margin-bottom: 14px; }
+  .pub-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 8px;
+  }
+
+  .hero-card {
+    background: var(--blue-light);
+    border: 1px solid var(--blue-border);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .hero-card h3 { font-size: 15px; font-weight: 600; color: var(--blue-dark); margin-bottom: 4px; }
+  .hero-card p { font-size: 12px; color: var(--blue); line-height: 1.55; }
+  .hero-card-btn {
+    margin-top: 12px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+
+  .activity-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .activity-card:hover { box-shadow: var(--shadow-sm); }
+  .activity-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+  .activity-icon.green { background: var(--green-bg); color: var(--green); }
+  .activity-icon.amber { background: var(--amber-bg); color: var(--amber); }
+  .activity-icon.purple { background: var(--purple-bg); color: var(--purple); }
+  .activity-icon.teal { background: var(--teal-bg); color: var(--teal); }
+  .activity-info { flex: 1; min-width: 0; }
+  .activity-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .activity-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-open { background: var(--green-bg); color: var(--green); }
+  .badge-few { background: var(--amber-bg); color: var(--amber); }
+  .badge-full { background: var(--red-bg); color: var(--red); }
+  .badge-wait { background: var(--purple-bg); color: var(--purple); }
+
+  .facility-row {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .facility-row:hover { box-shadow: var(--shadow-sm); }
+  .fac-info .fac-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .fac-info .fac-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+  .avail-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-green { background: #4CAF50; }
+  .dot-amber { background: #FF9800; }
+  .dot-red { background: #EF4444; }
+
+  /* Registration flow */
+  .reg-back {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 13px; color: var(--blue);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font); margin-bottom: 12px;
+  }
+  .reg-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .reg-card h4 { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .reg-card h4 i { color: var(--blue); font-size: 18px; }
+  .participant-opt {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .participant-opt.selected { border: 2px solid var(--blue); background: var(--blue-light); }
+  .pname { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .psub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .session-opt {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .session-opt.selected { border: 2px solid var(--blue); background: var(--blue-light); }
+  .sname { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .smeta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .sprice { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .field-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 5px; }
+  .mock-input {
+    width: 100%;
+    border: 1px solid var(--border-med);
+    border-radius: var(--radius-md);
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    font-family: var(--font);
+    margin-bottom: 8px;
+    outline: none;
+  }
+  .mock-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+  .waiver-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .check-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    background: var(--blue); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .check-box i { font-size: 11px; color: #fff; }
+  .pay-method-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .pay-method {
+    flex: 1; border: 2px solid var(--blue); border-radius: var(--radius-md);
+    padding: 9px 10px; font-size: 12px; font-weight: 500;
+    color: var(--blue-dark); background: var(--blue-light);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pay-method-alt {
+    border: 1px solid var(--border-med); border-radius: var(--radius-md);
+    padding: 9px 12px; font-size: 20px; color: var(--text-secondary);
+    display: flex; align-items: center;
+  }
+  .line-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .line-item span:first-child { color: var(--text-secondary); }
+  .line-total {
+    display: flex; justify-content: space-between;
+    font-size: 14px; font-weight: 600;
+    border-top: 1px solid var(--border);
+    padding-top: 10px; margin-top: 4px;
+  }
+  .register-btn {
+    width: 100%; background: var(--blue); color: #fff;
+    border: none; border-radius: var(--radius-md);
+    padding: 13px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: var(--font); margin-top: 12px;
+  }
+  .secure-note { text-align: center; font-size: 11px; color: var(--text-tertiary); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .fee-assist-link { color: var(--blue); cursor: pointer; }
+
+  /* My Pass */
+  .membership-card {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    border-radius: var(--radius-xl);
+    padding: 18px;
+    margin-bottom: 14px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .membership-card::after {
+    content: '';
+    position: absolute;
+    right: -20px; top: -20px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .mc-name { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .mc-type { font-size: 12px; opacity: 0.75; margin-top: 3px; }
+  .mc-id { font-size: 10px; opacity: 0.5; margin-top: 16px; letter-spacing: 3px; text-transform: uppercase; }
+  .mc-qr {
+    position: absolute; right: 16px; bottom: 16px;
+    background: #fff; border-radius: 10px;
+    padding: 8px; width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mc-qr i { font-size: 40px; color: var(--blue); }
+  .household-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .member-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .member-row:last-child { border-bottom: none; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .av-blue { background: var(--blue-light); color: var(--blue); }
+  .av-green { background: var(--green-bg); color: var(--green); }
+  .av-amber { background: var(--amber-bg); color: var(--amber); }
+  .av-purple { background: var(--purple-bg); color: var(--purple); }
+  .member-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .member-sub { font-size: 11px; color: var(--text-secondary); }
+
+  /* Sub nav pills */
+  .pill-nav { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+  .pill-nav::-webkit-scrollbar { display: none; }
+  .pill {
+    padding: 5px 13px; border-radius: var(--radius-pill);
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border-med);
+    background: none; color: var(--text-secondary);
+    cursor: pointer; white-space: nowrap;
+    font-family: var(--font);
+  }
+  .pill.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* Info panel */
+  .info-panel {
+    background: var(--bg-primary);
+    border-left: 1px solid var(--border);
+    width: 340px;
+    flex-shrink: 0;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    position: sticky;
+    top: 80px;
+  }
+  .info-panel-header {
+    background: var(--blue-dark);
+    padding: 20px 24px;
+    color: #fff;
+  }
+  .info-panel-header h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .info-panel-header p { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+  .feature-list { padding: 20px 24px; }
+  .feature-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .feature-item:last-child { margin-bottom: 0; }
+  .feat-icon {
+    width: 36px; height: 36px; border-radius: var(--radius-md);
+    background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blue); font-size: 18px; flex-shrink: 0;
+  }
+  .feat-icon.green { background: var(--green-bg); color: var(--green); }
+  .feat-icon.amber { background: var(--amber-bg); color: var(--amber); }
+  .feat-icon.purple { background: var(--purple-bg); color: var(--purple); }
+  .feat-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .feat-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .info-divider { height: 1px; background: var(--border); margin: 0 24px; }
+  .try-note {
+    padding: 16px 24px;
+    font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+    background: var(--bg-secondary);
+  }
+  .try-note strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ════════════════════════════════
+     ADMIN DASHBOARD
+  ════════════════════════════════ */
+  .admin-layout {
+    display: flex;
+    height: calc(100vh - 52px);
+  }
+  .admin-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #0F2237;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar-org {
+    padding: 18px 16px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .org-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; color: #fff; flex-shrink: 0;
+  }
+  .org-name { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.3; }
+  .org-sub { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .sidebar-section-label {
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 16px 16px 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; background: none;
+    width: 100%; text-align: left;
+    font-family: var(--font);
+    border-left: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .sidebar-item i { font-size: 17px; }
+  .sidebar-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+  .sidebar-item.active { color: #fff; background: rgba(55,138,221,0.2); border-left-color: var(--blue-mid); }
+  .sidebar-footer { margin-top: auto; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.08); }
+
+  .admin-main {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg-tertiary);
+    display: flex;
+    flex-direction: column;
+  }
+  .admin-topbar {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .topbar-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-primary {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: var(--radius-md);
+    padding: 8px 16px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-primary i { font-size: 16px; }
+  .btn-secondary {
+    background: var(--bg-primary); color: var(--text-primary);
+    border: 1px solid var(--border-med); border-radius: var(--radius-md);
+    padding: 8px 14px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-secondary i { font-size: 16px; }
+
+  .admin-body { padding: 24px; flex: 1; }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+  }
+  .kpi-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; }
+  .kpi-delta { font-size: 12px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+  .kpi-delta.up { color: var(--green); }
+  .kpi-delta.down { color: var(--red); }
+  .kpi-delta.warn { color: var(--amber); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .one-col { margin-bottom: 24px; }
+
+  .card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .card-action { font-size: 12px; color: var(--blue); background: none; border: none; cursor: pointer; font-family: var(--font); font-weight: 500; }
+
+  .reg-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .reg-row:last-child { border-bottom: none; }
+  .reg-info { flex: 1; }
+  .reg-name { font-weight: 500; color: var(--text-primary); }
+  .reg-detail { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .reg-amount { font-size: 13px; font-weight: 600; color: var(--green); }
+
+  .prog-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .prog-row:last-child { border-bottom: none; }
+  .prog-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .prog-info { flex: 1; }
+  .prog-name-cell { font-weight: 500; color: var(--text-primary); }
+  .prog-meta-cell { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .cap-wrap { text-align: right; }
+  .cap-bar { height: 5px; border-radius: 3px; background: var(--bg-tertiary); width: 80px; overflow: hidden; margin-bottom: 3px; }
+  .cap-fill { height: 100%; border-radius: 3px; }
+  .cap-text { font-size: 11px; color: var(--text-secondary); }
+
+  /* Programs table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left; padding: 10px 18px;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .data-table td {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--bg-secondary); }
+  .prog-tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: var(--radius-pill);
+  }
+
+  /* Scheduler */
+  .sched-grid {
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 70px repeat(5, 1fr);
+    gap: 5px;
+    font-size: 11px;
+    overflow-x: auto;
+  }
+  .sched-head {
+    text-align: center; font-size: 11px; font-weight: 600;
+    color: var(--text-secondary); padding: 6px;
+  }
+  .sched-time { color: var(--text-tertiary); display: flex; align-items: center; font-size: 11px; }
+  .sched-block {
+    border-radius: var(--radius-md);
+    padding: 6px 8px;
+    min-height: 42px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .sb-blue { background: var(--blue-light); }
+  .sb-green { background: var(--green-bg); }
+  .sb-amber { background: var(--amber-bg); }
+  .sb-purple { background: var(--purple-bg); }
+  .sb-empty { background: var(--bg-secondary); }
+  .sb-name { font-size: 10px; font-weight: 600; color: var(--text-primary); }
+  .sb-time { font-size: 9px; color: var(--text-secondary); margin-top: 1px; }
+
+  /* Members */
+  .member-table-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .member-table-row:last-child { border-bottom: none; }
+  .mt-name { flex: 1; }
+  .mt-name .mname { font-weight: 500; color: var(--text-primary); }
+  .mt-name .msub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+  /* Check-in */
+  .checkin-scanner {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .scanner-icon { font-size: 56px; color: var(--blue); display: block; margin-bottom: 12px; }
+  .scanner-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .scanner-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; }
+  .search-bar {
+    max-width: 320px; margin: 0 auto;
+    border: 1px solid var(--border-med); border-radius: var(--radius-md);
+    padding: 9px 14px; font-size: 13px;
+    color: var(--text-primary); width: 100%;
+    font-family: var(--font); outline: none; background: var(--bg-primary);
+  }
+  .search-bar:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+  .checkin-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 18px; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .checkin-row:last-child { border-bottom: none; }
+  .ci-info { flex: 1; }
+  .ci-name { font-weight: 500; color: var(--text-primary); }
+  .ci-loc { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .ci-time { font-size: 12px; color: var(--text-tertiary); }
+
+  /* Finance */
+  .fin-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .fin-row:last-child { border-bottom: none; }
+  .fin-desc { font-weight: 500; color: var(--text-primary); }
+  .fin-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .fin-amount { font-weight: 600; color: var(--green); }
+  .fin-amount.refund { color: var(--red); }
+
+  /* Charts */
+  .chart-wrap { padding: 18px; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 120px; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .bar { border-radius: 5px 5px 0 0; width: 100%; display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; }
+  .bar-val { font-size: 10px; font-weight: 600; color: var(--bg-primary); }
+  .bar-label { font-size: 10px; color: var(--text-tertiary); text-align: center; }
+
+  /* Reports */
+  .perf-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .perf-table th { text-align: left; padding: 10px 18px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+  .perf-table td { padding: 12px 18px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+  .perf-table tr:last-child td { border-bottom: none; }
+  .star-rating { color: #F59E0B; font-size: 13px; }
+
+  /* Settings */
+  .settings-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); margin-bottom: 20px; overflow: hidden;
+  }
+  .settings-card-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; color: var(--text-primary);
+  }
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px; }
+  .setting-field label { font-size: 12px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px; }
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .toggle-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .toggle { width: 38px; height: 22px; border-radius: var(--radius-pill); position: relative; cursor: pointer; flex-shrink: 0; }
+  .toggle.on { background: var(--blue); }
+  .toggle.off { background: var(--border-med); }
+  .toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; transition: left 0.15s; }
+  .toggle.on .toggle-thumb { left: 18px; }
+  .toggle.off .toggle-thumb { left: 2px; }
+
+  /* Hidden sections */
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+  .pub-page { display: none; }
+  .pub-page.active { display: block; }
+
+  @media (max-width: 900px) {
+    .public-wrapper { flex-direction: column; align-items: center; }
+    .info-panel { width: 100%; max-width: 390px; position: static; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-chrome">
+  <div class="chrome-brand">
+    <div class="logo-icon"><i class="ti ti-leaf"></i></div>
+    Springfield Recreation <span>· Demo</span>
+  </div>
+  <div class="chrome-tabs">
+    <button class="chrome-tab active" onclick="switchMain('public', this)">
+      <i class="ti ti-device-mobile"></i> Resident Portal <span class="chrome-badge">Mobile-first</span>
+    </button>
+    <button class="chrome-tab" onclick="switchMain('admin', this)">
+      <i class="ti ti-layout-dashboard"></i> Admin Dashboard <span class="chrome-badge">Web app</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PUBLIC VIEW ═══════════════════════════ -->
+<div id="view-public" class="view active">
+  <div class="public-wrapper">
+
+    <!-- Device Frame -->
+    <div class="device-frame">
+      <div class="device-notch"><div class="notch-pill"></div></div>
+      <div class="device-screen">
+        <div class="pub-header">
+          <div class="pub-header-top">
+            <div class="pub-logo">Springfield <span>Recreation</span></div>
+            <div class="pub-icons">
+              <i class="ti ti-bell"></i>
+              <i class="ti ti-user-circle"></i>
+            </div>
+          </div>
+          <div class="pub-search">
+            <i class="ti ti-search"></i>
+            Search programs, facilities...
+          </div>
+        </div>
+
+        <div class="pub-nav">
+          <button class="pub-nav-btn active" onclick="pubNav(this,'home')"><i class="ti ti-home"></i>Home</button>
+          <button class="pub-nav-btn" onclick="pubNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+          <button class="pub-nav-btn" onclick="pubNav(this,'facilities')"><i class="ti ti-building"></i>Facilities</button>
+          <button class="pub-nav-btn" onclick="pubNav(this,'mypass')"><i class="ti ti-id-badge"></i>My Pass</button>
+        </div>
+
+        <div class="pub-content">
+
+          <!-- HOME -->
+          <div id="pub-home" class="pub-page active">
+            <div class="hero-card">
+              <h3>Summer registration is open!</h3>
+              <p>Swim lessons, youth sports, art camps, and more are now available for enrollment.</p>
+              <button class="hero-card-btn" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">Browse summer programs</button>
+            </div>
+            <div class="pub-section">
+              <div class="pub-section-label">Popular this week</div>
+              <div class="activity-card" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">
+                <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Youth Swim Lessons</div>
+                  <div class="activity-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div>
+                </div>
+                <span class="badge badge-few">4 left</span>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Soccer Skills Camp</div>
+                  <div class="activity-meta">Tue/Thu · 10–11:30am · Ages 8–14</div>
+                </div>
+                <span class="badge badge-open">Open</span>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Summer Art Studio</div>
+                  <div class="activity-meta">Mon–Fri · 1–3pm · Ages 7–13</div>
+                </div>
+                <span class="badge badge-full">Full</span>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Adult Yoga</div>
+                  <div class="activity-meta">Saturday · 8–9am · All levels</div>
+                </div>
+                <span class="badge badge-open">Open</span>
+              </div>
+            </div>
+            <div class="pub-section">
+              <div class="pub-section-label">Facilities now</div>
+              <div class="facility-row">
+                <div class="fac-info">
+                  <div class="fac-name">Community Center Pool</div>
+                  <div class="fac-meta"><span class="avail-dot dot-green"></span>Open · Lap swimming available</div>
+                </div>
+                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+              <div class="facility-row">
+                <div class="fac-info">
+                  <div class="fac-name">Riverside Tennis Courts</div>
+                  <div class="fac-meta"><span class="avail-dot dot-amber"></span>2 of 4 courts reserved</div>
+                </div>
+                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+              <div class="facility-row">
+                <div class="fac-info">
+                  <div class="fac-name">Maple Street Gym</div>
+                  <div class="fac-meta"><span class="avail-dot dot-red"></span>Reserved until 5pm</div>
+                </div>
+                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROGRAMS -->
+          <div id="pub-programs" class="pub-page">
+            <div class="pill-nav">
+              <button class="pill active">All</button>
+              <button class="pill">Aquatics</button>
+              <button class="pill">Youth Sports</button>
+              <button class="pill">Arts</button>
+              <button class="pill">Fitness</button>
+              <button class="pill">Seniors</button>
+            </div>
+            <div class="pub-section-label">Tap a program to register</div>
+            <div class="activity-card" onclick="showRegister()">
+              <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Youth Swim Lessons — Level 1</div>
+                <div class="activity-meta">Mon/Wed/Fri · 9–10am · $85</div>
+              </div>
+              <span class="badge badge-few">4 left</span>
+            </div>
+            <div class="activity-card" onclick="showRegister()">
+              <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Youth Swim Lessons — Level 2</div>
+                <div class="activity-meta">Tue/Thu · 9–10am · $85</div>
+              </div>
+              <span class="badge badge-open">Open</span>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Soccer Skills Camp</div>
+                <div class="activity-meta">Tue/Thu · 10–11:30am · $120</div>
+              </div>
+              <span class="badge badge-open">Open</span>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Summer Art Studio</div>
+                <div class="activity-meta">Mon–Fri · 1–3pm · $150</div>
+              </div>
+              <span class="badge badge-wait">Waitlist</span>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Adult Yoga</div>
+                <div class="activity-meta">Saturday · 8–9am · $60</div>
+              </div>
+              <span class="badge badge-open">Open</span>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon green"><i class="ti ti-ball-basketball"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Adult Basketball League</div>
+                <div class="activity-meta">Wednesday evenings · $45/season</div>
+              </div>
+              <span class="badge badge-open">Open</span>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon teal"><i class="ti ti-heart-rate-monitor"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Senior Fitness</div>
+                <div class="activity-meta">Mon/Wed/Fri · 10–11am · Ages 60+</div>
+              </div>
+              <span class="badge badge-open">Open</span>
+            </div>
+          </div>
+
+          <!-- REGISTER FLOW -->
+          <div id="pub-register" class="pub-page">
+            <button class="reg-back" onclick="showPrograms()"><i class="ti ti-arrow-left" style="font-size:16px"></i> Back to programs</button>
+            <div class="reg-card">
+              <h4><i class="ti ti-swimming"></i>Youth Swim Lessons — Level 1</h4>
+              <div class="field-label">Select participant</div>
+              <div class="participant-opt selected">
+                <div><div class="pname">Emma Johnson</div><div class="psub">Age 8 · your child</div></div>
+                <i class="ti ti-check" style="color:var(--blue);font-size:18px"></i>
+              </div>
+              <div class="participant-opt">
+                <div><div class="pname">+ Add family member</div></div>
+              </div>
+            </div>
+            <div class="reg-card">
+              <h4><i class="ti ti-calendar"></i>Choose a session</h4>
+              <div class="session-opt selected">
+                <div><div class="sname">Session A — Jun 23 to Jul 11</div><div class="smeta">Mon/Wed/Fri · 9–10am · 4 spots left</div></div>
+                <div class="sprice">$85</div>
+              </div>
+              <div class="session-opt">
+                <div><div class="sname">Session B — Jul 14 to Aug 1</div><div class="smeta">Mon/Wed/Fri · 9–10am · 8 spots</div></div>
+                <div class="sprice">$85</div>
+              </div>
+            </div>
+            <div class="reg-card">
+              <h4><i class="ti ti-clipboard-check"></i>Health & waiver</h4>
+              <div class="field-label">Known allergies or medical notes</div>
+              <input class="mock-input" type="text" value="No known allergies">
+              <div class="waiver-row">
+                <div class="check-box"><i class="ti ti-check"></i></div>
+                I agree to the Springfield Recreation liability waiver and photo release agreement
+              </div>
+            </div>
+            <div class="reg-card">
+              <h4><i class="ti ti-credit-card"></i>Payment</h4>
+              <div class="pay-method-row">
+                <div class="pay-method"><i class="ti ti-credit-card" style="font-size:16px"></i>Card on file ···4821</div>
+                <div class="pay-method-alt"><i class="ti ti-brand-apple" style="font-size:22px"></i></div>
+                <div class="pay-method-alt"><i class="ti ti-brand-google" style="font-size:20px"></i></div>
+              </div>
+              <div class="line-item"><span>Swim Lessons — Session A</span><span>$85.00</span></div>
+              <div class="line-item"><span>Processing fee</span><span>$1.50</span></div>
+              <div class="line-total"><span>Total</span><span>$86.50</span></div>
+              <button class="register-btn">Complete registration</button>
+              <div class="secure-note"><i class="ti ti-shield-check" style="font-size:13px"></i> Secure payment · <span class="fee-assist-link">Apply for fee assistance</span></div>
+            </div>
+          </div>
+
+          <!-- FACILITIES -->
+          <div id="pub-facilities" class="pub-page">
+            <div class="pub-section-label">All facilities</div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Community Center — Main Pool</div>
+                <div class="fac-meta"><span class="avail-dot dot-green"></span>Open now · Reserve a lane</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Riverside Tennis Courts</div>
+                <div class="fac-meta"><span class="avail-dot dot-amber"></span>2 of 4 courts available</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Maple Street Gym</div>
+                <div class="fac-meta"><span class="avail-dot dot-red"></span>Reserved until 5pm</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Centennial Baseball Fields</div>
+                <div class="fac-meta"><span class="avail-dot dot-green"></span>Fields 1–3 available tonight</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Senior Activity Center</div>
+                <div class="fac-meta"><span class="avail-dot dot-green"></span>Open · Classes in session</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+            <div class="facility-row">
+              <div class="fac-info">
+                <div class="fac-name">Pickleball Courts — Riverside</div>
+                <div class="fac-meta"><span class="avail-dot dot-green"></span>All 6 courts open</div>
+              </div>
+              <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+            </div>
+          </div>
+
+          <!-- MY PASS -->
+          <div id="pub-mypass" class="pub-page">
+            <div class="membership-card">
+              <div class="mc-name">Sarah Johnson</div>
+              <div class="mc-type">Family Membership · Active through Dec 2026</div>
+              <div class="mc-id">MBR · 4821 · 9304</div>
+              <div class="mc-qr"><i class="ti ti-qrcode"></i></div>
+            </div>
+            <div class="pub-section">
+              <div class="pub-section-label">My household</div>
+              <div class="household-card">
+                <div class="member-row">
+                  <div class="avatar av-blue">SJ</div>
+                  <div><div class="member-name">Sarah Johnson <span style="font-size:11px;color:var(--text-tertiary)">(you)</span></div><div class="member-sub">Adult member</div></div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div class="member-row">
+                  <div class="avatar av-green">EJ</div>
+                  <div><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8</div></div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div class="member-row">
+                  <div class="avatar av-amber">LJ</div>
+                  <div><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11</div></div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+              </div>
+            </div>
+            <div class="pub-section">
+              <div class="pub-section-label">Upcoming registrations</div>
+              <div class="activity-card">
+                <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Youth Swim Lessons — Emma</div>
+                  <div class="activity-meta">Jun 23 – Jul 11 · Mon/Wed/Fri 9am</div>
+                </div>
+                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+                <div class="activity-info">
+                  <div class="activity-name">Soccer Skills Camp — Liam</div>
+                  <div class="activity-meta">Jul 8 – Aug 1 · Tue/Thu 10am</div>
+                </div>
+                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /pub-content -->
+      </div><!-- /device-screen -->
+    </div><!-- /device-frame -->
+
+    <!-- Info Panel -->
+    <div class="info-panel">
+      <div class="info-panel-header">
+        <h2>Resident Portal</h2>
+        <p>What residents experience on their phone — from browsing to registration to check-in.</p>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feat-icon"><i class="ti ti-search"></i></div>
+          <div><div class="feat-title">Smart program discovery</div><div class="feat-desc">Searchable, filterable catalog with real-time availability and capacity indicators.</div></div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon green"><i class="ti ti-users"></i></div>
+          <div><div class="feat-title">Family account management</div><div class="feat-desc">One login manages all household members with separate waivers and health info.</div></div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon amber"><i class="ti ti-credit-card"></i></div>
+          <div><div class="feat-title">Seamless checkout</div><div class="feat-desc">Apple Pay, Google Pay, and saved cards. Fee assistance built into the checkout flow.</div></div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon purple"><i class="ti ti-qrcode"></i></div>
+          <div><div class="feat-title">Digital membership pass</div><div class="feat-desc">QR code check-in from the phone — no card needed at the facility.</div></div>
+        </div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="try-note">
+        <strong>Try it:</strong> Tap Programs → tap "Youth Swim Lessons — Level 1" to walk through a full registration flow, including participant selection, session picker, waiver, and payment.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ADMIN VIEW ═══════════════════════════ -->
+<div id="view-admin" class="view">
+  <div class="admin-layout">
+    <div class="admin-sidebar">
+      <div class="sidebar-org">
+        <div class="org-icon"><i class="ti ti-leaf"></i></div>
+        <div><div class="org-name">Springfield</div><div class="org-sub">Parks &amp; Recreation</div></div>
+      </div>
+      <div class="sidebar-section-label">Overview</div>
+      <button class="sidebar-item active" onclick="adminNav(this,'dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+      <div class="sidebar-section-label">Programs</div>
+      <button class="sidebar-item" onclick="adminNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+      <button class="sidebar-item" onclick="adminNav(this,'scheduler')"><i class="ti ti-calendar"></i>Facility scheduler</button>
+      <div class="sidebar-section-label">Members</div>
+      <button class="sidebar-item" onclick="adminNav(this,'members')"><i class="ti ti-users"></i>Members</button>
+      <button class="sidebar-item" onclick="adminNav(this,'checkin')"><i class="ti ti-scan"></i>Check-in</button>
+      <div class="sidebar-section-label">Finance</div>
+      <button class="sidebar-item" onclick="adminNav(this,'finance')"><i class="ti ti-cash"></i>Payments</button>
+      <button class="sidebar-item" onclick="adminNav(this,'reports')"><i class="ti ti-chart-bar"></i>Reports</button>
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="adminNav(this,'settings')"><i class="ti ti-settings"></i>Settings</button>
+      </div>
+    </div>
+
+    <div class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div id="admin-dashboard" class="admin-section active">
+        <div class="admin-topbar">
+          <div class="topbar-title">Dashboard</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-calendar"></i>Jun 16, 2026</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>New program</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Active members</div>
+              <div class="kpi-value">1,284</div>
+              <div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:14px"></i>+47 this month</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Enrollments (June)</div>
+              <div class="kpi-value">342</div>
+              <div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:14px"></i>+18% vs last year</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Revenue (June)</div>
+              <div class="kpi-value">$28,410</div>
+              <div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:14px"></i>On track for goal</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Open waitlists</div>
+              <div class="kpi-value">7</div>
+              <div class="kpi-delta warn"><i class="ti ti-alert-circle" style="font-size:14px"></i>Consider adding sections</div>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-header"><h3>Recent registrations</h3><button class="card-action">View all</button></div>
+              <div class="reg-row"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="reg-info"><div class="reg-name">Sarah Johnson</div><div class="reg-detail">Swim Lessons L1 — Emma</div></div><span class="reg-amount">$85.00</span></div>
+              <div class="reg-row"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="reg-info"><div class="reg-name">Marcus Rivera</div><div class="reg-detail">Adult Yoga — Saturday</div></div><span class="reg-amount">$60.00</span></div>
+              <div class="reg-row"><div class="avatar av-amber" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">KL</div><div class="reg-info"><div class="reg-name">Karen Liu</div><div class="reg-detail">Soccer Camp — Ethan</div></div><span class="reg-amount">$120.00</span></div>
+              <div class="reg-row"><div class="avatar av-purple" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">DP</div><div class="reg-info"><div class="reg-name">David Park</div><div class="reg-detail">Family Membership renewal</div></div><span class="reg-amount">$240.00</span></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Program capacity</h3><button class="card-action">Add section</button></div>
+              <div class="prog-row"><div class="prog-dot" style="background:#EF4444"></div><div class="prog-info"><div class="prog-name-cell">Summer Art Studio</div><div class="prog-meta-cell">Mon–Fri · 14 on waitlist</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:100%;background:#EF4444"></div></div><div class="cap-text">20/20</div></div></div>
+              <div class="prog-row"><div class="prog-dot" style="background:#F59E0B"></div><div class="prog-info"><div class="prog-name-cell">Swim Lessons L1 — Sess A</div><div class="prog-meta-cell">MWF · 9am · 4 left</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:80%;background:#F59E0B"></div></div><div class="cap-text">16/20</div></div></div>
+              <div class="prog-row"><div class="prog-dot" style="background:#F59E0B"></div><div class="prog-info"><div class="prog-name-cell">Basketball League</div><div class="prog-meta-cell">Wed evenings · 3 left</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:85%;background:#F59E0B"></div></div><div class="cap-text">17/20</div></div></div>
+              <div class="prog-row"><div class="prog-dot" style="background:#4CAF50"></div><div class="prog-info"><div class="prog-name-cell">Adult Yoga</div><div class="prog-meta-cell">Saturday · 8am</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:40%;background:#4CAF50"></div></div><div class="cap-text">8/20</div></div></div>
+              <div class="prog-row"><div class="prog-dot" style="background:#4CAF50"></div><div class="prog-info"><div class="prog-name-cell">Senior Fitness</div><div class="prog-meta-cell">MWF · 10am</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:65%;background:#4CAF50"></div></div><div class="cap-text">13/20</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROGRAMS -->
+      <div id="admin-programs" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Programs</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-filter"></i>Filter</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>New program</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Program</th>
+                  <th>Category</th>
+                  <th>Schedule</th>
+                  <th>Enrollment</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div style="font-weight:500">Youth Swim Lessons L1</div><div style="font-size:11px;color:var(--text-secondary)">Ages 6–12</div></td>
+                  <td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Aquatics</span></td>
+                  <td>MWF · 9–10am</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:80%;background:#F59E0B"></div></div><span style="font-size:11px;color:var(--text-secondary)">16/20</span></td>
+                  <td><span class="badge badge-few">Almost full</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:500">Soccer Skills Camp</div><div style="font-size:11px;color:var(--text-secondary)">Ages 8–14</div></td>
+                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td>
+                  <td>T/Th · 10–11:30am</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:55%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">11/20</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:500">Summer Art Studio</div><div style="font-size:11px;color:var(--text-secondary)">Ages 7–13</div></td>
+                  <td><span class="prog-tag" style="background:var(--amber-bg);color:var(--amber)">Arts</span></td>
+                  <td>M–F · 1–3pm</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:100%;background:#EF4444"></div></div><span style="font-size:11px;color:var(--text-secondary)">20/20</span></td>
+                  <td><span class="badge badge-full">Full · 14 waitlist</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:500">Adult Yoga</div><div style="font-size:11px;color:var(--text-secondary)">All levels</div></td>
+                  <td><span class="prog-tag" style="background:var(--purple-bg);color:var(--purple)">Fitness</span></td>
+                  <td>Sat · 8–9am</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:40%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">8/20</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:500">Senior Fitness</div><div style="font-size:11px;color:var(--text-secondary)">Ages 60+</div></td>
+                  <td><span class="prog-tag" style="background:var(--teal-bg);color:var(--teal)">Seniors</span></td>
+                  <td>MWF · 10–11am</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:65%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">13/20</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:500">Adult Basketball League</div><div style="font-size:11px;color:var(--text-secondary)">Adults 18+</div></td>
+                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Sports</span></td>
+                  <td>Wed · 6–9pm</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:85%;background:#F59E0B"></div></div><span style="font-size:11px;color:var(--text-secondary)">17/20</span></td>
+                  <td><span class="badge badge-few">Almost full</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULER -->
+      <div id="admin-scheduler" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Facility scheduler</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-chevron-left"></i></button>
+            <button class="btn-secondary">Week of Jun 16, 2026</button>
+            <button class="btn-secondary"><i class="ti ti-chevron-right"></i></button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>Reserve</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><h3>Community Center — Main Pool</h3><button class="card-action">View all facilities</button></div>
+            <div class="sched-grid">
+              <div></div>
+              <div class="sched-head">Mon 16</div><div class="sched-head">Tue 17</div><div class="sched-head">Wed 18</div><div class="sched-head">Thu 19</div><div class="sched-head">Fri 20</div>
+              <div class="sched-time">9 am</div>
+              <div class="sched-block sb-blue"><div class="sb-name">Swim L1</div><div class="sb-time">9–10am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-blue"><div class="sb-name">Swim L1</div><div class="sb-time">9–10am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-blue"><div class="sb-name">Swim L1</div><div class="sb-time">9–10am</div></div>
+              <div class="sched-time">10 am</div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-green"><div class="sb-name">Swim L2</div><div class="sb-time">10–11am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-green"><div class="sb-name">Swim L2</div><div class="sb-time">10–11am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-time">1 pm</div>
+              <div class="sched-block sb-amber"><div class="sb-name">Lap Swim</div><div class="sb-time">Open swim</div></div>
+              <div class="sched-block sb-amber"><div class="sb-name">Lap Swim</div><div class="sb-time">Open swim</div></div>
+              <div class="sched-block sb-amber"><div class="sb-name">Lap Swim</div><div class="sb-time">Open swim</div></div>
+              <div class="sched-block sb-amber"><div class="sb-name">Lap Swim</div><div class="sb-time">Open swim</div></div>
+              <div class="sched-block sb-amber"><div class="sb-name">Lap Swim</div><div class="sb-time">Open swim</div></div>
+              <div class="sched-time">6 pm</div>
+              <div class="sched-block sb-purple"><div class="sb-name">Water Polo</div><div class="sb-time">6–8pm</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-purple"><div class="sb-name">Water Polo</div><div class="sb-time">6–8pm</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-empty"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Maple Street Gym</h3></div>
+            <div class="sched-grid">
+              <div></div>
+              <div class="sched-head">Mon 16</div><div class="sched-head">Tue 17</div><div class="sched-head">Wed 18</div><div class="sched-head">Thu 19</div><div class="sched-head">Fri 20</div>
+              <div class="sched-time">8 am</div>
+              <div class="sched-block sb-green"><div class="sb-name">Senior Fitness</div><div class="sb-time">8–9am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-green"><div class="sb-name">Senior Fitness</div><div class="sb-time">8–9am</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-green"><div class="sb-name">Senior Fitness</div><div class="sb-time">8–9am</div></div>
+              <div class="sched-time">6 pm</div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-blue"><div class="sb-name">Basketball</div><div class="sb-time">6–9pm</div></div>
+              <div class="sched-block sb-empty"></div>
+              <div class="sched-block sb-empty"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERS -->
+      <div id="admin-members" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Members</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-search"></i>Search</button>
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>Add member</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="card">
+            <div class="card-header"><h3>All members · 1,284</h3></div>
+            <div class="member-table-row"><div class="avatar av-blue" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="mt-name"><div class="mname">Johnson, Sarah</div><div class="msub">Family · 3 members · Exp Dec 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+            <div class="member-table-row"><div class="avatar av-green" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="mt-name"><div class="mname">Rivera, Marcus</div><div class="msub">Individual · Exp Sep 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+            <div class="member-table-row"><div class="avatar av-amber" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">KL</div><div class="mt-name"><div class="mname">Liu, Karen</div><div class="msub">Family · 4 members · Exp Mar 2027</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+            <div class="member-table-row"><div class="avatar av-purple" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">DP</div><div class="mt-name"><div class="mname">Park, David</div><div class="msub">Individual · Exp Jun 2026</div></div><span class="badge badge-few">Expiring soon</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+            <div class="member-table-row"><div class="avatar av-green" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">AL</div><div class="mt-name"><div class="mname">Lopez, Ana</div><div class="msub">Senior · Exp Dec 2025</div></div><span class="badge badge-full">Expired</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+            <div class="member-table-row"><div class="avatar av-amber" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">BC</div><div class="mt-name"><div class="mname">Chen, Brian</div><div class="msub">Family · 2 members · Exp Aug 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div id="admin-checkin" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Check-in</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-filter"></i>Filter by facility</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="checkin-scanner">
+            <i class="ti ti-scan scanner-icon"></i>
+            <div class="scanner-title">Scan member QR code</div>
+            <div class="scanner-sub">Point a device camera at the member's digital pass, or search by name or member ID below.</div>
+            <input class="search-bar" type="text" placeholder="Search name or member ID...">
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Today's check-ins · 47</h3><button class="card-action">Export</button></div>
+            <div class="checkin-row"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="ci-info"><div class="ci-name">Sarah Johnson</div><div class="ci-loc">Community Center · Pool</div></div><span class="ci-time">8:42 am</span></div>
+            <div class="checkin-row"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="ci-info"><div class="ci-name">Marcus Rivera</div><div class="ci-loc">Maple Street Gym</div></div><span class="ci-time">9:05 am</span></div>
+            <div class="checkin-row"><div class="avatar av-amber" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">TP</div><div class="ci-info"><div class="ci-name">Tanya Patel</div><div class="ci-loc">Senior Activity Center</div></div><span class="ci-time">9:18 am</span></div>
+            <div class="checkin-row"><div class="avatar av-purple" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">BC</div><div class="ci-info"><div class="ci-name">Brian Chen</div><div class="ci-loc">Riverside Tennis Courts</div></div><span class="ci-time">9:31 am</span></div>
+            <div class="checkin-row"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">AL</div><div class="ci-info"><div class="ci-name">Ana Lopez</div><div class="ci-loc">Community Center · Pool</div></div><span class="ci-time">9:44 am</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCE -->
+      <div id="admin-finance" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Payments</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>Record payment</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="three-col">
+            <div class="kpi-card"><div class="kpi-label">Collected (June)</div><div class="kpi-value">$28,410</div></div>
+            <div class="kpi-card"><div class="kpi-label">Pending payments</div><div class="kpi-value">$1,240</div></div>
+            <div class="kpi-card"><div class="kpi-label">Refunds issued</div><div class="kpi-value">$320</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Recent transactions</h3><button class="card-action">View all</button></div>
+            <div class="fin-row"><div><div class="fin-desc">Sarah Johnson — Swim Lessons L1</div><div class="fin-sub">Jun 16 · Visa ···4821</div></div><span class="fin-amount">+$85.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">Karen Liu — Soccer Skills Camp</div><div class="fin-sub">Jun 16 · Apple Pay</div></div><span class="fin-amount">+$120.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">David Park — Family Membership</div><div class="fin-sub">Jun 15 · Visa ···9302</div></div><span class="fin-amount">+$240.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">T. Nguyen — Art Studio refund</div><div class="fin-sub">Jun 15 · Returned to original payment</div></div><span class="fin-amount refund">−$150.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">Marcus Rivera — Adult Yoga</div><div class="fin-sub">Jun 14 · Mastercard ···7741</div></div><span class="fin-amount">+$60.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">Brian Chen — Family Membership</div><div class="fin-sub">Jun 14 · Google Pay</div></div><span class="fin-amount">+$240.00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="admin-reports" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Reports</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export PDF</button>
+            <button class="btn-secondary"><i class="ti ti-table"></i>Export CSV</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="two-col">
+            <div class="card">
+              <div class="card-header"><h3>Enrollment by category</h3></div>
+              <div class="chart-wrap">
+                <div class="bar-chart" id="enroll-chart"></div>
+                <div style="display:flex;justify-content:space-around;margin-top:8px;" id="enroll-labels"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Revenue trend (2026)</h3></div>
+              <div class="chart-wrap">
+                <div class="bar-chart" id="rev-chart"></div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;" id="rev-labels"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card one-col">
+            <div class="card-header"><h3>Program performance summary</h3></div>
+            <table class="perf-table">
+              <thead><tr><th>Program</th><th>Enrolled</th><th>Revenue</th><th>Fill rate</th><th>Avg satisfaction</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500">Youth Swim Lessons</td><td>36</td><td>$3,060</td><td><span class="badge badge-few">80%</span></td><td><span class="star-rating">★★★★★</span> 4.8</td></tr>
+                <tr><td style="font-weight:500">Soccer Skills Camp</td><td>22</td><td>$2,640</td><td><span class="badge badge-open">55%</span></td><td><span class="star-rating">★★★★★</span> 4.6</td></tr>
+                <tr><td style="font-weight:500">Summer Art Studio</td><td>20</td><td>$3,000</td><td><span class="badge badge-full">100%</span></td><td><span class="star-rating">★★★★★</span> 4.9</td></tr>
+                <tr><td style="font-weight:500">Adult Yoga</td><td>8</td><td>$480</td><td><span class="badge badge-open">40%</span></td><td><span class="star-rating">★★★★★</span> 4.7</td></tr>
+                <tr><td style="font-weight:500">Senior Fitness</td><td>13</td><td>$390</td><td><span class="badge badge-open">65%</span></td><td><span class="star-rating">★★★★★</span> 4.5</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="admin-settings" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Settings</div>
+          <div class="topbar-actions">
+            <button class="btn-primary"><i class="ti ti-device-floppy"></i>Save changes</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="settings-card">
+            <div class="settings-card-header">Department profile</div>
+            <div class="settings-grid">
+              <div class="setting-field"><label>Department name</label><input class="mock-input" value="Springfield Parks &amp; Recreation"></div>
+              <div class="setting-field"><label>Primary brand color</label><input class="mock-input" value="#185FA5"></div>
+              <div class="setting-field"><label>Public portal URL</label><input class="mock-input" value="springfield.recportal.com"></div>
+              <div class="setting-field"><label>Support email</label><input class="mock-input" value="rec@springfield.gov"></div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <div class="settings-card-header">Payment &amp; registration</div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Fee assistance program</div><div class="toggle-desc">Allow residents to apply for subsidized fees during checkout</div></div>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Pass processing fee to resident</div><div class="toggle-desc">Add transaction fee at checkout (currently off — absorbed by department)</div></div>
+              <div class="toggle off"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Auto-enroll from waitlist</div><div class="toggle-desc">Automatically notify and enroll waitlisted residents when a spot opens</div></div>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Require waiver on every registration</div><div class="toggle-desc">Collect digital signature per registration, not just per household</div></div>
+              <div class="toggle off"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <div class="settings-card-header">Notifications</div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Send enrollment confirmation emails</div><div class="toggle-desc">Residents receive a confirmation email immediately after registering</div></div>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Class reminder push notifications</div><div class="toggle-desc">Remind residents 24 hours before a scheduled class or activity</div></div>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-main -->
+  </div><!-- /admin-layout -->
+</div>
+
+<script>
+  function switchMain(view, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.chrome-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    btn.classList.add('active');
+    if (view === 'admin') buildCharts();
+  }
+
+  function pubNav(btn, page) {
+    document.querySelectorAll('.pub-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn && btn.classList) btn.classList.add('active');
+    document.querySelectorAll('.pub-page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('pub-' + page);
+    if (target) target.classList.add('active');
+  }
+
+  function showRegister() {
+    document.querySelectorAll('.pub-nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pub-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('pub-register').classList.add('active');
+  }
+
+  function showPrograms() {
+    pubNav(document.querySelectorAll('.pub-nav-btn')[1], 'programs');
+  }
+
+  function adminNav(btn, section) {
+    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('admin-' + section).classList.add('active');
+    if (section === 'reports') buildCharts();
+  }
+
+  let chartsBuilt = false;
+  function buildCharts() {
+    if (chartsBuilt) return;
+    chartsBuilt = true;
+
+    const cats = [
+      {n:'Aquatics', v:36, c:'#378ADD'},
+      {n:'Sports', v:33, c:'#4CAF50'},
+      {n:'Arts', v:20, c:'#F59E0B'},
+      {n:'Fitness', v:8, c:'#7C6FD4'},
+      {n:'Seniors', v:13, c:'#0F9B8E'}
+    ];
+    const maxE = 40;
+    const ec = document.getElementById('enroll-chart');
+    const el = document.getElementById('enroll-labels');
+    if (ec && ec.children.length === 0) {
+      cats.forEach(c => {
+        const h = Math.round((c.v / maxE) * 110);
+        const grp = document.createElement('div');
+        grp.className = 'bar-group';
+        grp.innerHTML = `<div class="bar" style="height:${h}px;background:${c.c}"><span class="bar-val">${c.v}</span></div>`;
+        ec.appendChild(grp);
+        const lbl = document.createElement('div');
+        lbl.className = 'bar-label';
+        lbl.textContent = c.n;
+        el.appendChild(lbl);
+      });
+    }
+
+    const months = [
+      {m:'Jan',v:18200},{m:'Feb',v:14100},{m:'Mar',v:21300},
+      {m:'Apr',v:19800},{m:'May',v:24500},{m:'Jun',v:28410}
+    ];
+    const maxR = 30000;
+    const rc = document.getElementById('rev-chart');
+    const rl = document.getElementById('rev-labels');
+    if (rc && rc.children.length === 0) {
+      months.forEach(m => {
+        const h = Math.round((m.v / maxR) * 110);
+        const grp = document.createElement('div');
+        grp.className = 'bar-group';
+        grp.innerHTML = `<div class="bar" style="height:${h}px;background:var(--blue-mid)"><span class="bar-val" style="font-size:9px">$${Math.round(m.v/1000)}k</span></div>`;
+        rc.appendChild(grp);
+        const lbl = document.createElement('div');
+        lbl.className = 'bar-label';
+        lbl.textContent = m.m;
+        rl.appendChild(lbl);
+      });
+    }
+  }
+</script>
+</body>
+</html>
