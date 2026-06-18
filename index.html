@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 06.18.26 -->
 <head>
+  <!--- PR 06.18.26.4:17 pm --->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Springfield Recreation — Demo</title>
@@ -861,6 +861,220 @@
     .two-col, .three-col { grid-template-columns: 1fr; }
   }
 
+  /* ── ELIGIBILITY STYLES ── */
+  .elig-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 600; padding: 3px 8px;
+    border-radius: var(--radius-pill); white-space: nowrap; flex-shrink: 0;
+  }
+  .elig-yes { background: #EAF3DE; color: #27500A; }
+  .elig-no { background: #F3F4F6; color: #9CA3AF; }
+  .elig-prereq { background: #FAEEDA; color: #633806; }
+  .elig-tag i { font-size: 11px; }
+
+  .for-you-banner {
+    background: linear-gradient(135deg, #0C447C, #185FA5);
+    border-radius: var(--radius-xl);
+    padding: 14px;
+    margin-bottom: 10px;
+    color: #fff;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .for-you-banner i { font-size: 22px; opacity: 0.9; }
+  .for-you-banner-text { font-size: 13px; font-weight: 500; }
+  .for-you-banner-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  .member-tab-row {
+    display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto;
+  }
+  .member-tab-row::-webkit-scrollbar { display: none; }
+  .member-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px;
+    border: 1px solid var(--border-med);
+    background: var(--bg-primary); font-size: 12px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer;
+    font-family: var(--font); white-space: nowrap;
+  }
+  .member-tab .mt-avatar {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700;
+  }
+  .member-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .member-tab.active .mt-avatar { background: rgba(255,255,255,0.25); }
+
+  .elig-rule-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 11px; color: var(--text-secondary);
+  }
+  .elig-rule-row:last-child { border-bottom: none; }
+  .elig-rule-row i { font-size: 14px; }
+  .elig-rule-pass { color: var(--green); }
+  .elig-rule-fail { color: var(--text-tertiary); }
+  .elig-rule-warn { color: var(--amber); }
+
+  /* Family schedule mobile */
+  .family-sched-member {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .fsm-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .fsm-name { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .fsm-count { font-size: 11px; color: var(--text-secondary); }
+  .fsm-reg-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+  }
+  .fsm-reg-row:last-child { border-bottom: none; }
+  .fsm-reg-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .fsm-reg-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .fsm-reg-meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .fsm-empty { padding: 12px; font-size: 12px; color: var(--text-tertiary); text-align: center; }
+
+  .week-cal {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .week-cal-header {
+    display: grid; grid-template-columns: 36px repeat(5,1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .wch-day {
+    padding: 6px 2px; text-align: center;
+    font-size: 9px; font-weight: 600;
+    color: var(--text-tertiary); text-transform: uppercase;
+    border-left: 1px solid var(--border);
+  }
+  .wch-time { padding: 6px 4px; font-size: 9px; color: var(--text-tertiary); }
+  .week-cal-row {
+    display: grid; grid-template-columns: 36px repeat(5,1fr);
+    border-bottom: 1px solid var(--border);
+    min-height: 36px;
+  }
+  .week-cal-row:last-child { border-bottom: none; }
+  .wcr-time {
+    padding: 4px; font-size: 9px; color: var(--text-tertiary);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 4px; border-right: 1px solid var(--border);
+  }
+  .wcr-cell {
+    border-left: 1px solid var(--border);
+    padding: 2px;
+  }
+  .wcr-block {
+    border-radius: 4px; padding: 3px 4px;
+    font-size: 8px; font-weight: 600; line-height: 1.3;
+    height: 100%;
+  }
+  .wcr-empty { background: transparent; }
+
+  /* Web eligibility styles */
+  .web-elig-banner {
+    background: linear-gradient(135deg, #0C447C, #185FA5);
+    border-radius: 14px; padding: 20px 24px;
+    color: #fff; display: flex; align-items: flex-start;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .web-elig-banner i { font-size: 28px; opacity: 0.85; flex-shrink: 0; margin-top: 2px; }
+  .web-elig-banner h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .web-elig-banner p { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+
+  .web-member-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .web-member-tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 20px;
+    border: 1px solid var(--border-med);
+    background: var(--bg-primary); font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer; font-family: var(--font);
+  }
+  .web-member-tab .wmt-av {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+  }
+  .web-member-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .web-member-tab.all-tab { font-weight: 600; }
+
+  .web-prog-elig {
+    margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .web-elig-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 3px 9px;
+    border-radius: var(--radius-pill);
+  }
+  .wec-yes { background: #EAF3DE; color: #27500A; }
+  .wec-no { background: #F3F4F6; color: #9CA3AF; }
+  .wec-prereq { background: #FAEEDA; color: #633806; }
+  .wec-adult { background: #EEEDFE; color: #534AB7; }
+
+  .elig-toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .etl-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .etl-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* Web family schedule */
+  .web-fam-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .web-fam-layout { grid-template-columns: 1fr; } }
+  .web-fam-cal {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 20px;
+  }
+  .web-fam-cal-header {
+    display: grid; grid-template-columns: 60px repeat(5,1fr);
+    background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+  }
+  .wfch { padding: 10px 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); border-left: 1px solid var(--border); }
+  .wfch-time { padding: 10px 8px; font-size: 11px; color: var(--text-tertiary); }
+  .web-fam-cal-row { display: grid; grid-template-columns: 60px repeat(5,1fr); border-bottom: 1px solid var(--border); min-height: 52px; }
+  .web-fam-cal-row:last-child { border-bottom: none; }
+  .wfcr-time { padding: 8px; font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; justify-content: flex-end; border-right: 1px solid var(--border); }
+  .wfcr-cell { border-left: 1px solid var(--border); padding: 3px; }
+  .wfcr-block { border-radius: 6px; padding: 5px 7px; font-size: 10px; font-weight: 600; line-height: 1.4; height: 100%; }
+  .wfcr-empty { background: var(--bg-secondary); height: 100%; border-radius: 6px; }
+
+  .web-member-sched-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 16px;
+  }
+  .wmsc-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .wmsc-name { font-size: 14px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .wmsc-reg-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+  }
+  .wmsc-reg-row:last-child { border-bottom: none; }
+  .wmsc-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .wmsc-info { flex: 1; }
+  .wmsc-name-prog { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .wmsc-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .wmsc-empty { padding: 16px 18px; font-size: 13px; color: var(--text-tertiary); text-align: center; }
+
   /* ── WEB / TABLET PORTAL ── */
   #view-publicweb { background: var(--bg-tertiary); min-height: calc(100vh - 52px); }
 
@@ -1210,6 +1424,7 @@
         <div class="pub-nav">
           <button class="pub-nav-btn active" onclick="pubNav(this,'home')"><i class="ti ti-home"></i>Home</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+          <button class="pub-nav-btn" onclick="pubNav(this,'famschedule')"><i class="ti ti-calendar-event"></i>Schedule</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'facilities')"><i class="ti ti-building"></i>Facilities</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'mypass')"><i class="ti ti-id-badge"></i>My Pass</button>
         </div>
@@ -1221,43 +1436,194 @@
             <div class="hero-card">
               <h3>Summer registration is open!</h3>
               <p>Swim lessons, youth sports, art camps, and more are now available for enrollment.</p>
-              <button class="hero-card-btn" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">Browse summer programs</button>
+              <button class="hero-card-btn" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">Browse all programs</button>
             </div>
+
+            <!-- FOR YOUR FAMILY -->
             <div class="pub-section">
-              <div class="pub-section-label">Popular this week</div>
-              <div class="activity-card" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">
-                <div class="activity-icon"><i class="ti ti-swimming"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Youth Swim Lessons</div>
-                  <div class="activity-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div>
+              <div class="pub-section-label">For your family</div>
+              <div class="for-you-banner">
+                <i class="ti ti-sparkles"></i>
+                <div>
+                  <div class="for-you-banner-text">Personalized for the Johnson family</div>
+                  <div class="for-you-banner-sub">Showing programs each member is eligible for</div>
                 </div>
-                <span class="badge badge-few">4 left</span>
               </div>
-              <div class="activity-card">
-                <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Soccer Skills Camp</div>
-                  <div class="activity-meta">Tue/Thu · 10–11:30am · Ages 8–14</div>
-                </div>
-                <span class="badge badge-open">Open</span>
+
+              <!-- Member tabs -->
+              <div class="member-tab-row">
+                <button class="member-tab active" onclick="mobileFilterMember(this,'all')">
+                  <div class="mt-avatar" style="background:rgba(24,95,165,0.15);color:var(--blue)">All</div> Everyone
+                </button>
+                <button class="member-tab" onclick="mobileFilterMember(this,'sarah')">
+                  <div class="mt-avatar" style="background:var(--blue-light);color:var(--blue)">SJ</div> Sarah
+                </button>
+                <button class="member-tab" onclick="mobileFilterMember(this,'emma')">
+                  <div class="mt-avatar" style="background:var(--green-bg);color:var(--green)">EJ</div> Emma
+                </button>
+                <button class="member-tab" onclick="mobileFilterMember(this,'liam')">
+                  <div class="mt-avatar" style="background:var(--amber-bg);color:var(--amber)">LJ</div> Liam
+                </button>
               </div>
-              <div class="activity-card">
-                <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Summer Art Studio</div>
-                  <div class="activity-meta">Mon–Fri · 1–3pm · Ages 7–13</div>
+
+              <!-- Program cards with eligibility -->
+              <div id="mob-for-all">
+                <div class="activity-card" onclick="showRegister()">
+                  <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Youth Swim Lessons L1</div>
+                    <div class="activity-meta">MWF · 9–10am · Ages 6–12 · $85</div>
+                    <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Emma eligible</span>
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam eligible</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-few">4 left</span>
                 </div>
-                <span class="badge badge-full">Full</span>
+                <div class="activity-card">
+                  <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Soccer Skills Camp</div>
+                    <div class="activity-meta">T/Th · 10–11:30am · Ages 8–14 · $120</div>
+                    <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                      <span class="elig-tag elig-no"><i class="ti ti-x"></i>Emma (age 8 min)</span>
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam eligible</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Summer Art Studio</div>
+                    <div class="activity-meta">M–F · 1–3pm · Ages 7–13 · $150</div>
+                    <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Emma eligible</span>
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam eligible</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-wait">Waitlist</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Adult Yoga</div>
+                    <div class="activity-meta">Sat · 8–9am · Ages 18+ · $60</div>
+                    <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Sarah eligible</span>
+                      <span class="elig-tag elig-no"><i class="ti ti-x"></i>Emma (adults only)</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon green"><i class="ti ti-ball-basketball"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Adult Basketball League</div>
+                    <div class="activity-meta">Wed evenings · Ages 18+ · $45</div>
+                    <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                      <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Sarah eligible</span>
+                      <span class="elig-tag elig-no"><i class="ti ti-x"></i>Children (18+)</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-few">3 left</span>
+                </div>
               </div>
-              <div class="activity-card">
-                <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Adult Yoga</div>
-                  <div class="activity-meta">Saturday · 8–9am · All levels</div>
+
+              <div id="mob-for-sarah" style="display:none">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Programs Sarah (adult, member) qualifies for:</div>
+                <div class="activity-card">
+                  <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Adult Yoga</div>
+                    <div class="activity-meta">Sat · 8–9am · $60</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
                 </div>
-                <span class="badge badge-open">Open</span>
+                <div class="activity-card">
+                  <div class="activity-icon green"><i class="ti ti-ball-basketball"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Adult Basketball League</div>
+                    <div class="activity-meta">Wed evenings · $45</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-few">3 left</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon teal"><i class="ti ti-run"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">5K Training Club</div>
+                    <div class="activity-meta">Sat mornings · $40</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
+                </div>
+              </div>
+
+              <div id="mob-for-emma" style="display:none">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Programs Emma (age 8, member) qualifies for:</div>
+                <div class="activity-card" onclick="showRegister()">
+                  <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Youth Swim Lessons L1</div>
+                    <div class="activity-meta">MWF · 9–10am · $85</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age 6–12 · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-few">4 left</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Summer Art Studio</div>
+                    <div class="activity-meta">M–F · 1–3pm · $150</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age 7–13 · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-wait">Waitlist</span>
+                </div>
+                <div class="activity-card" style="opacity:0.65">
+                  <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Soccer Skills Camp</div>
+                    <div class="activity-meta">T/Th · 10–11:30am · $120</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-prereq"><i class="ti ti-alert-circle"></i>Age min 8 — borderline</span></div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
+                </div>
+              </div>
+
+              <div id="mob-for-liam" style="display:none">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Programs Liam (age 11, member) qualifies for:</div>
+                <div class="activity-card">
+                  <div class="activity-icon"><i class="ti ti-swimming"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Youth Swim Lessons L1</div>
+                    <div class="activity-meta">MWF · 9–10am · $85</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age 6–12 · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-few">4 left</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Soccer Skills Camp</div>
+                    <div class="activity-meta">T/Th · 10–11:30am · $120</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age 8–14 · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-open">Open</span>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+                  <div class="activity-info">
+                    <div class="activity-name">Summer Art Studio</div>
+                    <div class="activity-meta">M–F · 1–3pm · $150</div>
+                    <div style="margin-top:5px"><span class="elig-tag elig-yes"><i class="ti ti-check"></i>Age 7–13 · Member · ZIP ✓</span></div>
+                  </div>
+                  <span class="badge badge-wait">Waitlist</span>
+                </div>
               </div>
             </div>
+
             <div class="pub-section">
               <div class="pub-section-label">Facilities now</div>
               <div class="facility-row">
@@ -1294,20 +1660,37 @@
               <button class="pill">Fitness</button>
               <button class="pill">Seniors</button>
             </div>
-            <div class="pub-section-label">Tap a program to register</div>
+            <!-- Eligibility toggle -->
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+              <div>
+                <div style="font-size:12px;font-weight:500;color:var(--text-primary)">My family's programs only</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:1px">Hide programs no one qualifies for</div>
+              </div>
+              <div id="mob-elig-toggle" style="width:36px;height:20px;border-radius:10px;background:var(--blue);position:relative;cursor:pointer" onclick="toggleMobElig()">
+                <div id="mob-elig-thumb" style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px;transition:right 0.15s"></div>
+              </div>
+            </div>
+            <div class="pub-section-label">Tap to register</div>
             <div class="activity-card" onclick="showRegister()">
               <div class="activity-icon"><i class="ti ti-swimming"></i></div>
               <div class="activity-info">
-                <div class="activity-name">Youth Swim Lessons — Level 1</div>
-                <div class="activity-meta">Mon/Wed/Fri · 9–10am · $85</div>
+                <div class="activity-name">Youth Swim Lessons — L1</div>
+                <div class="activity-meta">MWF · 9–10am · $85</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Emma</span>
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam</span>
+                </div>
               </div>
               <span class="badge badge-few">4 left</span>
             </div>
-            <div class="activity-card" onclick="showRegister()">
+            <div class="activity-card">
               <div class="activity-icon"><i class="ti ti-swimming"></i></div>
               <div class="activity-info">
-                <div class="activity-name">Youth Swim Lessons — Level 2</div>
-                <div class="activity-meta">Tue/Thu · 9–10am · $85</div>
+                <div class="activity-name">Youth Swim Lessons — L2</div>
+                <div class="activity-meta">T/Th · 9–10am · $85</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-prereq"><i class="ti ti-alert-circle"></i>Prereq: L1 required</span>
+                </div>
               </div>
               <span class="badge badge-open">Open</span>
             </div>
@@ -1315,7 +1698,11 @@
               <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
               <div class="activity-info">
                 <div class="activity-name">Soccer Skills Camp</div>
-                <div class="activity-meta">Tue/Thu · 10–11:30am · $120</div>
+                <div class="activity-meta">T/Th · 10–11:30am · $120</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-no"><i class="ti ti-x"></i>Emma (age 8 min)</span>
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam</span>
+                </div>
               </div>
               <span class="badge badge-open">Open</span>
             </div>
@@ -1323,7 +1710,11 @@
               <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
               <div class="activity-info">
                 <div class="activity-name">Summer Art Studio</div>
-                <div class="activity-meta">Mon–Fri · 1–3pm · $150</div>
+                <div class="activity-meta">M–F · 1–3pm · $150</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Emma</span>
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam</span>
+                </div>
               </div>
               <span class="badge badge-wait">Waitlist</span>
             </div>
@@ -1331,7 +1722,11 @@
               <div class="activity-icon purple"><i class="ti ti-yoga"></i></div>
               <div class="activity-info">
                 <div class="activity-name">Adult Yoga</div>
-                <div class="activity-meta">Saturday · 8–9am · $60</div>
+                <div class="activity-meta">Sat · 8–9am · $60</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Sarah</span>
+                  <span class="elig-tag elig-no"><i class="ti ti-x"></i>Children (18+)</span>
+                </div>
               </div>
               <span class="badge badge-open">Open</span>
             </div>
@@ -1339,15 +1734,22 @@
               <div class="activity-icon green"><i class="ti ti-ball-basketball"></i></div>
               <div class="activity-info">
                 <div class="activity-name">Adult Basketball League</div>
-                <div class="activity-meta">Wednesday evenings · $45/season</div>
+                <div class="activity-meta">Wed evenings · $45</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Sarah</span>
+                  <span class="elig-tag elig-no"><i class="ti ti-x"></i>Children (18+)</span>
+                </div>
               </div>
-              <span class="badge badge-open">Open</span>
+              <span class="badge badge-few">3 left</span>
             </div>
             <div class="activity-card">
               <div class="activity-icon teal"><i class="ti ti-heart-rate-monitor"></i></div>
               <div class="activity-info">
                 <div class="activity-name">Senior Fitness</div>
-                <div class="activity-meta">Mon/Wed/Fri · 10–11am · Ages 60+</div>
+                <div class="activity-meta">MWF · 10–11am · $30</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-no"><i class="ti ti-x"></i>Ages 60+ only</span>
+                </div>
               </div>
               <span class="badge badge-open">Open</span>
             </div>
@@ -1399,6 +1801,97 @@
               <div class="line-total"><span>Total</span><span>$86.50</span></div>
               <button class="register-btn">Complete registration</button>
               <div class="secure-note"><i class="ti ti-shield-check" style="font-size:13px"></i> Secure payment · <span class="fee-assist-link">Apply for fee assistance</span></div>
+            </div>
+          </div>
+
+          <!-- FAMILY SCHEDULE -->
+          <div id="pub-famschedule" class="pub-page">
+            <div class="pub-section-label">Family weekly schedule</div>
+            <div class="week-cal">
+              <div class="week-cal-header">
+                <div class="wch-time"></div>
+                <div class="wch-day">MON</div>
+                <div class="wch-day">TUE</div>
+                <div class="wch-day">WED</div>
+                <div class="wch-day">THU</div>
+                <div class="wch-day">FRI</div>
+              </div>
+              <div class="week-cal-row">
+                <div class="wcr-time">9am</div>
+                <div class="wcr-cell"><div class="wcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim</div><div style="font-weight:400;font-size:7px">Emma</div></div></div>
+                <div class="wcr-cell"><div class="wcr-empty"></div></div>
+                <div class="wcr-cell"><div class="wcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim</div><div style="font-weight:400;font-size:7px">Emma</div></div></div>
+                <div class="wcr-cell"><div class="wcr-empty"></div></div>
+                <div class="wcr-cell"><div class="wcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim</div><div style="font-weight:400;font-size:7px">Emma</div></div></div>
+              </div>
+              <div class="week-cal-row">
+                <div class="wcr-time">10am</div>
+                <div class="wcr-cell"><div class="wcr-empty"></div></div>
+                <div class="wcr-cell"><div class="wcr-block" style="background:var(--green-bg);color:var(--green)"><div>Soccer</div><div style="font-weight:400;font-size:7px">Liam</div></div></div>
+                <div class="wcr-cell"><div class="wcr-empty"></div></div>
+                <div class="wcr-cell"><div class="wcr-block" style="background:var(--green-bg);color:var(--green)"><div>Soccer</div><div style="font-weight:400;font-size:7px">Liam</div></div></div>
+                <div class="wcr-cell"><div class="wcr-empty"></div></div>
+              </div>
+              <div class="week-cal-row">
+                <div class="wcr-time">8am<br><span style="font-size:7px">Sat</span></div>
+                <div class="wcr-cell" style="grid-column:span 5;background:var(--purple-bg)">
+                  <div class="wcr-block" style="background:var(--purple-bg);color:var(--purple)"><div>Adult Yoga — Sarah · Sat 8–9am</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pub-section-label" style="margin-top:4px">Registrations by member</div>
+
+            <div class="family-sched-member">
+              <div class="fsm-header">
+                <div class="avatar av-blue" style="width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div>
+                <div class="fsm-name">Sarah Johnson</div>
+                <div class="fsm-count">1 program</div>
+              </div>
+              <div class="fsm-reg-row">
+                <div class="fsm-reg-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
+                <div>
+                  <div class="fsm-reg-name">Adult Yoga</div>
+                  <div class="fsm-reg-meta">Sat · 8–9am · Through Aug 30</div>
+                </div>
+                <span class="badge badge-open" style="margin-left:auto">Active</span>
+              </div>
+            </div>
+
+            <div class="family-sched-member">
+              <div class="fsm-header">
+                <div class="avatar av-green" style="width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">EJ</div>
+                <div class="fsm-name">Emma Johnson · Age 8</div>
+                <div class="fsm-count">1 program</div>
+              </div>
+              <div class="fsm-reg-row">
+                <div class="fsm-reg-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+                <div>
+                  <div class="fsm-reg-name">Youth Swim Lessons L1</div>
+                  <div class="fsm-reg-meta">MWF · 9–10am · Jun 23 – Jul 11</div>
+                </div>
+                <span class="badge badge-open" style="margin-left:auto">Active</span>
+              </div>
+            </div>
+
+            <div class="family-sched-member">
+              <div class="fsm-header">
+                <div class="avatar av-amber" style="width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">LJ</div>
+                <div class="fsm-name">Liam Johnson · Age 11</div>
+                <div class="fsm-count">1 program</div>
+              </div>
+              <div class="fsm-reg-row">
+                <div class="fsm-reg-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                <div>
+                  <div class="fsm-reg-name">Soccer Skills Camp</div>
+                  <div class="fsm-reg-meta">T/Th · 10–11:30am · Jul 8 – Aug 1</div>
+                </div>
+                <span class="badge badge-open" style="margin-left:auto">Active</span>
+              </div>
+            </div>
+
+            <div style="margin-top:8px">
+              <button class="hero-card-btn" style="width:100%;text-align:center" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">+ Register for more programs</button>
             </div>
           </div>
 
@@ -1528,7 +2021,7 @@
       </div>
       <div class="info-divider"></div>
       <div class="try-note">
-        <strong>Try it:</strong> Tap Programs → tap "Youth Swim Lessons — Level 1" to walk through a full registration flow, including participant selection, session picker, waiver, and payment.
+        <strong>Try it:</strong> On the Home tab, tap family member tabs (Sarah / Emma / Liam) to see personalized eligible programs for each person. On Programs, notice eligibility chips on every card. Tap the Schedule tab to see the full family calendar and registrations per member.
       </div>
     </div>
 
@@ -1543,6 +2036,7 @@
     <div class="web-nav-logo">Springfield <span>Recreation</span></div>
     <button class="web-nav-link active" onclick="webNav(this,'whome')"><i class="ti ti-home"></i>Home</button>
     <button class="web-nav-link" onclick="webNav(this,'wprograms')"><i class="ti ti-run"></i>Programs</button>
+    <button class="web-nav-link" onclick="webNav(this,'wfamschedule')"><i class="ti ti-calendar-event"></i>Family Schedule</button>
     <button class="web-nav-link" onclick="webNav(this,'wfacilities')"><i class="ti ti-building"></i>Facilities</button>
     <button class="web-nav-link" onclick="webNav(this,'waccount')"><i class="ti ti-user-circle"></i>My Account</button>
     <div class="web-nav-right">
@@ -1649,33 +2143,74 @@
         </div>
       </div>
 
+
       <div class="web-section-header">
         <h2>Facility availability</h2>
-        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[2],'wfacilities')">View all facilities →</a>
+        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[3],'wfacilities')">View all facilities →</a>
       </div>
       <div class="web-facility-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="web-fac-card">
-          <div class="web-fac-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
-          <div class="web-fac-name">Community Center Pool</div>
-          <div class="web-fac-status"><span class="avail-dot dot-green"></span>Open now · Lap swimming</div>
-        </div>
-        <div class="web-fac-card">
-          <div class="web-fac-icon bg-green-img"><i class="ti ti-ball-tennis"></i></div>
-          <div class="web-fac-name">Riverside Tennis Courts</div>
-          <div class="web-fac-status"><span class="avail-dot dot-amber"></span>2 of 4 courts available</div>
-        </div>
-        <div class="web-fac-card">
-          <div class="web-fac-icon bg-purple-img"><i class="ti ti-building"></i></div>
-          <div class="web-fac-name">Maple Street Gym</div>
-          <div class="web-fac-status"><span class="avail-dot dot-red"></span>Reserved until 5pm</div>
+        <div class="web-fac-card"><div class="web-fac-icon bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-fac-name">Community Center Pool</div><div class="web-fac-status"><span class="avail-dot dot-green"></span>Open now · Lap swimming</div></div>
+        <div class="web-fac-card"><div class="web-fac-icon bg-green-img"><i class="ti ti-ball-tennis"></i></div><div class="web-fac-name">Riverside Tennis Courts</div><div class="web-fac-status"><span class="avail-dot dot-amber"></span>2 of 4 courts available</div></div>
+        <div class="web-fac-card"><div class="web-fac-icon bg-purple-img"><i class="ti ti-building"></i></div><div class="web-fac-name">Maple Street Gym</div><div class="web-fac-status"><span class="avail-dot dot-red"></span>Reserved until 5pm</div></div>
+      </div>
+
+      <!-- FOR YOUR FAMILY -->
+      <div class="web-elig-banner">
+        <i class="ti ti-sparkles"></i>
+        <div>
+          <h3>Personalized for the Johnson family</h3>
+          <p>The system matches each member to programs they qualify for based on age, grade, membership status, ZIP code, prerequisites, and more. Toggle between family members to see their individual eligible programs.</p>
         </div>
       </div>
+      <div class="web-section-header">
+        <h2>For your family</h2>
+        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[2],'wfamschedule')">View family schedule →</a>
+      </div>
+      <div class="web-member-tabs" style="margin-bottom:16px">
+        <button class="web-member-tab all-tab active" onclick="webFilterMember(this,'wall')">Everyone</button>
+        <button class="web-member-tab" onclick="webFilterMember(this,'wsarah')"><div class="wmt-av" style="background:var(--blue-light);color:var(--blue)">SJ</div>Sarah</button>
+        <button class="web-member-tab" onclick="webFilterMember(this,'wemma')"><div class="wmt-av" style="background:var(--green-bg);color:var(--green)">EJ</div>Emma (8)</button>
+        <button class="web-member-tab" onclick="webFilterMember(this,'wliam')"><div class="wmt-av" style="background:var(--amber-bg);color:var(--amber)">LJ</div>Liam (11)</button>
+      </div>
+      <div id="wall">
+        <div class="web-program-grid">
+          <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons L1</div><div class="web-prog-meta">MWF · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+          <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Soccer Skills Camp</div><div class="web-prog-meta">T/Th · 10–11:30am · Ages 8–14</div><div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Emma (age min)</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+          <div class="web-prog-card"><div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Summer Art Studio</div><div class="web-prog-meta">M–F · 1–3pm · Ages 7–13</div><div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+          <div class="web-prog-card"><div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Yoga</div><div class="web-prog-meta">Sat · 8–9am · Ages 18+</div><div class="web-prog-footer"><div class="web-prog-price">$60</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span></div></div></div>
+          <div class="web-prog-card"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons L2</div><div class="web-prog-meta">T/Th · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-prereq"><i class="ti ti-alert-circle" style="font-size:10px"></i>Prereq: L1 required</span></div></div></div>
+          <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Basketball League</div><div class="web-prog-meta">Wed evenings · Adults 18+</div><div class="web-prog-footer"><div class="web-prog-price">$45</div><span class="badge badge-few">3 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span></div></div></div>
+        </div>
+      </div>
+      <div id="wsarah" style="display:none"><div class="web-program-grid">
+        <div class="web-prog-card"><div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Yoga</div><div class="web-prog-meta">Sat · 8–9am</div><div class="web-prog-footer"><div class="web-prog-price">$60</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Basketball League</div><div class="web-prog-meta">Wed evenings · 18+</div><div class="web-prog-footer"><div class="web-prog-price">$45</div><span class="badge badge-few">3 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-teal-img"><i class="ti ti-run"></i></div><div class="web-prog-card-body"><div class="web-prog-name">5K Training Club</div><div class="web-prog-meta">Sat mornings</div><div class="web-prog-footer"><div class="web-prog-price">$40</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age · Member · ZIP ✓</span></div></div></div>
+      </div></div>
+      <div id="wemma" style="display:none"><div class="web-program-grid">
+        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons L1</div><div class="web-prog-meta">MWF · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age 6–12 · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Summer Art Studio</div><div class="web-prog-meta">M–F · 1–3pm · Ages 7–13</div><div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age 7–13 · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card" style="opacity:0.7"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Soccer Skills Camp</div><div class="web-prog-meta">T/Th · Ages 8–14</div><div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-prereq"><i class="ti ti-alert-circle" style="font-size:10px"></i>Age borderline — check with staff</span></div></div></div>
+      </div></div>
+      <div id="wliam" style="display:none"><div class="web-program-grid">
+        <div class="web-prog-card"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons L1</div><div class="web-prog-meta">MWF · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age 6–12 · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Soccer Skills Camp</div><div class="web-prog-meta">T/Th · Ages 8–14</div><div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age 8–14 · Member · ZIP ✓</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Summer Art Studio</div><div class="web-prog-meta">M–F · Ages 7–13</div><div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Age 7–13 · Member · ZIP ✓</span></div></div></div>
+      </div></div>
     </div>
 
     <!-- PROGRAMS -->
     <div id="wprograms" class="web-page">
-      <div class="web-section-header" style="margin-bottom:16px">
-        <h2>All programs</h2>
+      <div class="web-section-header" style="margin-bottom:16px"><h2>All programs</h2></div>
+      <div class="elig-toggle-row">
+        <div><div class="etl-label">Show only programs my family qualifies for</div><div class="etl-sub">Filters out programs no household member is eligible for</div></div>
+        <div class="toggle on"><div class="toggle-thumb"></div></div>
+      </div>
+      <div class="web-member-tabs">
+        <button class="web-member-tab all-tab active">Everyone</button>
+        <button class="web-member-tab"><div class="wmt-av" style="background:var(--blue-light);color:var(--blue)">SJ</div>Sarah</button>
+        <button class="web-member-tab"><div class="wmt-av" style="background:var(--green-bg);color:var(--green)">EJ</div>Emma (8)</button>
+        <button class="web-member-tab"><div class="wmt-av" style="background:var(--amber-bg);color:var(--amber)">LJ</div>Liam (11)</button>
       </div>
       <div class="web-filter-pills">
         <button class="web-filter-pill active">All categories</button>
@@ -1691,80 +2226,94 @@
         <button class="web-search-btn"><i class="ti ti-search"></i>Search</button>
       </div>
       <div class="web-program-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">
-          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Youth Swim Lessons — Level 1</div>
-            <div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div>
+        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons — Level 1</div><div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons — Level 2</div><div class="web-prog-meta">Tue/Thu · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-prereq"><i class="ti ti-alert-circle" style="font-size:10px"></i>Prereq: L1 completion required</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Lap Swim Pass</div><div class="web-prog-meta">Daily open swim · All ages</div><div class="web-prog-footer"><div class="web-prog-price">$5/visit</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Soccer Skills Camp</div><div class="web-prog-meta">Tue/Thu · 10–11:30am · Ages 8–14</div><div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Emma (age 8 min)</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Basketball League</div><div class="web-prog-meta">Wednesday evenings · Adults 18+</div><div class="web-prog-footer"><div class="web-prog-price">$45</div><span class="badge badge-few">3 spots left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Summer Art Studio</div><div class="web-prog-meta">Mon–Fri · 1–3pm · Ages 7–13</div><div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Adult Yoga</div><div class="web-prog-meta">Saturday · 8–9am · All levels</div><div class="web-prog-footer"><div class="web-prog-price">$60</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-teal-img"><i class="ti ti-heart-rate-monitor"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Senior Fitness</div><div class="web-prog-meta">Mon/Wed/Fri · 10–11am · Ages 60+</div><div class="web-prog-footer"><div class="web-prog-price">$30</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Ages 60+ only</span></div></div></div>
+        <div class="web-prog-card"><div class="web-prog-card-img bg-green-img"><i class="ti ti-run"></i></div><div class="web-prog-card-body"><div class="web-prog-name">5K Training Club</div><div class="web-prog-meta">Saturday mornings · All fitness levels</div><div class="web-prog-footer"><div class="web-prog-price">$40</div><span class="badge badge-open">Open</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span><span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (16+)</span></div></div></div>
+      </div>
+    </div>
+
+    <!-- FAMILY SCHEDULE WEB -->
+    <div id="wfamschedule" class="web-page">
+      <div class="web-section-header" style="margin-bottom:20px"><h2>Family schedule</h2></div>
+      <div class="web-fam-layout">
+        <div>
+          <div class="web-fam-cal">
+            <div class="web-fam-cal-header">
+              <div class="wfch-time"></div>
+              <div class="wfch">MON</div><div class="wfch">TUE</div><div class="wfch">WED</div><div class="wfch">THU</div><div class="wfch">FRI / SAT</div>
+            </div>
+            <div class="web-fam-cal-row">
+              <div class="wfcr-time">9 am</div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim L1</div><div style="font-weight:400;font-size:9px">Emma · 9–10am</div></div></div>
+              <div class="wfcr-cell"><div class="wfcr-empty"></div></div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim L1</div><div style="font-weight:400;font-size:9px">Emma · 9–10am</div></div></div>
+              <div class="wfcr-cell"><div class="wfcr-empty"></div></div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--blue-light);color:var(--blue-dark)"><div>Swim L1</div><div style="font-weight:400;font-size:9px">Emma · 9–10am</div></div></div>
+            </div>
+            <div class="web-fam-cal-row">
+              <div class="wfcr-time">10 am</div>
+              <div class="wfcr-cell"><div class="wfcr-empty"></div></div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--green-bg);color:var(--green)"><div>Soccer Camp</div><div style="font-weight:400;font-size:9px">Liam · 10–11:30</div></div></div>
+              <div class="wfcr-cell"><div class="wfcr-empty"></div></div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--green-bg);color:var(--green)"><div>Soccer Camp</div><div style="font-weight:400;font-size:9px">Liam · 10–11:30</div></div></div>
+              <div class="wfcr-cell"><div class="wfcr-empty"></div></div>
+            </div>
+            <div class="web-fam-cal-row">
+              <div class="wfcr-time">Sat 8am</div>
+              <div class="wfcr-cell" style="grid-column:span 4"><div class="wfcr-empty"></div></div>
+              <div class="wfcr-cell"><div class="wfcr-block" style="background:var(--purple-bg);color:var(--purple)"><div>Adult Yoga</div><div style="font-weight:400;font-size:9px">Sarah · 8–9am</div></div></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;font-size:12px;color:var(--text-secondary)">
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:var(--blue-light)"></div>Emma</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:var(--green-bg)"></div>Liam</div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:var(--purple-bg)"></div>Sarah</div>
+          </div>
+          <div class="web-member-sched-card">
+            <div class="wmsc-header"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="wmsc-name">Sarah Johnson <span style="font-weight:400;font-size:12px;color:var(--text-secondary)">· Adult member</span></div><span class="badge badge-open">1 active</span></div>
+            <div class="wmsc-reg-row"><div class="wmsc-icon bg-purple-img"><i class="ti ti-yoga"></i></div><div class="wmsc-info"><div class="wmsc-name-prog">Adult Yoga</div><div class="wmsc-meta">Saturday · 8–9am · Through Aug 30 · Maple Street Gym</div></div><button class="web-reg-btn" style="margin-left:auto">Details</button></div>
+          </div>
+          <div class="web-member-sched-card">
+            <div class="wmsc-header"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">EJ</div><div class="wmsc-name">Emma Johnson <span style="font-weight:400;font-size:12px;color:var(--text-secondary)">· Age 8 · Child member</span></div><span class="badge badge-open">1 active</span></div>
+            <div class="wmsc-reg-row"><div class="wmsc-icon bg-blue-img"><i class="ti ti-swimming"></i></div><div class="wmsc-info"><div class="wmsc-name-prog">Youth Swim Lessons — Level 1</div><div class="wmsc-meta">Mon/Wed/Fri · 9–10am · Jun 23 – Jul 11 · Community Center Pool</div></div><button class="web-reg-btn" style="margin-left:auto">Details</button></div>
+          </div>
+          <div class="web-member-sched-card">
+            <div class="wmsc-header"><div class="avatar av-amber" style="width:34px;height:34px;font-size:11px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">LJ</div><div class="wmsc-name">Liam Johnson <span style="font-weight:400;font-size:12px;color:var(--text-secondary)">· Age 11 · Child member</span></div><span class="badge badge-open">1 active</span></div>
+            <div class="wmsc-reg-row"><div class="wmsc-icon bg-green-img"><i class="ti ti-ball-football"></i></div><div class="wmsc-info"><div class="wmsc-name-prog">Soccer Skills Camp</div><div class="wmsc-meta">Tue/Thu · 10–11:30am · Jul 8 – Aug 1 · Centennial Fields</div></div><button class="web-reg-btn" style="margin-left:auto">Details</button></div>
           </div>
         </div>
-        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">
-          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Youth Swim Lessons — Level 2</div>
-            <div class="web-prog-meta">Tue/Thu · 9–10am · Ages 6–12</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-open">Open</span></div>
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><h3>Eligibility rules</h3></div>
+            <div style="padding:14px 18px">
+              <div class="elig-rule-row"><i class="ti ti-calendar elig-rule-pass"></i><span><strong>Age range</strong> — min/max age enforced per program</span></div>
+              <div class="elig-rule-row"><i class="ti ti-school elig-rule-pass"></i><span><strong>Grade level</strong> — some programs restrict by school grade</span></div>
+              <div class="elig-rule-row"><i class="ti ti-gender-bigender elig-rule-pass"></i><span><strong>Gender</strong> — gender-specific leagues and programs</span></div>
+              <div class="elig-rule-row"><i class="ti ti-map-pin elig-rule-pass"></i><span><strong>ZIP / residency</strong> — resident vs non-resident access and pricing</span></div>
+              <div class="elig-rule-row"><i class="ti ti-id-badge elig-rule-pass"></i><span><strong>Membership status</strong> — member-only enrollment windows</span></div>
+              <div class="elig-rule-row"><i class="ti ti-certificate elig-rule-warn"></i><span><strong>Prerequisites</strong> — prior program level completion required</span></div>
+              <div class="elig-rule-row"><i class="ti ti-clock elig-rule-pass"></i><span><strong>Registration window</strong> — open/closed dates enforced</span></div>
+              <div class="elig-rule-row"><i class="ti ti-users elig-rule-pass"></i><span><strong>Capacity</strong> — waitlist offered when full</span></div>
+            </div>
           </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Adult Lap Swim Pass</div>
-            <div class="web-prog-meta">Daily open swim · All ages</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$5/visit</div><span class="badge badge-open">Open</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Soccer Skills Camp</div>
-            <div class="web-prog-meta">Tue/Thu · 10–11:30am · Ages 8–14</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Adult Basketball League</div>
-            <div class="web-prog-meta">Wednesday evenings · Adults 18+</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$45</div><span class="badge badge-few">3 left</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Summer Art Studio</div>
-            <div class="web-prog-meta">Mon–Fri · 1–3pm · Ages 7–13</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Adult Yoga</div>
-            <div class="web-prog-meta">Saturday · 8–9am · All levels</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$60</div><span class="badge badge-open">Open</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-teal-img"><i class="ti ti-heart-rate-monitor"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">Senior Fitness</div>
-            <div class="web-prog-meta">Mon/Wed/Fri · 10–11am · Ages 60+</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$30</div><span class="badge badge-open">Open</span></div>
-          </div>
-        </div>
-        <div class="web-prog-card">
-          <div class="web-prog-card-img bg-green-img"><i class="ti ti-run"></i></div>
-          <div class="web-prog-card-body">
-            <div class="web-prog-name">5K Training Club</div>
-            <div class="web-prog-meta">Saturday mornings · All fitness levels</div>
-            <div class="web-prog-footer"><div class="web-prog-price">$40</div><span class="badge badge-open">Open</span></div>
+          <div class="card">
+            <div class="card-header"><h3>Johnson family eligibility</h3></div>
+            <div style="padding:14px 18px">
+              <div class="member-row" style="padding:8px 0;border-bottom:1px solid var(--border)"><div class="avatar av-blue" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Sarah Johnson</div><div style="font-size:11px;color:var(--text-secondary)">Adult · Member · ZIP 01101</div></div><span class="badge badge-open">3 eligible</span></div>
+              <div class="member-row" style="padding:8px 0;border-bottom:1px solid var(--border)"><div class="avatar av-green" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">EJ</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Emma Johnson</div><div style="font-size:11px;color:var(--text-secondary)">Age 8 · Child member · ZIP 01101</div></div><span class="badge badge-open">2 eligible</span></div>
+              <div class="member-row" style="padding:8px 0"><div class="avatar av-amber" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">LJ</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Liam Johnson</div><div style="font-size:11px;color:var(--text-secondary)">Age 11 · Child member · ZIP 01101</div></div><span class="badge badge-open">3 eligible</span></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- REGISTER DETAIL -->
     <div id="wregister" class="web-page">
@@ -2367,6 +2916,37 @@
 </div>
 
 <script>
+  function mobileFilterMember(btn, who) {
+    document.querySelectorAll('.member-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['all','sarah','emma','liam'].forEach(m => {
+      const el = document.getElementById('mob-for-' + m);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById('mob-for-' + who).style.display = 'block';
+  }
+
+  function webFilterMember(btn, who) {
+    document.querySelectorAll('.web-member-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['wall','wsarah','wemma','wliam'].forEach(m => {
+      const el = document.getElementById(m);
+      if (el) el.style.display = 'none';
+    });
+    const target = document.getElementById(who);
+    if (target) target.style.display = 'block';
+  }
+
+  var mobEligOn = true;
+  function toggleMobElig() {
+    mobEligOn = !mobEligOn;
+    var toggle = document.getElementById('mob-elig-toggle');
+    var thumb = document.getElementById('mob-elig-thumb');
+    toggle.style.background = mobEligOn ? 'var(--blue)' : 'var(--border-med)';
+    thumb.style.right = mobEligOn ? '2px' : 'auto';
+    thumb.style.left = mobEligOn ? 'auto' : '2px';
+  }
+
   function switchMain(view, btn) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.chrome-tab').forEach(b => b.classList.remove('active'));
