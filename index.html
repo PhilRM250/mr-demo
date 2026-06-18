@@ -859,6 +859,309 @@
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .two-col, .three-col { grid-template-columns: 1fr; }
   }
+
+  /* ── WEB / TABLET PORTAL ── */
+  #view-publicweb { background: var(--bg-tertiary); min-height: calc(100vh - 52px); }
+
+  .web-portal-nav {
+    background: var(--blue-dark);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: sticky;
+    top: 52px;
+    z-index: 50;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .web-nav-logo {
+    font-size: 16px; font-weight: 600; color: #fff;
+    letter-spacing: -0.3px; padding: 14px 24px 14px 0;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    margin-right: 8px; white-space: nowrap;
+  }
+  .web-nav-logo span { opacity: 0.65; font-weight: 400; }
+  .web-nav-link {
+    padding: 0 16px; height: 50px;
+    display: flex; align-items: center; gap: 7px;
+    color: rgba(255,255,255,0.65); font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; background: none;
+    font-family: var(--font); border-bottom: 2px solid transparent;
+    transition: all 0.12s; white-space: nowrap;
+  }
+  .web-nav-link i { font-size: 16px; }
+  .web-nav-link:hover { color: rgba(255,255,255,0.9); }
+  .web-nav-link.active { color: #fff; border-bottom-color: #7BBCF0; }
+  .web-nav-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .web-nav-sign-in {
+    padding: 7px 16px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; font-size: 13px; font-weight: 500;
+    background: none; cursor: pointer; font-family: var(--font);
+  }
+  .web-nav-register {
+    padding: 7px 16px; border-radius: 8px;
+    background: #fff; color: var(--blue-dark);
+    font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer; font-family: var(--font);
+  }
+
+  .web-portal-body { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* Web page sections */
+  .web-page { display: none; }
+  .web-page.active { display: block; }
+
+  /* Hero */
+  .web-hero {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    border-radius: 16px;
+    padding: 48px 40px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+  .web-hero::after {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .web-hero-text h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2; }
+  .web-hero-text p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 420px; margin-bottom: 20px; }
+  .web-hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .web-hero-btn-primary {
+    background: #fff; color: var(--blue-dark);
+    border: none; border-radius: 8px; padding: 11px 22px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: var(--font);
+  }
+  .web-hero-btn-secondary {
+    background: rgba(255,255,255,0.15); color: #fff;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
+    padding: 11px 22px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: var(--font);
+  }
+  .web-hero-stats {
+    display: flex; flex-direction: column; gap: 12px;
+    flex-shrink: 0; z-index: 1;
+  }
+  .web-hero-stat {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px; padding: 12px 20px;
+    text-align: center; min-width: 130px;
+  }
+  .web-hero-stat .stat-val { font-size: 22px; font-weight: 600; }
+  .web-hero-stat .stat-lbl { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  /* Web search bar */
+  .web-search-bar {
+    display: flex; gap: 10px; margin-bottom: 28px;
+  }
+  .web-search-input {
+    flex: 1; border: 1px solid var(--border-med);
+    border-radius: 10px; padding: 11px 16px;
+    font-size: 14px; font-family: var(--font);
+    color: var(--text-primary); outline: none;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .web-search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24,95,165,0.1); }
+  .web-search-btn {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 10px;
+    padding: 11px 20px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .web-filter-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .web-filter-pill {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    color: var(--text-secondary); cursor: pointer; font-family: var(--font);
+  }
+  .web-filter-pill.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  .web-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .web-section-header h2 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .web-section-header a { font-size: 13px; color: var(--blue); text-decoration: none; font-weight: 500; cursor: pointer; }
+
+  /* Program cards grid */
+  .web-program-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 860px) { .web-program-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .web-prog-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .web-prog-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .web-prog-card-img {
+    height: 90px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  .bg-blue-img { background: var(--blue-light); color: var(--blue); }
+  .bg-green-img { background: var(--green-bg); color: var(--green); }
+  .bg-amber-img { background: var(--amber-bg); color: var(--amber); }
+  .bg-purple-img { background: var(--purple-bg); color: var(--purple); }
+  .bg-teal-img { background: var(--teal-bg); color: var(--teal); }
+  .bg-red-img { background: #FCEBEB; color: #A32D2D; }
+
+  .web-prog-card-body { padding: 14px 16px; }
+  .web-prog-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .web-prog-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.5; }
+  .web-prog-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .web-prog-price { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+
+  /* Facility grid */
+  .web-facility-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 860px) { .web-facility-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .web-fac-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .web-fac-card:hover { box-shadow: var(--shadow-md); }
+  .web-fac-icon {
+    width: 44px; height: 44px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 12px;
+  }
+  .web-fac-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .web-fac-meta { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+  .web-fac-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+
+  /* Account web view */
+  .web-account-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+  @media (max-width: 860px) { .web-account-layout { grid-template-columns: 1fr; } }
+  .web-account-sidebar { display: flex; flex-direction: column; gap: 16px; }
+  .web-member-card {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    border-radius: 14px; padding: 22px; color: #fff;
+  }
+  .wmc-name { font-size: 18px; font-weight: 600; margin-bottom: 3px; }
+  .wmc-type { font-size: 12px; opacity: 0.75; margin-bottom: 16px; }
+  .wmc-qr {
+    background: #fff; border-radius: 10px;
+    padding: 10px; width: 80px; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .wmc-qr i { font-size: 52px; color: var(--blue); }
+  .wmc-id { font-size: 10px; opacity: 0.5; letter-spacing: 3px; }
+  .web-sidebar-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .web-sidebar-card-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+  }
+  .web-account-main { display: flex; flex-direction: column; gap: 20px; }
+  .web-account-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .web-account-card-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 15px; font-weight: 600; color: var(--text-primary);
+  }
+  .web-reg-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+  }
+  .web-reg-row:last-child { border-bottom: none; }
+  .web-reg-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    flex-shrink: 0;
+  }
+  .web-reg-info { flex: 1; }
+  .web-reg-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .web-reg-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .web-reg-actions { display: flex; gap: 8px; }
+  .web-reg-btn {
+    padding: 6px 12px; border-radius: 7px; font-size: 12px;
+    font-weight: 500; cursor: pointer; font-family: var(--font);
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  /* Web registration detail */
+  .web-prog-detail {
+    display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start;
+  }
+  @media (max-width: 860px) { .web-prog-detail { grid-template-columns: 1fr; } }
+  .web-detail-main { display: flex; flex-direction: column; gap: 16px; }
+  .web-detail-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px;
+  }
+  .web-detail-card h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+  .web-detail-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+  .web-detail-meta { display: flex; gap: 20px; flex-wrap: wrap; margin: 14px 0; }
+  .web-meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+  .web-meta-item i { font-size: 16px; color: var(--blue); }
+  .web-sessions-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .web-session-row {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center;
+    justify-content: space-between; cursor: pointer;
+  }
+  .web-session-row.selected { border: 2px solid var(--blue); background: var(--blue-light); }
+  .web-session-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .web-session-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .web-session-price { font-size: 15px; font-weight: 600; color: var(--blue); }
+  .web-checkout-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px;
+    position: sticky; top: 110px;
+  }
+  .web-checkout-card h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+  .wco-line { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+  .wco-line span:first-child { color: var(--text-secondary); }
+  .wco-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; margin-bottom: 16px; }
+  .wco-btn {
+    width: 100%; background: var(--blue); color: #fff;
+    border: none; border-radius: 10px; padding: 13px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: var(--font); margin-bottom: 10px;
+  }
+  .wco-assist { text-align: center; font-size: 12px; color: var(--blue); cursor: pointer; }
+  .wco-secure { text-align: center; font-size: 11px; color: var(--text-tertiary); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 4px; }
 </style>
 </head>
 <body>
@@ -870,7 +1173,10 @@
   </div>
   <div class="chrome-tabs">
     <button class="chrome-tab active" onclick="switchMain('public', this)">
-      <i class="ti ti-device-mobile"></i> Resident Portal <span class="chrome-badge">Mobile-first</span>
+      <i class="ti ti-device-mobile"></i> Resident Portal <span class="chrome-badge">Mobile</span>
+    </button>
+    <button class="chrome-tab" onclick="switchMain('publicweb', this)">
+      <i class="ti ti-device-laptop"></i> Resident Portal <span class="chrome-badge">Web / Tablet</span>
     </button>
     <button class="chrome-tab" onclick="switchMain('admin', this)">
       <i class="ti ti-layout-dashboard"></i> Admin Dashboard <span class="chrome-badge">Web app</span>
@@ -1226,6 +1532,444 @@
     </div>
 
   </div>
+</div>
+
+<!-- ═══════════════════════════ PUBLIC WEB / TABLET VIEW ═══════════════════════════ -->
+<div id="view-publicweb" class="view">
+
+  <!-- Top nav bar -->
+  <nav class="web-portal-nav">
+    <div class="web-nav-logo">Springfield <span>Recreation</span></div>
+    <button class="web-nav-link active" onclick="webNav(this,'whome')"><i class="ti ti-home"></i>Home</button>
+    <button class="web-nav-link" onclick="webNav(this,'wprograms')"><i class="ti ti-run"></i>Programs</button>
+    <button class="web-nav-link" onclick="webNav(this,'wfacilities')"><i class="ti ti-building"></i>Facilities</button>
+    <button class="web-nav-link" onclick="webNav(this,'waccount')"><i class="ti ti-user-circle"></i>My Account</button>
+    <div class="web-nav-right">
+      <button class="web-nav-sign-in">Sign in</button>
+      <button class="web-nav-register">Register</button>
+    </div>
+  </nav>
+
+  <div class="web-portal-body">
+
+    <!-- HOME -->
+    <div id="whome" class="web-page active">
+      <div class="web-hero">
+        <div class="web-hero-text">
+          <h1>Springfield Recreation — Summer 2026</h1>
+          <p>Register for swim lessons, sports camps, art classes, and more. Memberships available for individuals and families.</p>
+          <div class="web-hero-btns">
+            <button class="web-hero-btn-primary" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">Browse programs</button>
+            <button class="web-hero-btn-secondary" onclick="webNav(document.querySelectorAll('.web-nav-link')[2],'wfacilities')">View facilities</button>
+          </div>
+        </div>
+        <div class="web-hero-stats">
+          <div class="web-hero-stat"><div class="stat-val">48+</div><div class="stat-lbl">Programs this summer</div></div>
+          <div class="web-hero-stat"><div class="stat-val">6</div><div class="stat-lbl">Facilities</div></div>
+          <div class="web-hero-stat"><div class="stat-val">1,200+</div><div class="stat-lbl">Active members</div></div>
+        </div>
+      </div>
+
+      <div class="web-search-bar">
+        <input class="web-search-input" type="text" placeholder="Search programs, activities, or facilities...">
+        <button class="web-search-btn"><i class="ti ti-search"></i>Search</button>
+      </div>
+
+      <div class="web-section-header">
+        <h2>Featured programs</h2>
+        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">View all programs →</a>
+      </div>
+      <div class="web-program-grid">
+        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">
+          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Youth Swim Lessons</div>
+            <div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12<br>Community Center Pool</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$85</div>
+              <span class="badge badge-few">4 spots left</span>
+            </div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Soccer Skills Camp</div>
+            <div class="web-prog-meta">Tue/Thu · 10–11:30am · Ages 8–14<br>Centennial Fields</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$120</div>
+              <span class="badge badge-open">Open</span>
+            </div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Summer Art Studio</div>
+            <div class="web-prog-meta">Mon–Fri · 1–3pm · Ages 7–13<br>Recreation Center, Room B</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$150</div>
+              <span class="badge badge-wait">Waitlist</span>
+            </div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Adult Yoga</div>
+            <div class="web-prog-meta">Saturday · 8–9am · All levels<br>Maple Street Gym</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$60</div>
+              <span class="badge badge-open">Open</span>
+            </div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Adult Basketball League</div>
+            <div class="web-prog-meta">Wednesday evenings · Adults 18+<br>Maple Street Gym</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$45</div>
+              <span class="badge badge-few">3 spots left</span>
+            </div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-teal-img"><i class="ti ti-heart-rate-monitor"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Senior Fitness</div>
+            <div class="web-prog-meta">Mon/Wed/Fri · 10–11am · Ages 60+<br>Senior Activity Center</div>
+            <div class="web-prog-footer">
+              <div class="web-prog-price">$30</div>
+              <span class="badge badge-open">Open</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="web-section-header">
+        <h2>Facility availability</h2>
+        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[2],'wfacilities')">View all facilities →</a>
+      </div>
+      <div class="web-facility-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-fac-name">Community Center Pool</div>
+          <div class="web-fac-status"><span class="avail-dot dot-green"></span>Open now · Lap swimming</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-green-img"><i class="ti ti-ball-tennis"></i></div>
+          <div class="web-fac-name">Riverside Tennis Courts</div>
+          <div class="web-fac-status"><span class="avail-dot dot-amber"></span>2 of 4 courts available</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-purple-img"><i class="ti ti-building"></i></div>
+          <div class="web-fac-name">Maple Street Gym</div>
+          <div class="web-fac-status"><span class="avail-dot dot-red"></span>Reserved until 5pm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRAMS -->
+    <div id="wprograms" class="web-page">
+      <div class="web-section-header" style="margin-bottom:16px">
+        <h2>All programs</h2>
+      </div>
+      <div class="web-filter-pills">
+        <button class="web-filter-pill active">All categories</button>
+        <button class="web-filter-pill">Aquatics</button>
+        <button class="web-filter-pill">Youth Sports</button>
+        <button class="web-filter-pill">Arts &amp; Crafts</button>
+        <button class="web-filter-pill">Fitness</button>
+        <button class="web-filter-pill">Seniors</button>
+        <button class="web-filter-pill">Camps</button>
+      </div>
+      <div class="web-search-bar">
+        <input class="web-search-input" type="text" placeholder="Search programs...">
+        <button class="web-search-btn"><i class="ti ti-search"></i>Search</button>
+      </div>
+      <div class="web-program-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">
+          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Youth Swim Lessons — Level 1</div>
+            <div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">
+          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Youth Swim Lessons — Level 2</div>
+            <div class="web-prog-meta">Tue/Thu · 9–10am · Ages 6–12</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Adult Lap Swim Pass</div>
+            <div class="web-prog-meta">Daily open swim · All ages</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$5/visit</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-football"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Soccer Skills Camp</div>
+            <div class="web-prog-meta">Tue/Thu · 10–11:30am · Ages 8–14</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$120</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-green-img"><i class="ti ti-ball-basketball"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Adult Basketball League</div>
+            <div class="web-prog-meta">Wednesday evenings · Adults 18+</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$45</div><span class="badge badge-few">3 left</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-amber-img"><i class="ti ti-palette"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Summer Art Studio</div>
+            <div class="web-prog-meta">Mon–Fri · 1–3pm · Ages 7–13</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$150</div><span class="badge badge-wait">Waitlist</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-purple-img"><i class="ti ti-yoga"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Adult Yoga</div>
+            <div class="web-prog-meta">Saturday · 8–9am · All levels</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$60</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-teal-img"><i class="ti ti-heart-rate-monitor"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Senior Fitness</div>
+            <div class="web-prog-meta">Mon/Wed/Fri · 10–11am · Ages 60+</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$30</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+        <div class="web-prog-card">
+          <div class="web-prog-card-img bg-green-img"><i class="ti ti-run"></i></div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">5K Training Club</div>
+            <div class="web-prog-meta">Saturday mornings · All fitness levels</div>
+            <div class="web-prog-footer"><div class="web-prog-price">$40</div><span class="badge badge-open">Open</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER DETAIL -->
+    <div id="wregister" class="web-page">
+      <button class="reg-back" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')" style="margin-bottom:20px"><i class="ti ti-arrow-left" style="font-size:16px"></i> Back to programs</button>
+      <div class="web-prog-detail">
+        <div class="web-detail-main">
+          <div class="web-detail-card">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+              <div class="web-fac-icon bg-blue-img" style="margin:0;flex-shrink:0"><i class="ti ti-swimming"></i></div>
+              <div>
+                <h2 style="margin-bottom:4px">Youth Swim Lessons — Level 1</h2>
+                <span class="badge badge-few" style="font-size:12px">4 spots remaining</span>
+              </div>
+            </div>
+            <p>A progressive swim instruction program for beginners aged 6–12. Students learn water safety, floating, kicking, and basic stroke technique in a fun, encouraging environment with certified instructors.</p>
+            <div class="web-detail-meta">
+              <div class="web-meta-item"><i class="ti ti-calendar"></i>Mon, Wed, Fri</div>
+              <div class="web-meta-item"><i class="ti ti-clock"></i>9:00 – 10:00am</div>
+              <div class="web-meta-item"><i class="ti ti-users"></i>Ages 6–12</div>
+              <div class="web-meta-item"><i class="ti ti-building"></i>Community Center Pool</div>
+            </div>
+          </div>
+          <div class="web-detail-card">
+            <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:14px">Choose a session</div>
+            <div class="web-sessions-list">
+              <div class="web-session-row selected">
+                <div>
+                  <div class="web-session-name">Session A — Jun 23 to Jul 11</div>
+                  <div class="web-session-meta">Mon/Wed/Fri · 9–10am · 4 spots left</div>
+                </div>
+                <div class="web-session-price">$85</div>
+              </div>
+              <div class="web-session-row">
+                <div>
+                  <div class="web-session-name">Session B — Jul 14 to Aug 1</div>
+                  <div class="web-session-meta">Mon/Wed/Fri · 9–10am · 8 spots</div>
+                </div>
+                <div class="web-session-price">$85</div>
+              </div>
+              <div class="web-session-row">
+                <div>
+                  <div class="web-session-name">Session C — Aug 4 to Aug 22</div>
+                  <div class="web-session-meta">Mon/Wed/Fri · 9–10am · 12 spots</div>
+                </div>
+                <div class="web-session-price">$85</div>
+              </div>
+            </div>
+          </div>
+          <div class="web-detail-card">
+            <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:14px">Select participant</div>
+            <div class="web-sessions-list">
+              <div class="web-session-row selected">
+                <div><div class="web-session-name">Emma Johnson</div><div class="web-session-meta">Age 8 · your child</div></div>
+                <i class="ti ti-check" style="color:var(--blue);font-size:20px"></i>
+              </div>
+              <div class="web-session-row">
+                <div><div class="web-session-name">Liam Johnson</div><div class="web-session-meta">Age 11 · your child</div></div>
+              </div>
+              <div class="web-session-row" style="cursor:pointer;color:var(--blue)">
+                <div><div class="web-session-name" style="color:var(--blue)">+ Add a family member</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="web-detail-card">
+            <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:14px">Health information &amp; waiver</div>
+            <div class="field-label">Known allergies or medical notes</div>
+            <input class="mock-input" type="text" value="No known allergies">
+            <div style="height:10px"></div>
+            <div class="waiver-row">
+              <div class="check-box"><i class="ti ti-check"></i></div>
+              I agree to the Springfield Recreation liability waiver and photo/video release agreement
+            </div>
+          </div>
+        </div>
+        <div class="web-checkout-card">
+          <h3>Order summary</h3>
+          <div class="wco-line"><span>Youth Swim Lessons L1</span><span>$85.00</span></div>
+          <div class="wco-line"><span>Session A · Jun 23–Jul 11</span><span></span></div>
+          <div class="wco-line"><span>Participant: Emma Johnson</span><span></span></div>
+          <div class="wco-line"><span>Processing fee</span><span>$1.50</span></div>
+          <div class="wco-total"><span>Total</span><span>$86.50</span></div>
+          <button class="wco-btn">Complete registration</button>
+          <div class="wco-assist">Apply for fee assistance</div>
+          <div class="wco-secure"><i class="ti ti-shield-check" style="font-size:13px"></i> Secure payment · SSL encrypted</div>
+          <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+            <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:10px">Accepted payment methods</div>
+            <div style="display:flex;gap:10px;align-items:center;color:var(--text-secondary);font-size:22px">
+              <i class="ti ti-credit-card"></i>
+              <i class="ti ti-brand-apple"></i>
+              <i class="ti ti-brand-google"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FACILITIES -->
+    <div id="wfacilities" class="web-page">
+      <div class="web-section-header" style="margin-bottom:20px"><h2>Facilities</h2></div>
+      <div class="web-facility-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:0">
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+          <div class="web-fac-name">Community Center — Main Pool</div>
+          <div class="web-fac-meta">25-yard, 6-lane lap pool. Open swim daily. Home of Springfield swim programs.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-green"></span>Open now · Lap swimming available</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-green-img"><i class="ti ti-ball-tennis"></i></div>
+          <div class="web-fac-name">Riverside Tennis Courts</div>
+          <div class="web-fac-meta">4 lighted hard courts. Reserve online up to 7 days in advance. Free to members.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-amber"></span>2 of 4 courts available</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-purple-img"><i class="ti ti-building"></i></div>
+          <div class="web-fac-name">Maple Street Gym</div>
+          <div class="web-fac-meta">Full gymnasium with basketball courts, fitness room, and multi-purpose studio.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-red"></span>Reserved until 5pm</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-green-img"><i class="ti ti-ball-baseball"></i></div>
+          <div class="web-fac-name">Centennial Baseball Fields</div>
+          <div class="web-fac-meta">3 regulation baseball/softball fields with dugouts and bleachers. Field lights available.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-green"></span>Fields 1–3 available tonight</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-teal-img"><i class="ti ti-heart-rate-monitor"></i></div>
+          <div class="web-fac-name">Senior Activity Center</div>
+          <div class="web-fac-meta">Dedicated space for seniors with fitness equipment, lounge area, and activity rooms.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-green"></span>Open · Classes in session</div>
+        </div>
+        <div class="web-fac-card">
+          <div class="web-fac-icon bg-amber-img"><i class="ti ti-ball-volleyball"></i></div>
+          <div class="web-fac-name">Pickleball Courts — Riverside</div>
+          <div class="web-fac-meta">6 dedicated pickleball courts, including 2 indoor. Open play and league scheduling.</div>
+          <div class="web-fac-status"><span class="avail-dot dot-green"></span>All 6 courts open</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY ACCOUNT -->
+    <div id="waccount" class="web-page">
+      <div class="web-section-header" style="margin-bottom:24px"><h2>My account</h2></div>
+      <div class="web-account-layout">
+        <div class="web-account-sidebar">
+          <div class="web-member-card">
+            <div class="wmc-name">Sarah Johnson</div>
+            <div class="wmc-type">Family Membership · Active through Dec 2026</div>
+            <div class="wmc-qr"><i class="ti ti-qrcode"></i></div>
+            <div class="wmc-id">MBR · 4821 · 9304</div>
+          </div>
+          <div class="web-sidebar-card">
+            <div class="web-sidebar-card-header">Household members</div>
+            <div class="member-row"><div class="avatar av-blue">SJ</div><div><div class="member-name">Sarah Johnson</div><div class="member-sub">Adult · you</div></div></div>
+            <div class="member-row"><div class="avatar av-green">EJ</div><div><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8</div></div></div>
+            <div class="member-row"><div class="avatar av-amber">LJ</div><div><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11</div></div></div>
+          </div>
+        </div>
+        <div class="web-account-main">
+          <div class="web-account-card">
+            <div class="web-account-card-header">
+              Upcoming registrations
+              <button class="card-action" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">Register for a program</button>
+            </div>
+            <div class="web-reg-row">
+              <div class="web-reg-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+              <div class="web-reg-info">
+                <div class="web-reg-name">Youth Swim Lessons L1 — Emma</div>
+                <div class="web-reg-meta">Session A · Jun 23 – Jul 11 · Mon/Wed/Fri 9am · Community Center Pool</div>
+              </div>
+              <div class="web-reg-actions">
+                <button class="web-reg-btn">View details</button>
+                <button class="web-reg-btn" style="color:var(--red);border-color:var(--red)">Cancel</button>
+              </div>
+            </div>
+            <div class="web-reg-row">
+              <div class="web-reg-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+              <div class="web-reg-info">
+                <div class="web-reg-name">Soccer Skills Camp — Liam</div>
+                <div class="web-reg-meta">Jul 8 – Aug 1 · Tue/Thu 10am · Centennial Fields</div>
+              </div>
+              <div class="web-reg-actions">
+                <button class="web-reg-btn">View details</button>
+                <button class="web-reg-btn" style="color:var(--red);border-color:var(--red)">Cancel</button>
+              </div>
+            </div>
+          </div>
+          <div class="web-account-card">
+            <div class="web-account-card-header">Payment history</div>
+            <div class="fin-row"><div><div class="fin-desc">Youth Swim Lessons L1 — Emma</div><div class="fin-sub">Jun 16 · Visa ···4821</div></div><span class="fin-amount">$85.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">Soccer Skills Camp — Liam</div><div class="fin-sub">Jun 10 · Apple Pay</div></div><span class="fin-amount">$120.00</span></div>
+            <div class="fin-row"><div><div class="fin-desc">Family Membership renewal</div><div class="fin-sub">Jan 5 · Visa ···4821</div></div><span class="fin-amount">$240.00</span></div>
+          </div>
+          <div class="web-account-card">
+            <div class="web-account-card-header">Account settings</div>
+            <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="setting-field"><label>Full name</label><input class="mock-input" value="Sarah Johnson"></div>
+              <div class="setting-field"><label>Email address</label><input class="mock-input" value="sarah.johnson@email.com"></div>
+              <div class="setting-field"><label>Phone number</label><input class="mock-input" value="(413) 555-0198"></div>
+              <div class="setting-field"><label>Password</label><input class="mock-input" type="password" value="••••••••••"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /web-portal-body -->
 </div>
 
 <!-- ═══════════════════════════ ADMIN VIEW ═══════════════════════════ -->
@@ -1628,6 +2372,15 @@
     document.getElementById('view-' + view).classList.add('active');
     btn.classList.add('active');
     if (view === 'admin') buildCharts();
+  }
+
+  function webNav(btn, page) {
+    document.querySelectorAll('.web-nav-link').forEach(b => b.classList.remove('active'));
+    if (btn && btn.classList) btn.classList.add('active');
+    document.querySelectorAll('.web-page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(page);
+    if (target) target.classList.add('active');
+    document.getElementById('view-publicweb').scrollTo(0, 0);
   }
 
   function pubNav(btn, page) {
