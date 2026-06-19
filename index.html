@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!--- 06.19.a --->
 <head>
-  <!--- PR 06.18.26.4:17 pm --->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Springfield Recreation — Demo</title>
@@ -860,6 +860,497 @@
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .two-col, .three-col { grid-template-columns: 1fr; }
   }
+
+  /* ── DIGITAL ID CARD STYLES ── */
+  .id-card-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 600;
+    align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .id-card-modal-overlay.open { display: flex; }
+  .id-card-modal {
+    background: var(--bg-primary); border-radius: 20px;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .id-card-modal-header {
+    background: var(--blue-dark); padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    color: #fff;
+  }
+  .id-card-modal-header h3 { font-size: 15px; font-weight: 600; }
+  .id-card-close-btn {
+    background: rgba(255,255,255,0.15); border: none; color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+  }
+
+  /* The actual ID card design */
+  .dig-id-card {
+    margin: 16px; border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    position: relative;
+  }
+  .dic-header {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    padding: 14px 16px 10px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .dic-header::after {
+    content: ''; position: absolute;
+    right: -24px; top: -24px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .dic-org-logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #fff; flex-shrink: 0;
+  }
+  .dic-org-name { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.3; }
+  .dic-org-sub { font-size: 10px; color: rgba(255,255,255,0.7); }
+
+  .dic-body {
+    background: #fff; padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .dic-photo {
+    width: 64px; height: 64px; border-radius: 10px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden; position: relative;
+  }
+  .dic-photo-initials {
+    font-size: 22px; font-weight: 700;
+    color: var(--blue); font-family: var(--font);
+  }
+  .dic-photo-placeholder {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px;
+  }
+  .dic-photo-placeholder i { font-size: 28px; color: var(--text-tertiary); }
+  .dic-photo-placeholder span { font-size: 8px; color: var(--text-tertiary); font-weight: 500; }
+  .dic-info { flex: 1; }
+  .dic-name { font-size: 16px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; margin-bottom: 3px; }
+  .dic-type { font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .dic-detail-row { display: flex; gap: 6px; font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; align-items: center; }
+  .dic-detail-row i { font-size: 12px; color: var(--text-tertiary); flex-shrink: 0; }
+  .dic-detail-row span { font-weight: 500; color: var(--text-primary); }
+
+  .dic-qr-section {
+    background: var(--bg-secondary); padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .dic-qr-box {
+    width: 72px; height: 72px; background: #fff;
+    border-radius: 8px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .dic-qr-box svg { width: 58px; height: 58px; }
+  .dic-qr-info { flex: 1; }
+  .dic-qr-id { font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 1px; margin-bottom: 3px; }
+  .dic-qr-sub { font-size: 10px; color: var(--text-secondary); line-height: 1.5; }
+
+  .dic-footer {
+    background: var(--blue-dark); padding: 8px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dic-valid { font-size: 10px; color: rgba(255,255,255,0.7); }
+  .dic-valid strong { color: #fff; }
+  .dic-status { font-size: 10px; font-weight: 700; color: #4ADE80; display: flex; align-items: center; gap: 4px; }
+  .dic-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; }
+
+  /* Card switcher (family) */
+  .id-card-switcher {
+    display: flex; gap: 6px; padding: 0 16px 4px;
+    overflow-x: auto;
+  }
+  .id-card-switcher::-webkit-scrollbar { display: none; }
+  .id-card-thumb {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 20px;
+    border: 1px solid var(--border-med); background: none;
+    font-size: 11px; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; font-family: var(--font); white-space: nowrap;
+  }
+  .id-card-thumb .ict-av {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700;
+  }
+  .id-card-thumb.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* Wallet buttons */
+  .wallet-btns {
+    display: flex; gap: 8px; padding: 12px 16px 4px;
+  }
+  .wallet-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 7px; padding: 11px 12px;
+    border-radius: 10px; border: none; cursor: pointer;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .wallet-btn:hover { opacity: 0.9; }
+  .wallet-btn i { font-size: 18px; }
+  .apple-wallet-btn { background: #000; color: #fff; }
+  .google-wallet-btn { background: #1A73E8; color: #fff; }
+
+  .wallet-all-btn {
+    margin: 4px 16px 12px; width: calc(100% - 32px);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px; border-radius: 10px;
+    border: 1.5px solid var(--border-med); background: var(--bg-secondary);
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    color: var(--text-primary); cursor: pointer;
+  }
+
+  /* Photo toggle note */
+  .photo-toggle-note {
+    margin: 0 16px 12px; padding: 10px 12px;
+    background: var(--blue-light); border-radius: 10px;
+    font-size: 11px; color: var(--blue-dark); line-height: 1.5;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .photo-toggle-note i { font-size: 14px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+
+  /* Mobile ID card button in membership card */
+  .mc-id-btn {
+    margin-top: 10px; display: flex; gap: 8px;
+  }
+  .mc-id-btn button {
+    flex: 1; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15);
+    color: #fff; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .mc-id-btn button i { font-size: 15px; }
+
+  /* Web ID card area in sidebar */
+  .web-id-card-sidebar {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .web-id-card-sidebar-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .web-id-member-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .web-id-member-row:last-child { border-bottom: none; }
+  .web-id-member-row:hover { background: var(--bg-secondary); }
+  .web-id-member-row .idmr-name { font-size: 13px; font-weight: 500; color: var(--text-primary); flex: 1; }
+  .web-id-member-row .idmr-sub { font-size: 11px; color: var(--text-secondary); }
+  .web-id-view-btn {
+    font-size: 11px; font-weight: 500; color: var(--blue);
+    background: var(--blue-light); border: none; border-radius: 6px;
+    padding: 4px 8px; cursor: pointer; font-family: var(--font);
+    white-space: nowrap;
+  }
+  .web-id-all-btn {
+    margin: 10px 14px; width: calc(100% - 28px);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px; border-radius: 9px;
+    border: 1px solid var(--border-med); background: var(--bg-secondary);
+    font-family: var(--font); font-size: 12px; font-weight: 600;
+    color: var(--text-primary); cursor: pointer;
+  }
+
+  /* ── WAITLIST STYLES ── */
+  .waitlist-item {
+    background: var(--bg-primary);
+    border: 1.5px dashed var(--amber);
+    border-radius: var(--radius-lg);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .waitlist-item-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 12px; cursor: pointer;
+  }
+  .waitlist-position-badge {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--amber-bg); flex-shrink: 0;
+  }
+  .waitlist-position-badge .wl-num { font-size: 15px; font-weight: 700; color: var(--amber); line-height: 1; }
+  .waitlist-position-badge .wl-lbl { font-size: 7px; font-weight: 600; color: var(--amber); text-transform: uppercase; letter-spacing: 0.3px; }
+  .waitlist-position-hidden {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--amber-bg); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--amber);
+  }
+  .waitlist-info-banner {
+    background: var(--amber-bg); border-top: 1px dashed var(--amber);
+    padding: 8px 12px; font-size: 11px; color: var(--amber);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .waitlist-info-banner i { font-size: 14px; flex-shrink: 0; }
+
+  /* Web waitlist */
+  .web-waitlist-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    cursor: pointer; transition: background 0.1s;
+    background: #FFFDF5;
+  }
+  .web-waitlist-row:hover { background: #FFF8E6; }
+  .web-waitlist-row:last-child { border-bottom: none; }
+  .web-wl-position {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 10px;
+    background: var(--amber-bg); flex-shrink: 0;
+    border: 1.5px dashed var(--amber);
+  }
+  .web-wl-position .wlp-num { font-size: 18px; font-weight: 700; color: var(--amber); line-height: 1; }
+  .web-wl-position .wlp-lbl { font-size: 8px; font-weight: 600; color: var(--amber); text-transform: uppercase; }
+  .web-wl-hidden {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: var(--amber-bg); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--amber);
+    border: 1.5px dashed var(--amber);
+  }
+  .web-wl-info-strip {
+    background: #FFF8E6; border-top: 1px dashed var(--amber);
+    padding: 10px 20px; font-size: 12px; color: #A86A00;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .web-wl-info-strip i { font-size: 15px; }
+
+  /* Demo toggle for waitlist position visibility */
+  .wl-demo-toggle-bar {
+    background: var(--blue-dark);
+    border-radius: var(--radius-lg);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: rgba(255,255,255,0.85);
+  }
+  .wl-demo-toggle-bar i { font-size: 16px; color: #7BBCF0; flex-shrink: 0; }
+  .wl-demo-toggle-bar .wl-toggle-label { flex: 1; line-height: 1.4; }
+  .wl-demo-toggle-bar .wl-toggle-label strong { color: #fff; display: block; margin-bottom: 1px; }
+  .wl-mini-toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: #378ADD; flex-shrink: 0; cursor: pointer;
+    position: relative; transition: background 0.2s;
+  }
+  .wl-mini-toggle.off { background: rgba(255,255,255,0.2); }
+  .wl-mini-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; position: absolute; top: 2px;
+    transition: left 0.15s;
+  }
+  .wl-mini-toggle.on .wl-mini-thumb { left: 18px; }
+  .wl-mini-toggle.off .wl-mini-thumb { left: 2px; }
+
+  /* ── TRANSACTION / ACCOUNT STYLES ── */
+  .txn-tabs {
+    display: flex; gap: 0;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 3px;
+    margin-bottom: 12px;
+  }
+  .txn-tab {
+    flex: 1; padding: 7px 6px; text-align: center;
+    font-size: 11px; font-weight: 500;
+    border-radius: var(--radius-md); border: none;
+    background: none; color: var(--text-secondary);
+    cursor: pointer; font-family: var(--font);
+    transition: all 0.15s;
+  }
+  .txn-tab.active { background: var(--bg-primary); color: var(--blue); box-shadow: var(--shadow-sm); }
+
+  .txn-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .txn-item-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 12px;
+    cursor: pointer;
+  }
+  .txn-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .txn-info { flex: 1; min-width: 0; }
+  .txn-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .txn-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .txn-amount { font-size: 13px; font-weight: 600; }
+  .txn-amount.credit { color: var(--green); }
+  .txn-amount.refund { color: var(--red); }
+  .txn-amount.pending { color: var(--amber); }
+
+  .txn-detail {
+    border-top: 1px solid var(--border);
+    padding: 12px;
+    background: var(--bg-secondary);
+    display: none;
+  }
+  .txn-detail.open { display: block; }
+  .txn-detail-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-bottom: 6px;
+    color: var(--text-secondary);
+  }
+  .txn-detail-row span:last-child { color: var(--text-primary); font-weight: 500; }
+  .txn-detail-total {
+    display: flex; justify-content: space-between;
+    font-size: 13px; font-weight: 600;
+    border-top: 1px solid var(--border);
+    padding-top: 8px; margin-top: 4px;
+    color: var(--text-primary);
+  }
+  .txn-actions {
+    display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .txn-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: var(--radius-md);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    font-family: var(--font); border: 1px solid var(--border-med);
+    background: var(--bg-primary); color: var(--text-primary);
+  }
+  .txn-btn i { font-size: 14px; }
+  .txn-btn.danger { color: var(--red); border-color: var(--red); }
+  .txn-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  .outstanding-banner {
+    background: #FFF8E6;
+    border: 1px solid #F6D776;
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .outstanding-banner i { font-size: 20px; color: #A86A00; flex-shrink: 0; margin-top: 1px; }
+  .ob-title { font-size: 12px; font-weight: 600; color: #7A4D00; margin-bottom: 2px; }
+  .ob-sub { font-size: 11px; color: #A86A00; }
+  .ob-pay-btn {
+    margin-top: 8px; background: #E6A817; color: #fff;
+    border: none; border-radius: var(--radius-md);
+    padding: 7px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: var(--font);
+  }
+
+  .cancel-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 500;
+    align-items: center; justify-content: center;
+  }
+  .cancel-modal-overlay.open { display: flex; }
+  .cancel-modal {
+    background: var(--bg-primary); border-radius: var(--radius-xl);
+    padding: 24px; width: 90%; max-width: 340px;
+    box-shadow: var(--shadow-md);
+  }
+  .cancel-modal h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+  .cancel-modal p { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 16px; }
+  .cancel-policy-box {
+    background: var(--bg-secondary); border-radius: var(--radius-md);
+    padding: 10px 12px; margin-bottom: 16px;
+    font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+  }
+  .cancel-policy-box strong { color: var(--text-primary); }
+  .cancel-modal-btns { display: flex; gap: 8px; }
+  .cancel-modal-btns button { flex: 1; padding: 10px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+  .cancel-keep { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-med); }
+  .cancel-confirm { background: var(--red); color: #fff; border: none; }
+
+  .receipt-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 500;
+    align-items: center; justify-content: center;
+  }
+  .receipt-modal-overlay.open { display: flex; }
+  .receipt-modal {
+    background: var(--bg-primary); border-radius: var(--radius-xl);
+    padding: 24px; width: 90%; max-width: 340px;
+    box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto;
+  }
+  .receipt-header { text-align: center; margin-bottom: 20px; }
+  .receipt-logo { font-size: 14px; font-weight: 600; color: var(--blue); margin-bottom: 4px; }
+  .receipt-title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .receipt-date { font-size: 12px; color: var(--text-tertiary); }
+  .receipt-divider { border: none; border-top: 1px dashed var(--border-med); margin: 14px 0; }
+  .receipt-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+  .receipt-row span:first-child { color: var(--text-secondary); }
+  .receipt-row span:last-child { font-weight: 500; color: var(--text-primary); }
+  .receipt-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; border-top: 2px solid var(--text-primary); padding-top: 10px; margin-top: 4px; }
+  .receipt-conf { text-align: center; margin-top: 16px; font-size: 11px; color: var(--text-tertiary); }
+  .receipt-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .receipt-actions button { flex: 1; padding: 10px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+  .receipt-close { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-med); }
+  .receipt-download { background: var(--blue); color: #fff; border: none; }
+
+  /* Web account tabs */
+  .web-acct-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .web-acct-tab {
+    padding: 10px 20px; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); border: none; background: none;
+    cursor: pointer; font-family: var(--font);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .web-acct-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .web-acct-pane { display: none; }
+  .web-acct-pane.active { display: block; }
+
+  .web-txn-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .web-txn-row:hover { background: var(--bg-secondary); }
+  .web-txn-row:last-child { border-bottom: none; }
+  .web-txn-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .web-txn-info { flex: 1; }
+  .web-txn-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .web-txn-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .web-txn-right { text-align: right; }
+  .web-txn-amount { font-size: 14px; font-weight: 600; }
+  .web-txn-date { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .web-txn-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+
+  .web-outstanding-card {
+    background: #FFF8E6; border: 1px solid #F6D776;
+    border-radius: var(--radius-lg); padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .web-outstanding-card i { font-size: 28px; color: #A86A00; flex-shrink: 0; }
+  .woc-info { flex: 1; }
+  .woc-title { font-size: 14px; font-weight: 600; color: #7A4D00; margin-bottom: 3px; }
+  .woc-sub { font-size: 13px; color: #A86A00; }
+  .woc-btn { background: #E6A817; color: #fff; border: none; border-radius: var(--radius-md); padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); white-space: nowrap; }
 
   /* ── ELIGIBILITY STYLES ── */
   .elig-tag {
@@ -1942,51 +2433,421 @@
             </div>
           </div>
 
-          <!-- MY PASS -->
+          <!-- MY PASS / ACCOUNT -->
           <div id="pub-mypass" class="pub-page">
+            <!-- Membership card -->
             <div class="membership-card">
-              <div class="mc-name">Sarah Johnson</div>
-              <div class="mc-type">Family Membership · Active through Dec 2026</div>
-              <div class="mc-id">MBR · 4821 · 9304</div>
-              <div class="mc-qr"><i class="ti ti-qrcode"></i></div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                  <div class="mc-name">Sarah Johnson</div>
+                  <div class="mc-type">Family Membership · Active through Dec 2026</div>
+                  <div class="mc-id">MBR · 4821 · 9304</div>
+                </div>
+                <div class="mc-qr" onclick="openIdCard('sarah')"><i class="ti ti-qrcode"></i></div>
+              </div>
+              <div class="mc-id-btn">
+                <button onclick="openIdCard('sarah')"><i class="ti ti-id-badge"></i>My ID card</button>
+                <button onclick="openIdCard('family')"><i class="ti ti-users"></i>All family cards</button>
+              </div>
             </div>
-            <div class="pub-section">
-              <div class="pub-section-label">My household</div>
+
+            <!-- Outstanding balance banner -->
+            <div class="outstanding-banner">
+              <i class="ti ti-alert-circle"></i>
+              <div style="flex:1">
+                <div class="ob-title">Outstanding balance: $45.00</div>
+                <div class="ob-sub">Adult Basketball League — payment due Jun 30</div>
+                <button class="ob-pay-btn" onclick="showPaymentModal()">Pay now</button>
+              </div>
+            </div>
+
+            <!-- Account tabs -->
+            <div class="txn-tabs">
+              <button class="txn-tab active" onclick="mobAcctTab(this,'mob-registrations')">Registered</button>
+              <button class="txn-tab" onclick="mobAcctTab(this,'mob-transactions')">Transactions</button>
+              <button class="txn-tab" onclick="mobAcctTab(this,'mob-household')">Household</button>
+            </div>
+
+            <!-- REGISTRATIONS TAB -->
+            <div id="mob-registrations">
+              <div class="pub-section-label">Active registrations</div>
+
+              <!-- WAITLIST DEMO TOGGLE (mobile) -->
+              <div class="wl-demo-toggle-bar">
+                <i class="ti ti-adjustments-horizontal"></i>
+                <div class="wl-toggle-label">
+                  <strong>Demo: Waitlist position visibility</strong>
+                  Admin controls whether residents see their position number
+                </div>
+                <div id="mob-wl-toggle" class="wl-mini-toggle on" onclick="toggleWaitlistPosition()">
+                  <div class="wl-mini-thumb"></div>
+                </div>
+              </div>
+
+              <!-- WAITLIST ENTRY -->
+              <div class="pub-section-label">On waitlist</div>
+
+              <div class="waitlist-item">
+                <div class="waitlist-item-header" onclick="toggleTxn('wl1')">
+                  <!-- Position visible state -->
+                  <div id="mob-wl-pos-badge" class="waitlist-position-badge">
+                    <div class="wl-num">3</div>
+                    <div class="wl-lbl">in line</div>
+                  </div>
+                  <!-- Position hidden state -->
+                  <div id="mob-wl-hidden-badge" class="waitlist-position-hidden" style="display:none">
+                    <i class="ti ti-clock"></i>
+                  </div>
+                  <div class="txn-info">
+                    <div class="txn-name">Summer Art Studio — Emma</div>
+                    <div class="txn-meta" id="mob-wl-meta">M–F · 1–3pm · Position #3 of 14 on waitlist</div>
+                  </div>
+                  <span class="badge badge-few">Waitlist</span>
+                </div>
+                <div id="wl1" class="txn-detail">
+                  <div class="txn-detail-row"><span>Participant</span><span>Emma Johnson</span></div>
+                  <div class="txn-detail-row"><span>Program</span><span>Summer Art Studio</span></div>
+                  <div class="txn-detail-row"><span>Schedule</span><span>Mon–Fri · 1–3pm</span></div>
+                  <div class="txn-detail-row"><span>Location</span><span>Recreation Center, Room B</span></div>
+                  <div id="mob-wl-detail-pos" class="txn-detail-row"><span>Waitlist position</span><span style="color:var(--amber);font-weight:600">#3 of 14</span></div>
+                  <div class="txn-detail-row"><span>Joined waitlist</span><span>Jun 14, 2026</span></div>
+                  <div class="txn-detail-row"><span>If enrolled</span><span>$150.00 due on enrollment</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn danger" onclick="showCancel('Summer Art Studio waitlist','$0','No charge — you have not been enrolled yet')"><i class="ti ti-x"></i>Leave waitlist</button>
+                  </div>
+                </div>
+                <div class="waitlist-info-banner">
+                  <i class="ti ti-bell"></i>
+                  <span id="mob-wl-banner-text">You're #3. We'll notify you immediately if a spot opens and hold it for 24 hours.</span>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('reg1')">
+                  <div class="txn-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Youth Swim Lessons L1 — Emma</div>
+                    <div class="txn-meta">Jun 23 – Jul 11 · MWF 9am</div>
+                  </div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div id="reg1" class="txn-detail">
+                  <div class="txn-detail-row"><span>Participant</span><span>Emma Johnson</span></div>
+                  <div class="txn-detail-row"><span>Session</span><span>A · Jun 23 – Jul 11</span></div>
+                  <div class="txn-detail-row"><span>Schedule</span><span>MWF · 9–10am</span></div>
+                  <div class="txn-detail-row"><span>Location</span><span>Community Center Pool</span></div>
+                  <div class="txn-detail-row"><span>Instructor</span><span>Coach Ramirez</span></div>
+                  <div class="txn-detail-row"><span>Paid</span><span>$85.00 · Jun 16</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('swim')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn danger" onclick="showCancel('Youth Swim Lessons L1','$85.00','Full refund available until Jun 20')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('reg2')">
+                  <div class="txn-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Soccer Skills Camp — Liam</div>
+                    <div class="txn-meta">Jul 8 – Aug 1 · Tue/Thu 10am</div>
+                  </div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div id="reg2" class="txn-detail">
+                  <div class="txn-detail-row"><span>Participant</span><span>Liam Johnson</span></div>
+                  <div class="txn-detail-row"><span>Schedule</span><span>Tue/Thu · 10–11:30am</span></div>
+                  <div class="txn-detail-row"><span>Location</span><span>Centennial Fields</span></div>
+                  <div class="txn-detail-row"><span>Instructor</span><span>Coach Williams</span></div>
+                  <div class="txn-detail-row"><span>Paid</span><span>$120.00 · Jun 10</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('soccer')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn danger" onclick="showCancel('Soccer Skills Camp','$120.00','50% refund available — camp starts in 22 days')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('reg3')">
+                  <div class="txn-icon bg-green-img"><i class="ti ti-ball-basketball"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Adult Basketball League — Sarah</div>
+                    <div class="txn-meta">Wed evenings · Season starts Jul 2</div>
+                  </div>
+                  <span class="badge badge-few">Balance due</span>
+                </div>
+                <div id="reg3" class="txn-detail">
+                  <div class="txn-detail-row"><span>Participant</span><span>Sarah Johnson</span></div>
+                  <div class="txn-detail-row"><span>Schedule</span><span>Wednesday · 6–9pm</span></div>
+                  <div class="txn-detail-row"><span>Location</span><span>Maple Street Gym</span></div>
+                  <div class="txn-detail-row"><span>Amount due</span><span style="color:var(--amber);font-weight:600">$45.00 by Jun 30</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn primary" onclick="showPaymentModal()"><i class="ti ti-credit-card"></i>Pay $45.00</button>
+                    <button class="txn-btn danger" onclick="showCancel('Adult Basketball League','$0','No charge — not yet paid')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pub-section-label" style="margin-top:10px">Past registrations</div>
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('reg4')">
+                  <div class="txn-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Adult Yoga Spring — Sarah</div>
+                    <div class="txn-meta">Apr 5 – May 31 · Completed</div>
+                  </div>
+                  <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Past</span>
+                </div>
+                <div id="reg4" class="txn-detail">
+                  <div class="txn-detail-row"><span>Sessions attended</span><span>7 of 8</span></div>
+                  <div class="txn-detail-row"><span>Paid</span><span>$60.00 · Apr 1</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('yoga')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn primary"><i class="ti ti-rotate-clockwise"></i>Re-register</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRANSACTIONS TAB -->
+            <div id="mob-transactions" style="display:none">
+              <div class="pub-section-label">All transactions</div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('t1')">
+                  <div class="txn-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Youth Swim Lessons L1</div>
+                    <div class="txn-meta">Jun 16 · Visa ···4821</div>
+                  </div>
+                  <span class="txn-amount credit">+$85.00</span>
+                </div>
+                <div id="t1" class="txn-detail">
+                  <div class="txn-detail-row"><span>Confirmation #</span><span>SR-20260616-0041</span></div>
+                  <div class="txn-detail-row"><span>Program</span><span>Youth Swim Lessons L1</span></div>
+                  <div class="txn-detail-row"><span>Participant</span><span>Emma Johnson</span></div>
+                  <div class="txn-detail-row"><span>Payment method</span><span>Visa ···4821</span></div>
+                  <div class="txn-detail-row"><span>Program fee</span><span>$85.00</span></div>
+                  <div class="txn-detail-row"><span>Processing fee</span><span>$1.50</span></div>
+                  <div class="txn-detail-total"><span>Total charged</span><span>$86.50</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('swim')"><i class="ti ti-receipt"></i>View receipt</button>
+                    <button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('t2')">
+                  <div class="txn-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Soccer Skills Camp</div>
+                    <div class="txn-meta">Jun 10 · Apple Pay</div>
+                  </div>
+                  <span class="txn-amount credit">+$120.00</span>
+                </div>
+                <div id="t2" class="txn-detail">
+                  <div class="txn-detail-row"><span>Confirmation #</span><span>SR-20260610-0029</span></div>
+                  <div class="txn-detail-row"><span>Participant</span><span>Liam Johnson</span></div>
+                  <div class="txn-detail-row"><span>Payment method</span><span>Apple Pay</span></div>
+                  <div class="txn-detail-row"><span>Program fee</span><span>$120.00</span></div>
+                  <div class="txn-detail-total"><span>Total charged</span><span>$120.00</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('soccer')"><i class="ti ti-receipt"></i>View receipt</button>
+                    <button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('t3')">
+                  <div class="txn-icon" style="background:var(--red-bg)"><i class="ti ti-rotate-2" style="color:var(--red)"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Art Studio refund</div>
+                    <div class="txn-meta">May 22 · Returned to Visa ···4821</div>
+                  </div>
+                  <span class="txn-amount refund">−$150.00</span>
+                </div>
+                <div id="t3" class="txn-detail">
+                  <div class="txn-detail-row"><span>Refund reason</span><span>Cancelled by resident</span></div>
+                  <div class="txn-detail-row"><span>Original charge</span><span>$150.00 · May 1</span></div>
+                  <div class="txn-detail-row"><span>Refund amount</span><span>$150.00</span></div>
+                  <div class="txn-detail-row"><span>Returned to</span><span>Visa ···4821</span></div>
+                  <div class="txn-detail-row"><span>Processing time</span><span>3–5 business days</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn"><i class="ti ti-receipt"></i>View refund receipt</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="txn-item">
+                <div class="txn-item-header" onclick="toggleTxn('t4')">
+                  <div class="txn-icon" style="background:var(--blue-light)"><i class="ti ti-id-badge" style="color:var(--blue)"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Family Membership renewal</div>
+                    <div class="txn-meta">Jan 5 · Visa ···4821</div>
+                  </div>
+                  <span class="txn-amount credit">+$240.00</span>
+                </div>
+                <div id="t4" class="txn-detail">
+                  <div class="txn-detail-row"><span>Confirmation #</span><span>SR-20260105-0003</span></div>
+                  <div class="txn-detail-row"><span>Membership type</span><span>Family (3 members)</span></div>
+                  <div class="txn-detail-row"><span>Valid through</span><span>Dec 31, 2026</span></div>
+                  <div class="txn-detail-total"><span>Total charged</span><span>$240.00</span></div>
+                  <div class="txn-actions">
+                    <button class="txn-btn"><i class="ti ti-receipt"></i>View receipt</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- HOUSEHOLD TAB -->
+            <div id="mob-household" style="display:none">
+              <div class="pub-section-label">Household members</div>
               <div class="household-card">
                 <div class="member-row">
                   <div class="avatar av-blue">SJ</div>
-                  <div><div class="member-name">Sarah Johnson <span style="font-size:11px;color:var(--text-tertiary)">(you)</span></div><div class="member-sub">Adult member</div></div>
+                  <div style="flex:1"><div class="member-name">Sarah Johnson <span style="font-size:11px;color:var(--text-tertiary)">(you)</span></div><div class="member-sub">Adult · Account holder</div></div>
                   <span class="badge badge-open">Active</span>
                 </div>
                 <div class="member-row">
                   <div class="avatar av-green">EJ</div>
-                  <div><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8</div></div>
+                  <div style="flex:1"><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8 · Grade 3</div></div>
                   <span class="badge badge-open">Active</span>
                 </div>
                 <div class="member-row">
                   <div class="avatar av-amber">LJ</div>
-                  <div><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11</div></div>
+                  <div style="flex:1"><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11 · Grade 6</div></div>
                   <span class="badge badge-open">Active</span>
                 </div>
               </div>
-            </div>
-            <div class="pub-section">
-              <div class="pub-section-label">Upcoming registrations</div>
-              <div class="activity-card">
-                <div class="activity-icon"><i class="ti ti-swimming"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Youth Swim Lessons — Emma</div>
-                  <div class="activity-meta">Jun 23 – Jul 11 · Mon/Wed/Fri 9am</div>
+              <div class="pub-section-label" style="margin-top:10px">Saved payment methods</div>
+              <div class="txn-item">
+                <div class="txn-item-header">
+                  <div class="txn-icon" style="background:var(--blue-light)"><i class="ti ti-credit-card" style="color:var(--blue)"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Visa ending ···4821</div>
+                    <div class="txn-meta">Expires 08/28 · Default card</div>
+                  </div>
+                  <span class="badge badge-open">Default</span>
                 </div>
-                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
               </div>
-              <div class="activity-card">
-                <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
-                <div class="activity-info">
-                  <div class="activity-name">Soccer Skills Camp — Liam</div>
-                  <div class="activity-meta">Jul 8 – Aug 1 · Tue/Thu 10am</div>
+              <div class="txn-item">
+                <div class="txn-item-header">
+                  <div class="txn-icon" style="background:var(--bg-tertiary)"><i class="ti ti-brand-apple" style="color:var(--text-primary)"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Apple Pay</div>
+                    <div class="txn-meta">Connected</div>
+                  </div>
                 </div>
-                <i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:18px"></i>
+              </div>
+              <div style="margin-top:6px">
+                <button class="txn-btn" style="width:100%;justify-content:center"><i class="ti ti-plus"></i>Add payment method</button>
+              </div>
+              <div class="pub-section-label" style="margin-top:10px">Account settings</div>
+              <div class="txn-item">
+                <div class="txn-item-header">
+                  <div class="txn-icon" style="background:var(--bg-tertiary)"><i class="ti ti-bell" style="color:var(--text-secondary)"></i></div>
+                  <div class="txn-info"><div class="txn-name">Notifications</div><div class="txn-meta">Email + push · All enabled</div></div>
+                  <i class="ti ti-chevron-right" style="color:var(--text-tertiary)"></i>
+                </div>
+              </div>
+              <div class="txn-item">
+                <div class="txn-item-header">
+                  <div class="txn-icon" style="background:var(--bg-tertiary)"><i class="ti ti-gift" style="color:var(--text-secondary)"></i></div>
+                  <div class="txn-info"><div class="txn-name">Fee assistance</div><div class="txn-meta">Apply for subsidized pricing</div></div>
+                  <i class="ti ti-chevron-right" style="color:var(--text-tertiary)"></i>
+                </div>
+              </div>
+              <div class="txn-item">
+                <div class="txn-item-header">
+                  <div class="txn-icon" style="background:var(--bg-tertiary)"><i class="ti ti-lock" style="color:var(--text-secondary)"></i></div>
+                  <div class="txn-info"><div class="txn-name">Password &amp; security</div><div class="txn-meta">Last changed 3 months ago</div></div>
+                  <i class="ti ti-chevron-right" style="color:var(--text-tertiary)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ID CARD MODAL (shared mobile + web) -->
+          <div id="id-card-modal" class="id-card-modal-overlay" onclick="if(event.target===this)closeIdCard()">
+            <div class="id-card-modal">
+              <div class="id-card-modal-header">
+                <h3 id="id-card-modal-title">Digital ID Card</h3>
+                <button class="id-card-close-btn" onclick="closeIdCard()"><i class="ti ti-x"></i></button>
+              </div>
+
+              <!-- Family member tabs (shown when viewing family) -->
+              <div id="id-card-switcher-wrap" style="padding:12px 16px 0;display:none">
+                <div class="id-card-switcher">
+                  <button class="id-card-thumb active" onclick="switchIdCard(this,'sarah')">
+                    <div class="ict-av" style="background:var(--blue-light);color:var(--blue)">SJ</div>Sarah
+                  </button>
+                  <button class="id-card-thumb" onclick="switchIdCard(this,'emma')">
+                    <div class="ict-av" style="background:var(--green-bg);color:var(--green)">EJ</div>Emma
+                  </button>
+                  <button class="id-card-thumb" onclick="switchIdCard(this,'liam')">
+                    <div class="ict-av" style="background:var(--amber-bg);color:var(--amber)">LJ</div>Liam
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card display area -->
+              <div id="id-card-display" style="padding-top:12px"></div>
+
+              <!-- Wallet buttons -->
+              <div class="wallet-btns">
+                <button class="wallet-btn apple-wallet-btn" onclick="walletToast('Apple Wallet')">
+                  <i class="ti ti-brand-apple"></i> Add to Apple Wallet
+                </button>
+                <button class="wallet-btn google-wallet-btn" onclick="walletToast('Google Wallet')">
+                  <i class="ti ti-brand-google"></i> Google Wallet
+                </button>
+              </div>
+              <button class="wallet-all-btn" onclick="walletToast('all 3 cards')">
+                <i class="ti ti-download"></i> Download all family cards
+              </button>
+
+              <!-- Photo note -->
+              <div class="photo-toggle-note">
+                <i class="ti ti-info-circle"></i>
+                <span>Photo display on ID cards is controlled by your recreation department. Cards may show a member photo, initials, or no photo depending on your organization's settings.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast notification -->
+          <div id="wallet-toast" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;font-weight:500;z-index:700;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3)"></div>
+
+          <!-- Cancellation modal -->
+          <div id="cancel-modal" class="cancel-modal-overlay" onclick="if(event.target===this)closeCancelModal()">
+            <div class="cancel-modal">
+              <h3 id="cancel-modal-title">Cancel registration?</h3>
+              <p id="cancel-modal-body">Are you sure you want to cancel this registration?</p>
+              <div class="cancel-policy-box" id="cancel-modal-policy"></div>
+              <div class="cancel-modal-btns">
+                <button class="cancel-keep" onclick="closeCancelModal()">Keep registration</button>
+                <button class="cancel-confirm" onclick="closeCancelModal()">Yes, cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Receipt modal -->
+          <div id="receipt-modal" class="receipt-modal-overlay" onclick="if(event.target===this)closeReceiptModal()">
+            <div class="receipt-modal">
+              <div class="receipt-header">
+                <div class="receipt-logo">Springfield Parks &amp; Recreation</div>
+                <div class="receipt-title">Payment Receipt</div>
+                <div class="receipt-date" id="receipt-date"></div>
+              </div>
+              <hr class="receipt-divider">
+              <div id="receipt-body"></div>
+              <div class="receipt-conf">Confirmation # SR-20260616-0041<br>Questions? rec@springfield.gov · (413) 555-7200</div>
+              <div class="receipt-actions">
+                <button class="receipt-close" onclick="closeReceiptModal()">Close</button>
+                <button class="receipt-download"><i class="ti ti-download" style="font-size:14px;vertical-align:-2px"></i> Download PDF</button>
               </div>
             </div>
           </div>
@@ -2455,8 +3316,9 @@
 
     <!-- MY ACCOUNT -->
     <div id="waccount" class="web-page">
-      <div class="web-section-header" style="margin-bottom:24px"><h2>My account</h2></div>
+      <div class="web-section-header" style="margin-bottom:20px"><h2>My account</h2></div>
       <div class="web-account-layout">
+        <!-- Sidebar -->
         <div class="web-account-sidebar">
           <div class="web-member-card">
             <div class="wmc-name">Sarah Johnson</div>
@@ -2466,54 +3328,348 @@
           </div>
           <div class="web-sidebar-card">
             <div class="web-sidebar-card-header">Household members</div>
-            <div class="member-row"><div class="avatar av-blue">SJ</div><div><div class="member-name">Sarah Johnson</div><div class="member-sub">Adult · you</div></div></div>
-            <div class="member-row"><div class="avatar av-green">EJ</div><div><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8</div></div></div>
-            <div class="member-row"><div class="avatar av-amber">LJ</div><div><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11</div></div></div>
+            <div class="member-row"><div class="avatar av-blue">SJ</div><div style="flex:1"><div class="member-name">Sarah Johnson</div><div class="member-sub">Adult · you</div></div><span class="badge badge-open">Active</span></div>
+            <div class="member-row"><div class="avatar av-green">EJ</div><div style="flex:1"><div class="member-name">Emma Johnson</div><div class="member-sub">Child · Age 8</div></div><span class="badge badge-open">Active</span></div>
+            <div class="member-row"><div class="avatar av-amber">LJ</div><div style="flex:1"><div class="member-name">Liam Johnson</div><div class="member-sub">Child · Age 11</div></div><span class="badge badge-open">Active</span></div>
+            <div style="padding:12px 16px;border-top:1px solid var(--border)"><button class="txn-btn" style="width:100%;justify-content:center;font-size:12px"><i class="ti ti-user-plus"></i>Add member</button></div>
+          </div>
+          <div class="web-sidebar-card">
+            <div class="web-sidebar-card-header">Saved payment methods</div>
+            <div class="member-row"><div class="txn-icon" style="width:34px;height:34px;border-radius:8px;background:var(--blue-light)"><i class="ti ti-credit-card" style="font-size:16px;color:var(--blue)"></i></div><div style="flex:1"><div class="member-name">Visa ···4821</div><div class="member-sub">Exp 08/28 · Default</div></div><span class="badge badge-open">✓</span></div>
+            <div class="member-row"><div class="txn-icon" style="width:34px;height:34px;border-radius:8px;background:var(--bg-tertiary)"><i class="ti ti-brand-apple" style="font-size:16px;color:var(--text-primary)"></i></div><div style="flex:1"><div class="member-name">Apple Pay</div><div class="member-sub">Connected</div></div></div>
+            <div style="padding:12px 16px;border-top:1px solid var(--border)"><button class="txn-btn" style="width:100%;justify-content:center;font-size:12px"><i class="ti ti-plus"></i>Add payment method</button></div>
+          </div>
+
+          <!-- DIGITAL ID CARDS -->
+          <div class="web-id-card-sidebar">
+            <div class="web-id-card-sidebar-header">
+              <span><i class="ti ti-id-badge" style="color:var(--blue);font-size:15px;vertical-align:-2px;margin-right:5px"></i>Digital ID cards</span>
+            </div>
+            <div class="web-id-member-row" onclick="openIdCard('sarah')">
+              <div class="avatar av-blue" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div>
+              <div style="flex:1"><div class="idmr-name">Sarah Johnson</div><div class="idmr-sub">Adult · Member</div></div>
+              <button class="web-id-view-btn" onclick="event.stopPropagation();openIdCard('sarah')">View card</button>
+            </div>
+            <div class="web-id-member-row" onclick="openIdCard('emma')">
+              <div class="avatar av-green" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">EJ</div>
+              <div style="flex:1"><div class="idmr-name">Emma Johnson</div><div class="idmr-sub">Child · Age 8</div></div>
+              <button class="web-id-view-btn" onclick="event.stopPropagation();openIdCard('emma')">View card</button>
+            </div>
+            <div class="web-id-member-row" onclick="openIdCard('liam')">
+              <div class="avatar av-amber" style="width:32px;height:32px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">LJ</div>
+              <div style="flex:1"><div class="idmr-name">Liam Johnson</div><div class="idmr-sub">Child · Age 11</div></div>
+              <button class="web-id-view-btn" onclick="event.stopPropagation();openIdCard('liam')">View card</button>
+            </div>
+            <button class="web-id-all-btn" onclick="openIdCard('family')">
+              <i class="ti ti-download"></i> Download all 3 cards
+            </button>
           </div>
         </div>
+
+        <!-- Main content -->
         <div class="web-account-main">
-          <div class="web-account-card">
-            <div class="web-account-card-header">
-              Upcoming registrations
-              <button class="card-action" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">Register for a program</button>
+
+          <!-- Outstanding balance -->
+          <div class="web-outstanding-card">
+            <i class="ti ti-alert-circle"></i>
+            <div class="woc-info">
+              <div class="woc-title">Outstanding balance: $45.00</div>
+              <div class="woc-sub">Adult Basketball League registration — payment due June 30, 2026</div>
             </div>
-            <div class="web-reg-row">
-              <div class="web-reg-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
-              <div class="web-reg-info">
-                <div class="web-reg-name">Youth Swim Lessons L1 — Emma</div>
-                <div class="web-reg-meta">Session A · Jun 23 – Jul 11 · Mon/Wed/Fri 9am · Community Center Pool</div>
+            <button class="woc-btn">Pay $45.00 now</button>
+          </div>
+
+          <!-- Account tabs -->
+          <div class="web-acct-tabs">
+            <button class="web-acct-tab active" onclick="webAcctTab(this,'wacct-regs')">Registrations</button>
+            <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-txns')">Transactions</button>
+            <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-settings')">Settings</button>
+          </div>
+
+          <!-- REGISTRATIONS PANE -->
+          <div id="wacct-regs" class="web-acct-pane active">
+
+            <!-- WAITLIST DEMO TOGGLE (web) -->
+            <div class="wl-demo-toggle-bar" style="margin-bottom:16px">
+              <i class="ti ti-adjustments-horizontal"></i>
+              <div class="wl-toggle-label">
+                <strong>Demo: Waitlist position visibility</strong>
+                Toggle this to show what residents see when the admin enables or disables waitlist position numbers
               </div>
-              <div class="web-reg-actions">
-                <button class="web-reg-btn">View details</button>
-                <button class="web-reg-btn" style="color:var(--red);border-color:var(--red)">Cancel</button>
+              <div id="web-wl-toggle" class="wl-mini-toggle on" onclick="toggleWaitlistPosition()">
+                <div class="wl-mini-thumb"></div>
               </div>
             </div>
-            <div class="web-reg-row">
-              <div class="web-reg-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
-              <div class="web-reg-info">
-                <div class="web-reg-name">Soccer Skills Camp — Liam</div>
-                <div class="web-reg-meta">Jul 8 – Aug 1 · Tue/Thu 10am · Centennial Fields</div>
+
+            <!-- WAITLIST CARD -->
+            <div class="web-account-card" style="margin-bottom:16px;border-color:var(--amber)">
+              <div class="web-account-card-header" style="background:#FFFDF5;border-bottom-color:var(--amber)">
+                <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-clock" style="color:var(--amber);font-size:16px"></i>On waitlist</span>
               </div>
-              <div class="web-reg-actions">
-                <button class="web-reg-btn">View details</button>
-                <button class="web-reg-btn" style="color:var(--red);border-color:var(--red)">Cancel</button>
+              <!-- Waitlist row -->
+              <div class="web-waitlist-row" onclick="toggleWebTxn('wwl1')">
+                <!-- Position visible -->
+                <div id="web-wl-pos-badge" class="web-wl-position">
+                  <div class="wlp-num">3</div>
+                  <div class="wlp-lbl">in line</div>
+                </div>
+                <!-- Position hidden -->
+                <div id="web-wl-hidden-badge" class="web-wl-hidden" style="display:none">
+                  <i class="ti ti-clock"></i>
+                </div>
+                <div class="web-txn-info">
+                  <div class="web-txn-name">Summer Art Studio — Emma Johnson</div>
+                  <div class="web-txn-meta" id="web-wl-meta">Mon–Fri · 1–3pm · Ages 7–13 · Recreation Center Room B · Joined waitlist Jun 14</div>
+                </div>
+                <div class="web-txn-right">
+                  <span class="badge badge-few">Waitlist</span>
+                  <div class="web-txn-actions" style="margin-top:6px">
+                    <button class="txn-btn danger" onclick="event.stopPropagation();showCancel('Summer Art Studio waitlist','$0','No charge — you have not been enrolled yet. You will be notified and given 24 hours to confirm if a spot opens.')">
+                      <i class="ti ti-x"></i>Leave waitlist
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="wwl1" class="txn-detail" style="padding:14px 20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:13px">
+                  <div><span style="color:var(--text-secondary)">Participant</span><div style="font-weight:500;margin-top:2px">Emma Johnson · Age 8</div></div>
+                  <div><span style="color:var(--text-secondary)">Joined waitlist</span><div style="font-weight:500;margin-top:2px">June 14, 2026</div></div>
+                  <div id="web-wl-detail-pos"><span style="color:var(--text-secondary)">Waitlist position</span><div style="font-weight:600;color:var(--amber);margin-top:2px">#3 of 14</div></div>
+                  <div><span style="color:var(--text-secondary)">Fee if enrolled</span><div style="font-weight:500;margin-top:2px">$150.00 — charged on enrollment</div></div>
+                  <div><span style="color:var(--text-secondary)">Notification</span><div style="font-weight:500;margin-top:2px">Email + push when spot opens</div></div>
+                  <div><span style="color:var(--text-secondary)">Hold window</span><div style="font-weight:500;margin-top:2px">24 hours to accept spot</div></div>
+                </div>
+              </div>
+              <div class="web-wl-info-strip">
+                <i class="ti ti-bell"></i>
+                <span id="web-wl-banner-text">You're #3 in line. We'll notify you immediately when a spot opens — you'll have 24 hours to confirm enrollment before it's offered to the next person.</span>
+              </div>
+            </div>
+            <div class="web-account-card" style="margin-bottom:16px">
+              <div class="web-account-card-header">
+                Active registrations
+                <button class="card-action" onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">+ Register for a program</button>
+              </div>
+              <!-- Swim -->
+              <div class="web-txn-row" onclick="toggleWebTxn('wreg1')">
+                <div class="web-txn-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+                <div class="web-txn-info">
+                  <div class="web-txn-name">Youth Swim Lessons L1 — Emma</div>
+                  <div class="web-txn-meta">Session A · Jun 23 – Jul 11 · MWF 9–10am · Community Center Pool</div>
+                </div>
+                <div class="web-txn-right">
+                  <span class="badge badge-open">Active</span>
+                  <div class="web-txn-actions">
+                    <button class="txn-btn" onclick="event.stopPropagation();showReceipt('swim')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn danger" onclick="event.stopPropagation();showCancel('Youth Swim Lessons L1','$85.00','Full refund available until Jun 20, 2026')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+              <div id="wreg1" class="txn-detail" style="padding:14px 20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+                  <div><span style="color:var(--text-secondary)">Participant</span><div style="font-weight:500;margin-top:2px">Emma Johnson</div></div>
+                  <div><span style="color:var(--text-secondary)">Instructor</span><div style="font-weight:500;margin-top:2px">Coach Ramirez</div></div>
+                  <div><span style="color:var(--text-secondary)">Confirmation #</span><div style="font-weight:500;margin-top:2px">SR-20260616-0041</div></div>
+                  <div><span style="color:var(--text-secondary)">Amount paid</span><div style="font-weight:500;margin-top:2px">$85.00 on Jun 16</div></div>
+                </div>
+              </div>
+              <!-- Soccer -->
+              <div class="web-txn-row" onclick="toggleWebTxn('wreg2')">
+                <div class="web-txn-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                <div class="web-txn-info">
+                  <div class="web-txn-name">Soccer Skills Camp — Liam</div>
+                  <div class="web-txn-meta">Jul 8 – Aug 1 · Tue/Thu 10–11:30am · Centennial Fields</div>
+                </div>
+                <div class="web-txn-right">
+                  <span class="badge badge-open">Active</span>
+                  <div class="web-txn-actions">
+                    <button class="txn-btn" onclick="event.stopPropagation();showReceipt('soccer')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn danger" onclick="event.stopPropagation();showCancel('Soccer Skills Camp','$60.00','50% refund — camp starts in 22 days')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+              <div id="wreg2" class="txn-detail" style="padding:14px 20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+                  <div><span style="color:var(--text-secondary)">Participant</span><div style="font-weight:500;margin-top:2px">Liam Johnson</div></div>
+                  <div><span style="color:var(--text-secondary)">Instructor</span><div style="font-weight:500;margin-top:2px">Coach Williams</div></div>
+                  <div><span style="color:var(--text-secondary)">Confirmation #</span><div style="font-weight:500;margin-top:2px">SR-20260610-0029</div></div>
+                  <div><span style="color:var(--text-secondary)">Amount paid</span><div style="font-weight:500;margin-top:2px">$120.00 on Jun 10</div></div>
+                </div>
+              </div>
+              <!-- Basketball - balance due -->
+              <div class="web-txn-row" onclick="toggleWebTxn('wreg3')">
+                <div class="web-txn-icon bg-green-img"><i class="ti ti-ball-basketball"></i></div>
+                <div class="web-txn-info">
+                  <div class="web-txn-name">Adult Basketball League — Sarah</div>
+                  <div class="web-txn-meta">Wednesday evenings · Season starts Jul 2 · Maple Street Gym</div>
+                </div>
+                <div class="web-txn-right">
+                  <span class="badge badge-few">Balance due</span>
+                  <div class="web-txn-actions">
+                    <button class="txn-btn primary" onclick="event.stopPropagation()"><i class="ti ti-credit-card"></i>Pay $45.00</button>
+                    <button class="txn-btn danger" onclick="event.stopPropagation();showCancel('Adult Basketball League','$0','No charge — registration not yet paid')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+              <div id="wreg3" class="txn-detail" style="padding:14px 20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+                  <div><span style="color:var(--text-secondary)">Participant</span><div style="font-weight:500;margin-top:2px">Sarah Johnson</div></div>
+                  <div><span style="color:var(--text-secondary)">Payment due</span><div style="font-weight:500;margin-top:2px;color:var(--amber)">$45.00 by Jun 30</div></div>
+                  <div><span style="color:var(--text-secondary)">Cancellation policy</span><div style="font-weight:500;margin-top:2px">No charge until paid</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="web-account-card">
+              <div class="web-account-card-header">Past registrations</div>
+              <div class="web-txn-row">
+                <div class="web-txn-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
+                <div class="web-txn-info">
+                  <div class="web-txn-name">Adult Yoga Spring — Sarah</div>
+                  <div class="web-txn-meta">Apr 5 – May 31, 2026 · 7 of 8 sessions attended</div>
+                </div>
+                <div class="web-txn-right">
+                  <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Completed</span>
+                  <div class="web-txn-actions">
+                    <button class="txn-btn" onclick="showReceipt('yoga')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn primary"><i class="ti ti-rotate-clockwise"></i>Re-register</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="web-account-card">
-            <div class="web-account-card-header">Payment history</div>
-            <div class="fin-row"><div><div class="fin-desc">Youth Swim Lessons L1 — Emma</div><div class="fin-sub">Jun 16 · Visa ···4821</div></div><span class="fin-amount">$85.00</span></div>
-            <div class="fin-row"><div><div class="fin-desc">Soccer Skills Camp — Liam</div><div class="fin-sub">Jun 10 · Apple Pay</div></div><span class="fin-amount">$120.00</span></div>
-            <div class="fin-row"><div><div class="fin-desc">Family Membership renewal</div><div class="fin-sub">Jan 5 · Visa ···4821</div></div><span class="fin-amount">$240.00</span></div>
-          </div>
-          <div class="web-account-card">
-            <div class="web-account-card-header">Account settings</div>
-            <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
-              <div class="setting-field"><label>Full name</label><input class="mock-input" value="Sarah Johnson"></div>
-              <div class="setting-field"><label>Email address</label><input class="mock-input" value="sarah.johnson@email.com"></div>
-              <div class="setting-field"><label>Phone number</label><input class="mock-input" value="(413) 555-0198"></div>
-              <div class="setting-field"><label>Password</label><input class="mock-input" type="password" value="••••••••••"></div>
+
+          <!-- TRANSACTIONS PANE -->
+          <div id="wacct-txns" class="web-acct-pane">
+            <div class="web-account-card">
+              <div class="web-account-card-header">
+                All transactions
+                <button class="card-action"><i class="ti ti-download" style="font-size:13px;vertical-align:-1px"></i> Export PDF</button>
+              </div>
+              <div class="web-txn-row" onclick="toggleWebTxn('wt1')">
+                <div class="web-txn-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name">Youth Swim Lessons L1 — Emma</div><div class="web-txn-meta">Conf # SR-20260616-0041 · Visa ···4821</div></div>
+                <div class="web-txn-right"><div class="web-txn-amount" style="color:var(--green)">$86.50</div><div class="web-txn-date">Jun 16, 2026</div></div>
+              </div>
+              <div id="wt1" class="txn-detail" style="padding:14px 20px">
+                <div class="txn-detail-row"><span>Program fee</span><span>$85.00</span></div>
+                <div class="txn-detail-row"><span>Processing fee</span><span>$1.50</span></div>
+                <div class="txn-detail-total"><span>Total charged</span><span>$86.50</span></div>
+                <div class="txn-actions"><button class="txn-btn" onclick="showReceipt('swim')"><i class="ti ti-receipt"></i>View receipt</button><button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button></div>
+              </div>
+
+              <div class="web-txn-row" onclick="toggleWebTxn('wt2')">
+                <div class="web-txn-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name">Soccer Skills Camp — Liam</div><div class="web-txn-meta">Conf # SR-20260610-0029 · Apple Pay</div></div>
+                <div class="web-txn-right"><div class="web-txn-amount" style="color:var(--green)">$120.00</div><div class="web-txn-date">Jun 10, 2026</div></div>
+              </div>
+              <div id="wt2" class="txn-detail" style="padding:14px 20px">
+                <div class="txn-detail-total"><span>Total charged</span><span>$120.00</span></div>
+                <div class="txn-actions"><button class="txn-btn" onclick="showReceipt('soccer')"><i class="ti ti-receipt"></i>View receipt</button><button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button></div>
+              </div>
+
+              <div class="web-txn-row" onclick="toggleWebTxn('wt3')">
+                <div class="web-txn-icon" style="background:var(--red-bg)"><i class="ti ti-rotate-2" style="font-size:20px;color:var(--red)"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name">Art Studio — Refund issued</div><div class="web-txn-meta">Cancelled by resident · Returned to Visa ···4821</div></div>
+                <div class="web-txn-right"><div class="web-txn-amount" style="color:var(--red)">−$150.00</div><div class="web-txn-date">May 22, 2026</div></div>
+              </div>
+              <div id="wt3" class="txn-detail" style="padding:14px 20px">
+                <div class="txn-detail-row"><span>Original charge</span><span>$150.00 on May 1</span></div>
+                <div class="txn-detail-row"><span>Refund amount</span><span>$150.00 (100%)</span></div>
+                <div class="txn-detail-row"><span>Returned to</span><span>Visa ···4821</span></div>
+                <div class="txn-detail-row"><span>Processing time</span><span>3–5 business days</span></div>
+                <div class="txn-actions"><button class="txn-btn"><i class="ti ti-receipt"></i>Refund receipt</button></div>
+              </div>
+
+              <div class="web-txn-row" onclick="toggleWebTxn('wt4')">
+                <div class="web-txn-icon" style="background:var(--blue-light)"><i class="ti ti-id-badge" style="font-size:20px;color:var(--blue)"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name">Family Membership renewal</div><div class="web-txn-meta">Conf # SR-20260105-0003 · Visa ···4821</div></div>
+                <div class="web-txn-right"><div class="web-txn-amount" style="color:var(--green)">$240.00</div><div class="web-txn-date">Jan 5, 2026</div></div>
+              </div>
+              <div id="wt4" class="txn-detail" style="padding:14px 20px">
+                <div class="txn-detail-row"><span>Membership type</span><span>Family (3 members)</span></div>
+                <div class="txn-detail-row"><span>Valid through</span><span>Dec 31, 2026</span></div>
+                <div class="txn-detail-total"><span>Total charged</span><span>$240.00</span></div>
+                <div class="txn-actions"><button class="txn-btn"><i class="ti ti-receipt"></i>View receipt</button><button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button></div>
+              </div>
+
+              <div class="web-txn-row" onclick="toggleWebTxn('wt5')">
+                <div class="web-txn-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name">Adult Yoga Spring — Sarah</div><div class="web-txn-meta">Conf # SR-20260401-0017 · Visa ···4821</div></div>
+                <div class="web-txn-right"><div class="web-txn-amount" style="color:var(--green)">$60.00</div><div class="web-txn-date">Apr 1, 2026</div></div>
+              </div>
+              <div id="wt5" class="txn-detail" style="padding:14px 20px">
+                <div class="txn-detail-total"><span>Total charged</span><span>$60.00</span></div>
+                <div class="txn-actions"><button class="txn-btn" onclick="showReceipt('yoga')"><i class="ti ti-receipt"></i>View receipt</button><button class="txn-btn"><i class="ti ti-download"></i>Download PDF</button></div>
+              </div>
             </div>
+          </div>
+
+          <!-- SETTINGS PANE -->
+          <div id="wacct-settings" class="web-acct-pane">
+            <div class="web-account-card" style="margin-bottom:16px">
+              <div class="web-account-card-header">Personal information</div>
+              <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="setting-field"><label>Full name</label><input class="mock-input" value="Sarah Johnson"></div>
+                <div class="setting-field"><label>Email address</label><input class="mock-input" value="sarah.johnson@email.com"></div>
+                <div class="setting-field"><label>Phone number</label><input class="mock-input" value="(413) 555-0198"></div>
+                <div class="setting-field"><label>Password</label><input class="mock-input" type="password" value="••••••••••"></div>
+                <div class="setting-field"><label>Home ZIP code</label><input class="mock-input" value="01101"></div>
+                <div class="setting-field"><label>Emergency contact</label><input class="mock-input" value="Mark Johnson · (413) 555-0142"></div>
+              </div>
+              <div style="padding:0 20px 20px;display:flex;gap:8px">
+                <button class="btn-primary" style="font-size:13px">Save changes</button>
+              </div>
+            </div>
+            <div class="web-account-card" style="margin-bottom:16px">
+              <div class="web-account-card-header">Notification preferences</div>
+              <div class="toggle-row"><div><div class="toggle-label">Email confirmations</div><div class="toggle-desc">Receive a confirmation email after each registration</div></div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+              <div class="toggle-row"><div><div class="toggle-label">Class reminders</div><div class="toggle-desc">Reminder 24 hours before each scheduled class</div></div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+              <div class="toggle-row"><div><div class="toggle-label">Waitlist notifications</div><div class="toggle-desc">Alert when a spot opens in a waitlisted program</div></div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+              <div class="toggle-row"><div><div class="toggle-label">Payment reminders</div><div class="toggle-desc">Remind me of upcoming or overdue balances</div></div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+              <div class="toggle-row"><div><div class="toggle-label">Program announcements</div><div class="toggle-desc">New programs, schedule changes, facility closures</div></div><div class="toggle off"><div class="toggle-thumb"></div></div></div>
+            </div>
+            <div class="web-account-card">
+              <div class="web-account-card-header">Fee assistance</div>
+              <div style="padding:18px 20px;font-size:13px;color:var(--text-secondary);line-height:1.6">
+                Springfield Recreation offers subsidized registration fees for qualifying households. Apply below and our team will review your request within 2 business days.
+                <div style="margin-top:12px"><button class="btn-primary" style="font-size:13px"><i class="ti ti-gift" style="font-size:15px"></i>Apply for fee assistance</button></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Cancel modal (web) -->
+      <div id="cancel-modal-web" class="cancel-modal-overlay" onclick="if(event.target===this)closeCancelModal()">
+        <div class="cancel-modal">
+          <h3 id="cancel-modal-title-web">Cancel registration?</h3>
+          <p id="cancel-modal-body-web">Are you sure you want to cancel?</p>
+          <div class="cancel-policy-box" id="cancel-modal-policy-web"></div>
+          <div class="cancel-modal-btns">
+            <button class="cancel-keep" onclick="closeCancelModal()">Keep registration</button>
+            <button class="cancel-confirm" onclick="closeCancelModal()">Yes, cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Receipt modal (web) -->
+      <div id="receipt-modal-web" class="receipt-modal-overlay" onclick="if(event.target===this)closeReceiptModal()">
+        <div class="receipt-modal" style="max-width:420px">
+          <div class="receipt-header">
+            <div class="receipt-logo">Springfield Parks &amp; Recreation</div>
+            <div class="receipt-title">Payment Receipt</div>
+            <div class="receipt-date" id="receipt-date-web"></div>
+          </div>
+          <hr class="receipt-divider">
+          <div id="receipt-body-web"></div>
+          <div class="receipt-conf">Questions? rec@springfield.gov · (413) 555-7200</div>
+          <div class="receipt-actions">
+            <button class="receipt-close" onclick="closeReceiptModal()">Close</button>
+            <button class="receipt-download"><i class="ti ti-download" style="font-size:14px;vertical-align:-2px"></i> Download PDF</button>
           </div>
         </div>
       </div>
@@ -2892,6 +4048,15 @@
               <div><div class="toggle-label">Auto-enroll from waitlist</div><div class="toggle-desc">Automatically notify and enroll waitlisted residents when a spot opens</div></div>
               <div class="toggle on"><div class="toggle-thumb"></div></div>
             </div>
+            <div class="toggle-row" style="background:#FFFDF5;border:1.5px dashed var(--amber);border-radius:var(--radius-md);margin:8px 12px;padding:12px">
+              <div>
+                <div class="toggle-label" style="display:flex;align-items:center;gap:7px"><i class="ti ti-eye" style="color:var(--amber);font-size:16px"></i>Show waitlist position to residents</div>
+                <div class="toggle-desc" style="margin-top:3px">When on, residents see their exact position number (e.g. "#3 of 14") in their account. When off, they only see that they are on the waitlist — no position number is shown.</div>
+              </div>
+              <div id="admin-wl-toggle" class="toggle on" style="flex-shrink:0;cursor:pointer" onclick="toggleWaitlistPosition()">
+                <div class="toggle-thumb"></div>
+              </div>
+            </div>
             <div class="toggle-row">
               <div><div class="toggle-label">Require waiver on every registration</div><div class="toggle-desc">Collect digital signature per registration, not just per household</div></div>
               <div class="toggle off"><div class="toggle-thumb"></div></div>
@@ -2916,6 +4081,365 @@
 </div>
 
 <script>
+  /* ── ID CARD SYSTEM ── */
+  var idCards = {
+    sarah: {
+      name: 'Sarah Johnson',
+      type: 'Adult Member',
+      initials: 'SJ',
+      avClass: 'av-blue',
+      details: [
+        {icon:'ti-calendar', label:'DOB', val:'Mar 12, 1985'},
+        {icon:'ti-map-pin', label:'ZIP', val:'01101'},
+        {icon:'ti-id-badge', label:'Member since', val:'Jan 2022'},
+      ],
+      id: 'MBR-4821-9304-SJ',
+      valid: 'Dec 31, 2026',
+      hasPhoto: true,
+      photoColor: '#185FA5'
+    },
+    emma: {
+      name: 'Emma Johnson',
+      type: 'Youth Member · Age 8',
+      initials: 'EJ',
+      avClass: 'av-green',
+      details: [
+        {icon:'ti-calendar', label:'DOB', val:'Feb 4, 2018'},
+        {icon:'ti-school', label:'Grade', val:'Grade 3'},
+        {icon:'ti-id-badge', label:'Member since', val:'Jan 2022'},
+      ],
+      id: 'MBR-4821-9304-EJ',
+      valid: 'Dec 31, 2026',
+      hasPhoto: false,
+      photoColor: '#3B6D11'
+    },
+    liam: {
+      name: 'Liam Johnson',
+      type: 'Youth Member · Age 11',
+      initials: 'LJ',
+      avClass: 'av-amber',
+      details: [
+        {icon:'ti-calendar', label:'DOB', val:'Sep 19, 2014'},
+        {icon:'ti-school', label:'Grade', val:'Grade 6'},
+        {icon:'ti-id-badge', label:'Member since', val:'Jan 2022'},
+      ],
+      id: 'MBR-4821-9304-LJ',
+      valid: 'Dec 31, 2026',
+      hasPhoto: false,
+      photoColor: '#854F0B'
+    }
+  };
+
+  var currentIdMember = 'sarah';
+  var idCardFamilyMode = false;
+
+  function buildQrSvg(id) {
+    // Deterministic mini QR-like pattern from the ID string
+    var seed = 0;
+    for (var i = 0; i < id.length; i++) seed = ((seed << 5) - seed) + id.charCodeAt(i) | 0;
+    var rng = function() { seed = (seed * 1664525 + 1013904223) | 0; return (seed >>> 0) / 4294967296; };
+    var cells = 9;
+    var size = 58;
+    var cs = size / cells;
+    var rects = '';
+    // Finder patterns
+    var fp = function(ox, oy) {
+      rects += '<rect x="'+(ox*cs)+'" y="'+(oy*cs)+'" width="'+(3*cs)+'" height="'+(3*cs)+'" fill="#111"/>';
+      rects += '<rect x="'+((ox+0.5)*cs)+'" y="'+((oy+0.5)*cs)+'" width="'+(2*cs)+'" height="'+(2*cs)+'" fill="#fff"/>';
+      rects += '<rect x="'+((ox+1)*cs)+'" y="'+((oy+1)*cs)+'" width="'+cs+'" height="'+cs+'" fill="#111"/>';
+    };
+    fp(0,0); fp(6,0); fp(0,6);
+    // Data cells
+    for (var row = 0; row < cells; row++) {
+      for (var col = 0; col < cells; col++) {
+        var inFinder = (row<3&&col<3)||(row<3&&col>5)||(row>5&&col<3);
+        if (!inFinder && rng() > 0.45) {
+          rects += '<rect x="'+(col*cs+0.5)+'" y="'+(row*cs+0.5)+'" width="'+(cs-1)+'" height="'+(cs-1)+'" rx="0.8" fill="#111"/>';
+        }
+      }
+    }
+    return '<svg viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg">'+rects+'</svg>';
+  }
+
+  function renderIdCard(memberId) {
+    var c = idCards[memberId];
+    if (!c) return '';
+    var photoHtml = c.hasPhoto
+      ? '<div class="dic-photo" style="background:'+c.photoColor+'20;border-color:'+c.photoColor+'40"><div class="dic-photo-initials" style="color:'+c.photoColor+'">'+c.initials+'</div><div style="position:absolute;bottom:0;left:0;right:0;background:'+c.photoColor+'CC;height:18px;display:flex;align-items:center;justify-content:center"><span style="font-size:7px;color:#fff;font-weight:600;letter-spacing:0.3px">PHOTO ID</span></div></div>'
+      : '<div class="dic-photo"><div class="dic-photo-placeholder"><i class="ti ti-user-circle"></i><span>No photo</span></div></div>';
+    var detailsHtml = c.details.map(function(d) {
+      return '<div class="dic-detail-row"><i class="ti '+d.icon+'"></i>'+d.label+': <span>'+d.val+'</span></div>';
+    }).join('');
+    return [
+      '<div class="dig-id-card">',
+        '<div class="dic-header">',
+          '<div class="dic-org-logo"><i class="ti ti-leaf"></i></div>',
+          '<div><div class="dic-org-name">Springfield Recreation</div><div class="dic-org-sub">Parks &amp; Recreation Department</div></div>',
+        '</div>',
+        '<div class="dic-body">',
+          photoHtml,
+          '<div class="dic-info">',
+            '<div class="dic-name">'+c.name+'</div>',
+            '<div class="dic-type">'+c.type+'</div>',
+            detailsHtml,
+          '</div>',
+        '</div>',
+        '<div class="dic-qr-section">',
+          '<div class="dic-qr-box">'+buildQrSvg(c.id)+'</div>',
+          '<div class="dic-qr-info">',
+            '<div class="dic-qr-id">'+c.id+'</div>',
+            '<div class="dic-qr-sub">Scan at any facility entrance, class check-in, or staff device to validate access.</div>',
+          '</div>',
+        '</div>',
+        '<div class="dic-footer">',
+          '<div class="dic-valid">Valid through: <strong>'+c.valid+'</strong></div>',
+          '<div class="dic-status">ACTIVE</div>',
+        '</div>',
+      '</div>'
+    ].join('');
+  }
+
+  function openIdCard(who) {
+    currentIdMember = who === 'family' ? 'sarah' : who;
+    idCardFamilyMode = who === 'family';
+    var modal = document.getElementById('id-card-modal');
+    var display = document.getElementById('id-card-display');
+    var switcher = document.getElementById('id-card-switcher-wrap');
+    var title = document.getElementById('id-card-modal-title');
+    if (!modal || !display) return;
+    if (idCardFamilyMode) {
+      title.textContent = 'Family ID Cards';
+      switcher.style.display = 'block';
+      document.querySelectorAll('.id-card-thumb').forEach(function(b) { b.classList.remove('active'); });
+      var firstThumb = document.querySelector('.id-card-thumb');
+      if (firstThumb) firstThumb.classList.add('active');
+    } else {
+      title.textContent = idCards[who] ? idCards[who].name + ' — ID Card' : 'Digital ID Card';
+      switcher.style.display = 'none';
+    }
+    display.innerHTML = renderIdCard(currentIdMember);
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function switchIdCard(btn, who) {
+    currentIdMember = who;
+    document.querySelectorAll('.id-card-thumb').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var display = document.getElementById('id-card-display');
+    if (display) display.innerHTML = renderIdCard(who);
+  }
+
+  function closeIdCard() {
+    var modal = document.getElementById('id-card-modal');
+    if (modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function walletToast(target) {
+    var toast = document.getElementById('wallet-toast');
+    if (!toast) return;
+    toast.textContent = 'Added ' + target + ' to ' + (target.includes('all') ? 'your wallet' : target);
+    toast.style.display = 'block';
+    setTimeout(function() { toast.style.display = 'none'; }, 2800);
+    closeIdCard();
+  }
+
+  var wlPositionVisible = true;
+
+  function toggleWaitlistPosition() {
+    wlPositionVisible = !wlPositionVisible;
+
+    // Sync all three toggle controls
+    var toggles = [
+      document.getElementById('mob-wl-toggle'),
+      document.getElementById('web-wl-toggle'),
+      document.getElementById('admin-wl-toggle')
+    ];
+    toggles.forEach(function(t) {
+      if (!t) return;
+      if (wlPositionVisible) {
+        t.classList.add('on'); t.classList.remove('off');
+        // handle admin toggle style separately
+        t.style.background = '';
+      } else {
+        t.classList.remove('on'); t.classList.add('off');
+      }
+    });
+    // Admin toggle color
+    var adminT = document.getElementById('admin-wl-toggle');
+    if (adminT) adminT.style.background = wlPositionVisible ? 'var(--blue)' : 'var(--border-med)';
+    var adminThumb = adminT ? adminT.querySelector('.toggle-thumb') : null;
+    if (adminThumb) { adminThumb.style.left = wlPositionVisible ? '18px' : '2px'; adminThumb.style.right = 'auto'; }
+
+    // Mobile — swap badge and update text
+    var mPos = document.getElementById('mob-wl-pos-badge');
+    var mHid = document.getElementById('mob-wl-hidden-badge');
+    var mMeta = document.getElementById('mob-wl-meta');
+    var mDPos = document.getElementById('mob-wl-detail-pos');
+    var mBanner = document.getElementById('mob-wl-banner-text');
+    if (mPos) mPos.style.display = wlPositionVisible ? 'flex' : 'none';
+    if (mHid) mHid.style.display = wlPositionVisible ? 'none' : 'flex';
+    if (mMeta) mMeta.textContent = wlPositionVisible
+      ? 'M–F · 1–3pm · Position #3 of 14 on waitlist'
+      : 'M–F · 1–3pm · You are on the waitlist';
+    if (mDPos) mDPos.style.display = wlPositionVisible ? 'flex' : 'none';
+    if (mBanner) mBanner.textContent = wlPositionVisible
+      ? "You're #3. We'll notify you immediately if a spot opens and hold it for 24 hours."
+      : "You're on the waitlist. We'll notify you immediately if a spot opens and hold it for 24 hours.";
+
+    // Web — swap badge and update text
+    var wPos = document.getElementById('web-wl-pos-badge');
+    var wHid = document.getElementById('web-wl-hidden-badge');
+    var wMeta = document.getElementById('web-wl-meta');
+    var wDPos = document.getElementById('web-wl-detail-pos');
+    var wBanner = document.getElementById('web-wl-banner-text');
+    if (wPos) wPos.style.display = wlPositionVisible ? 'flex' : 'none';
+    if (wHid) wHid.style.display = wlPositionVisible ? 'none' : 'flex';
+    if (wMeta) wMeta.textContent = wlPositionVisible
+      ? 'Mon–Fri · 1–3pm · Ages 7–13 · Recreation Center Room B · Position #3 of 14 · Joined Jun 14'
+      : 'Mon–Fri · 1–3pm · Ages 7–13 · Recreation Center Room B · On waitlist · Joined Jun 14';
+    if (wDPos) wDPos.style.display = wlPositionVisible ? 'block' : 'none';
+    if (wBanner) wBanner.textContent = wlPositionVisible
+      ? "You're #3 in line. We'll notify you immediately when a spot opens — you'll have 24 hours to confirm enrollment before it's offered to the next person."
+      : "You're on the waitlist. We'll notify you immediately when a spot opens — you'll have 24 hours to confirm enrollment before it's offered to the next person.";
+  }
+
+  function mobAcctTab(btn, pane) {
+    document.querySelectorAll('.txn-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['mob-registrations','mob-transactions','mob-household'].forEach(p => {
+      const el = document.getElementById(p);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById(pane).style.display = 'block';
+  }
+
+  function webAcctTab(btn, pane) {
+    document.querySelectorAll('.web-acct-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.web-acct-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById(pane).classList.add('active');
+  }
+
+  function toggleTxn(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('open');
+  }
+
+  function toggleWebTxn(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('open');
+  }
+
+  var receipts = {
+    swim: {
+      date: 'June 16, 2026 · 10:24 AM',
+      rows: [
+        ['Program','Youth Swim Lessons — Level 1'],
+        ['Participant','Emma Johnson'],
+        ['Session','A · Jun 23 – Jul 11'],
+        ['Schedule','Mon/Wed/Fri · 9–10am'],
+        ['Payment method','Visa ···4821'],
+        ['Program fee','$85.00'],
+        ['Processing fee','$1.50'],
+      ],
+      total: '$86.50',
+      conf: 'SR-20260616-0041'
+    },
+    soccer: {
+      date: 'June 10, 2026 · 2:11 PM',
+      rows: [
+        ['Program','Soccer Skills Camp'],
+        ['Participant','Liam Johnson'],
+        ['Dates','Jul 8 – Aug 1'],
+        ['Payment method','Apple Pay'],
+        ['Program fee','$120.00'],
+      ],
+      total: '$120.00',
+      conf: 'SR-20260610-0029'
+    },
+    yoga: {
+      date: 'April 1, 2026 · 9:05 AM',
+      rows: [
+        ['Program','Adult Yoga — Spring'],
+        ['Participant','Sarah Johnson'],
+        ['Dates','Apr 5 – May 31'],
+        ['Payment method','Visa ···4821'],
+        ['Program fee','$60.00'],
+      ],
+      total: '$60.00',
+      conf: 'SR-20260401-0017'
+    }
+  };
+
+  function showReceipt(type) {
+    var r = receipts[type];
+    if (!r) return;
+    var html = r.rows.map(function(row) {
+      return '<div class="receipt-row"><span>' + row[0] + '</span><span>' + row[1] + '</span></div>';
+    }).join('');
+    html += '<hr class="receipt-divider"><div class="receipt-total"><span>Total</span><span>' + r.total + '</span></div>';
+    // Mobile
+    var mb = document.getElementById('receipt-body');
+    var md = document.getElementById('receipt-date');
+    var mm = document.getElementById('receipt-modal');
+    if (mb) mb.innerHTML = html;
+    if (md) md.textContent = r.date + ' · Conf # ' + r.conf;
+    if (mm) mm.classList.add('open');
+    // Web
+    var wb = document.getElementById('receipt-body-web');
+    var wd = document.getElementById('receipt-date-web');
+    var wm = document.getElementById('receipt-modal-web');
+    if (wb) wb.innerHTML = html;
+    if (wd) wd.textContent = r.date + ' · Conf # ' + r.conf;
+    if (wm) wm.classList.add('open');
+  }
+
+  function closeReceiptModal() {
+    var mm = document.getElementById('receipt-modal');
+    var wm = document.getElementById('receipt-modal-web');
+    if (mm) mm.classList.remove('open');
+    if (wm) wm.classList.remove('open');
+  }
+
+  function showCancel(prog, refund, policy) {
+    var title = 'Cancel ' + prog + '?';
+    var body = 'If you cancel this registration, the following refund policy applies:';
+    var policyHtml = '<strong>Refund: ' + refund + '</strong><br>' + policy;
+    // Mobile
+    var mt = document.getElementById('cancel-modal-title');
+    var mb = document.getElementById('cancel-modal-body');
+    var mp = document.getElementById('cancel-modal-policy');
+    var mm = document.getElementById('cancel-modal');
+    if (mt) mt.textContent = title;
+    if (mb) mb.textContent = body;
+    if (mp) mp.innerHTML = policyHtml;
+    if (mm) mm.classList.add('open');
+    // Web
+    var wt = document.getElementById('cancel-modal-title-web');
+    var wb = document.getElementById('cancel-modal-body-web');
+    var wp = document.getElementById('cancel-modal-policy-web');
+    var wm = document.getElementById('cancel-modal-web');
+    if (wt) wt.textContent = title;
+    if (wb) wb.textContent = body;
+    if (wp) wp.innerHTML = policyHtml;
+    if (wm) wm.classList.add('open');
+  }
+
+  function closeCancelModal() {
+    var mm = document.getElementById('cancel-modal');
+    var wm = document.getElementById('cancel-modal-web');
+    if (mm) mm.classList.remove('open');
+    if (wm) wm.classList.remove('open');
+  }
+
+  function showPaymentModal() {
+    alert('Payment modal: In the live product, this would open a secure payment flow for the $45.00 outstanding balance on Adult Basketball League.');
+  }
+
   function mobileFilterMember(btn, who) {
     document.querySelectorAll('.member-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
