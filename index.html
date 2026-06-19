@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- 06.19.a --->
+  <!--- PR added tram info and insurance visit report for pub user --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -860,6 +860,262 @@
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .two-col, .three-col { grid-template-columns: 1fr; }
   }
+
+  /* ── ATTENDANCE REPORT STYLES ── */
+  .attend-report-wrap {
+    border-top: 1px solid var(--border);
+    padding: 12px;
+    background: var(--bg-secondary);
+  }
+  .attend-report-label {
+    font-size: 11px; font-weight: 600; color: var(--green);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 5px;
+    margin-bottom: 10px;
+  }
+  .attend-report-label i { font-size: 14px; }
+  .attend-date-row {
+    display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .attend-date-input {
+    flex: 1; min-width: 100px;
+    border: 1px solid var(--border-med); border-radius: 7px;
+    padding: 7px 8px; font-size: 12px; font-family: var(--font);
+    color: var(--text-primary); background: var(--bg-primary); outline: none;
+  }
+  .attend-date-input:focus { border-color: var(--blue); }
+  .attend-filter-btn {
+    padding: 7px 12px; border-radius: 7px;
+    background: var(--blue); color: #fff; border: none;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    font-family: var(--font); white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .attend-table {
+    width: 100%; border-collapse: collapse; font-size: 11px;
+    background: var(--bg-primary); border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border); margin-bottom: 8px;
+  }
+  .attend-table th {
+    background: var(--bg-secondary); padding: 7px 10px;
+    text-align: left; font-size: 10px; font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .attend-table td {
+    padding: 7px 10px; border-bottom: 1px solid var(--border);
+    color: var(--text-primary); vertical-align: middle;
+  }
+  .attend-table tr:last-child td { border-bottom: none; }
+  .attend-summary {
+    font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+  }
+  .attend-summary strong { color: var(--text-primary); }
+  .attend-pdf-btn {
+    width: 100%; padding: 9px; border-radius: 8px;
+    background: var(--green); color: #fff; border: none;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    font-family: var(--font); display: flex;
+    align-items: center; justify-content: center; gap: 7px;
+  }
+  .attend-pdf-btn i { font-size: 15px; }
+  .attend-insurance-note {
+    margin-top: 7px; font-size: 10px; color: var(--text-tertiary);
+    text-align: center; line-height: 1.5;
+  }
+
+  /* Web attendance */
+  .web-attend-panel {
+    border-top: 1px solid var(--border);
+    padding: 16px 20px; background: var(--bg-secondary);
+  }
+  .web-attend-label {
+    font-size: 12px; font-weight: 600; color: var(--green);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 12px;
+  }
+  .web-attend-controls {
+    display: flex; gap: 10px; align-items: flex-end; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .web-attend-field { display: flex; flex-direction: column; gap: 4px; }
+  .web-attend-field label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+  .web-attend-field input {
+    border: 1px solid var(--border-med); border-radius: 8px;
+    padding: 8px 10px; font-size: 13px; font-family: var(--font);
+    color: var(--text-primary); background: var(--bg-primary); outline: none;
+  }
+  .web-attend-field input:focus { border-color: var(--blue); }
+  .web-attend-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+    background: var(--bg-primary); border-radius: 9px; overflow: hidden;
+    border: 1px solid var(--border); margin-bottom: 12px;
+  }
+  .web-attend-table th {
+    background: var(--bg-secondary); padding: 9px 14px;
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .web-attend-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  .web-attend-table tr:last-child td { border-bottom: none; }
+  .web-attend-footer {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  .web-attend-summary { font-size: 13px; color: var(--text-secondary); }
+  .web-attend-summary strong { color: var(--text-primary); }
+  .web-attend-pdf {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px; border-radius: 8px;
+    background: var(--green); color: #fff; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font);
+  }
+
+  /* ── TEAM ROSTER STYLES ── */
+  .team-panel {
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary); padding: 12px;
+  }
+  .team-panel-label {
+    font-size: 11px; font-weight: 600; color: var(--purple);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 5px; margin-bottom: 10px;
+  }
+  .team-info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 9px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .ti-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 2px; }
+  .ti-val { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .ti-val a { color: var(--blue); text-decoration: none; }
+  .team-section-label {
+    font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .team-roster-list {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 9px; overflow: hidden; margin-bottom: 8px;
+  }
+  .team-roster-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .team-roster-row:last-child { border-bottom: none; }
+  .team-roster-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--purple-bg); color: var(--purple);
+    font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .team-roster-name { flex: 1; color: var(--text-primary); font-weight: 500; }
+  .team-roster-you { font-size: 9px; color: var(--blue); font-weight: 600; background: var(--blue-light); padding: 2px 6px; border-radius: 4px; }
+  .team-game-list {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 9px; overflow: hidden; margin-bottom: 8px;
+  }
+  .team-game-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 11px;
+  }
+  .team-game-row:last-child { border-bottom: none; }
+  .tgr-date {
+    width: 36px; text-align: center; flex-shrink: 0;
+    background: var(--bg-secondary); border-radius: 6px; padding: 3px;
+  }
+  .tgr-date .tgr-m { font-size: 8px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; }
+  .tgr-date .tgr-d { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+  .tgr-info { flex: 1; }
+  .tgr-opp { font-weight: 500; color: var(--text-primary); }
+  .tgr-loc { color: var(--text-secondary); margin-top: 1px; }
+  .tgr-result { font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 5px; }
+  .tgr-w { background: var(--green-bg); color: var(--green); }
+  .tgr-l { background: var(--red-bg); color: var(--red); }
+  .tgr-next { background: var(--blue-light); color: var(--blue); }
+
+  /* Web team panel */
+  .web-team-panel {
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary); padding: 16px 20px;
+  }
+  .web-team-label {
+    font-size: 12px; font-weight: 600; color: var(--purple);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 14px;
+  }
+  .web-team-meta-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    margin-bottom: 14px;
+  }
+  .web-team-meta-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 9px; padding: 10px 14px;
+  }
+  .wtmc-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; }
+  .wtmc-val { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .wtmc-val a { color: var(--blue); text-decoration: none; }
+  .web-team-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .web-team-section-label {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .web-team-roster-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .web-team-roster-item:last-child { border-bottom: none; }
+  .web-team-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--purple-bg); color: var(--purple);
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .web-game-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12px;
+  }
+  .web-game-row:last-child { border-bottom: none; }
+  .web-game-date {
+    width: 44px; text-align: center; flex-shrink: 0;
+    background: var(--bg-secondary); border-radius: 7px; padding: 4px;
+  }
+  .wgd-m { font-size: 9px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; }
+  .wgd-d { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+  .web-game-info { flex: 1; }
+  .wgi-opp { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .wgi-loc { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+  /* Team/admin visibility toggle demo bar */
+  .team-demo-bar {
+    background: var(--purple-dark, #2D2580); border-radius: var(--radius-lg);
+    padding: 10px 14px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; color: rgba(255,255,255,0.85);
+  }
+  .team-demo-bar i { font-size: 16px; color: #BEB9F8; flex-shrink: 0; }
+  .team-demo-bar .td-label { flex: 1; line-height: 1.4; }
+  .team-demo-bar .td-label strong { color: #fff; display: block; margin-bottom: 1px; }
+  .team-demo-toggles { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  .team-mini-toggle-row {
+    display: flex; align-items: center; gap: 6px; font-size: 10px; color: rgba(255,255,255,0.75);
+  }
+  .team-mini-toggle {
+    width: 28px; height: 16px; border-radius: 8px;
+    background: #7C6FD4; flex-shrink: 0; cursor: pointer;
+    position: relative; transition: background 0.2s;
+  }
+  .team-mini-toggle.off { background: rgba(255,255,255,0.2); }
+  .team-mini-thumb {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #fff; position: absolute; top: 2px; transition: left 0.15s;
+  }
+  .team-mini-toggle.on .team-mini-thumb { left: 14px; }
+  .team-mini-toggle.off .team-mini-thumb { left: 2px; }
 
   /* ── DIGITAL ID CARD STYLES ── */
   .id-card-modal-overlay {
@@ -2563,8 +2819,54 @@
                   <div class="txn-detail-row"><span>Paid</span><span>$120.00 · Jun 10</span></div>
                   <div class="txn-actions">
                     <button class="txn-btn" onclick="showReceipt('soccer')"><i class="ti ti-receipt"></i>Receipt</button>
-                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn" onclick="toggleTxn('reg2team')"><i class="ti ti-users"></i>Team info</button>
                     <button class="txn-btn danger" onclick="showCancel('Soccer Skills Camp','$120.00','50% refund available — camp starts in 22 days')"><i class="ti ti-x"></i>Cancel</button>
+                  </div>
+                </div>
+                <!-- TEAM PANEL mobile -->
+                <div id="reg2team" class="team-panel" style="display:none">
+                  <!-- Demo toggles -->
+                  <div class="team-demo-bar">
+                    <i class="ti ti-adjustments-horizontal"></i>
+                    <div class="td-label"><strong>Demo: Team info visibility</strong>Admin controls which info is shown</div>
+                    <div class="team-demo-toggles">
+                      <div class="team-mini-toggle-row"><div id="mob-t-roster" class="team-mini-toggle on" onclick="toggleTeamInfo('roster')"><div class="team-mini-thumb"></div></div>Roster</div>
+                      <div class="team-mini-toggle-row"><div id="mob-t-coach" class="team-mini-toggle on" onclick="toggleTeamInfo('coach')"><div class="team-mini-thumb"></div></div>Coach contact</div>
+                      <div class="team-mini-toggle-row"><div id="mob-t-sched" class="team-mini-toggle on" onclick="toggleTeamInfo('sched')"><div class="team-mini-thumb"></div></div>Schedule</div>
+                    </div>
+                  </div>
+                  <div class="team-panel-label"><i class="ti ti-ball-football"></i>Team information</div>
+                  <div class="team-info-row">
+                    <div><div class="ti-label">Team name</div><div class="ti-val">Springfield Strikers U12</div></div>
+                    <span class="badge badge-open">Active</span>
+                  </div>
+                  <div id="mob-coach-section" class="team-info-row">
+                    <div>
+                      <div class="ti-label">Head coach</div>
+                      <div class="ti-val">Coach Williams</div>
+                      <div class="ti-label" style="margin-top:4px">Contact</div>
+                      <div class="ti-val"><a href="#">d.williams@springfield.gov</a></div>
+                    </div>
+                  </div>
+                  <div id="mob-roster-section">
+                    <div class="team-section-label">Team roster (12 players)</div>
+                    <div class="team-roster-list">
+                      <div class="team-roster-row"><div class="team-roster-num">1</div><span class="team-roster-name">Liam Johnson</span><span class="team-roster-you">YOUR CHILD</span></div>
+                      <div class="team-roster-row"><div class="team-roster-num">2</div><span class="team-roster-name">Marcus Chen</span></div>
+                      <div class="team-roster-row"><div class="team-roster-num">3</div><span class="team-roster-name">Diego Rivera</span></div>
+                      <div class="team-roster-row"><div class="team-roster-num">4</div><span class="team-roster-name">Tyler Park</span></div>
+                      <div class="team-roster-row"><div class="team-roster-num">5</div><span class="team-roster-name">Sam Patel</span></div>
+                      <div class="team-roster-row" style="color:var(--text-tertiary);font-size:11px;justify-content:center;padding:7px">+ 7 more players</div>
+                    </div>
+                  </div>
+                  <div id="mob-sched-section">
+                    <div class="team-section-label">Game schedule</div>
+                    <div class="team-game-list">
+                      <div class="team-game-row"><div class="tgr-date"><div class="tgr-m">JUN</div><div class="tgr-d">28</div></div><div class="tgr-info"><div class="tgr-opp">vs. Riverside Rockets</div><div class="tgr-loc">Centennial Field 2 · 10am</div></div><span class="tgr-result tgr-w">W 3–1</span></div>
+                      <div class="team-game-row"><div class="tgr-date"><div class="tgr-m">JUL</div><div class="tgr-d">5</div></div><div class="tgr-info"><div class="tgr-opp">vs. Maple FC</div><div class="tgr-loc">Riverside Park · 11am</div></div><span class="tgr-result tgr-l">L 1–2</span></div>
+                      <div class="team-game-row"><div class="tgr-date"><div class="tgr-m">JUL</div><div class="tgr-d">12</div></div><div class="tgr-info"><div class="tgr-opp">vs. East Side United</div><div class="tgr-loc">Centennial Field 1 · 10am</div></div><span class="tgr-result tgr-next">NEXT</span></div>
+                      <div class="team-game-row"><div class="tgr-date"><div class="tgr-m">JUL</div><div class="tgr-d">19</div></div><div class="tgr-info"><div class="tgr-opp">vs. Northside FC</div><div class="tgr-loc">Springfield Stadium · 2pm</div></div><span class="tgr-result tgr-next">TBD</span></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2596,7 +2898,7 @@
                   <div class="txn-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
                   <div class="txn-info">
                     <div class="txn-name">Adult Yoga Spring — Sarah</div>
-                    <div class="txn-meta">Apr 5 – May 31 · Completed</div>
+                    <div class="txn-meta">Apr 5 – May 31 · Completed · 7 of 8 sessions</div>
                   </div>
                   <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Past</span>
                 </div>
@@ -2605,8 +2907,36 @@
                   <div class="txn-detail-row"><span>Paid</span><span>$60.00 · Apr 1</span></div>
                   <div class="txn-actions">
                     <button class="txn-btn" onclick="showReceipt('yoga')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn" onclick="toggleTxn('reg4attend')" style="color:var(--green);border-color:var(--green)"><i class="ti ti-file-certificate"></i>Insurance report</button>
                     <button class="txn-btn primary"><i class="ti ti-rotate-clockwise"></i>Re-register</button>
                   </div>
+                </div>
+                <!-- ATTENDANCE REPORT mobile -->
+                <div id="reg4attend" class="attend-report-wrap" style="display:none">
+                  <div class="attend-report-label"><i class="ti ti-file-certificate"></i>Insurance attendance report</div>
+                  <div class="attend-date-row">
+                    <input class="attend-date-input" type="date" value="2026-04-01" id="mob-attend-start">
+                    <input class="attend-date-input" type="date" value="2026-05-31" id="mob-attend-end">
+                    <button class="attend-filter-btn" onclick="filterAttend('mob')"><i class="ti ti-filter"></i>Filter</button>
+                  </div>
+                  <div class="attend-summary">
+                    <span>Member: <strong>Sarah Johnson</strong></span>
+                    <span>Visits: <strong id="mob-attend-count">7</strong></span>
+                  </div>
+                  <table class="attend-table" id="mob-attend-table">
+                    <thead><tr><th>#</th><th>Date</th><th>Time in</th><th>Location</th></tr></thead>
+                    <tbody>
+                      <tr><td>1</td><td>Apr 5</td><td>8:03 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>2</td><td>Apr 12</td><td>8:01 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>3</td><td>Apr 19</td><td>7:58 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>4</td><td>Apr 26</td><td>8:05 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>5</td><td>May 3</td><td>8:02 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>6</td><td>May 17</td><td>8:07 AM</td><td>Maple Street Gym</td></tr>
+                      <tr><td>7</td><td>May 31</td><td>8:00 AM</td><td>Maple Street Gym</td></tr>
+                    </tbody>
+                  </table>
+                  <button class="attend-pdf-btn" onclick="attendPdfToast()"><i class="ti ti-download"></i>Download PDF for insurance</button>
+                  <div class="attend-insurance-note">This report is suitable for health insurance benefit reimbursement claims. It includes program name, member name, and verified check-in records.</div>
                 </div>
               </div>
             </div>
@@ -3485,7 +3815,7 @@
                   <span class="badge badge-open">Active</span>
                   <div class="web-txn-actions">
                     <button class="txn-btn" onclick="event.stopPropagation();showReceipt('soccer')"><i class="ti ti-receipt"></i>Receipt</button>
-                    <button class="txn-btn"><i class="ti ti-calendar"></i>Add to calendar</button>
+                    <button class="txn-btn" onclick="event.stopPropagation();toggleWebTxn('wreg2team')" style="color:var(--purple);border-color:var(--purple)"><i class="ti ti-users"></i>Team info</button>
                     <button class="txn-btn danger" onclick="event.stopPropagation();showCancel('Soccer Skills Camp','$60.00','50% refund — camp starts in 22 days')"><i class="ti ti-x"></i>Cancel</button>
                   </div>
                 </div>
@@ -3496,6 +3826,46 @@
                   <div><span style="color:var(--text-secondary)">Instructor</span><div style="font-weight:500;margin-top:2px">Coach Williams</div></div>
                   <div><span style="color:var(--text-secondary)">Confirmation #</span><div style="font-weight:500;margin-top:2px">SR-20260610-0029</div></div>
                   <div><span style="color:var(--text-secondary)">Amount paid</span><div style="font-weight:500;margin-top:2px">$120.00 on Jun 10</div></div>
+                </div>
+              </div>
+              <!-- TEAM PANEL web -->
+              <div id="wreg2team" class="web-team-panel" style="display:none">
+                <!-- Demo toggle bar -->
+                <div class="team-demo-bar" style="background:#2D2A6E;margin-bottom:14px">
+                  <i class="ti ti-adjustments-horizontal"></i>
+                  <div class="td-label"><strong>Demo: Team info visibility controls</strong>Admin toggles which sections are shown to residents</div>
+                  <div class="team-demo-toggles">
+                    <div class="team-mini-toggle-row"><div id="web-t-roster" class="team-mini-toggle on" onclick="toggleTeamInfo('roster')"><div class="team-mini-thumb"></div></div>Roster</div>
+                    <div class="team-mini-toggle-row"><div id="web-t-coach" class="team-mini-toggle on" onclick="toggleTeamInfo('coach')"><div class="team-mini-thumb"></div></div>Coach contact</div>
+                    <div class="team-mini-toggle-row"><div id="web-t-sched" class="team-mini-toggle on" onclick="toggleTeamInfo('sched')"><div class="team-mini-thumb"></div></div>Schedule</div>
+                  </div>
+                </div>
+                <div class="web-team-label"><i class="ti ti-ball-football"></i>Team — Springfield Strikers U12</div>
+                <div class="web-team-meta-grid">
+                  <div class="web-team-meta-card"><div class="wtmc-label">Team name</div><div class="wtmc-val">Springfield Strikers U12</div></div>
+                  <div class="web-team-meta-card" id="web-coach-section"><div class="wtmc-label">Head coach</div><div class="wtmc-val">Coach D. Williams<br><a href="#">d.williams@springfield.gov</a></div></div>
+                  <div class="web-team-meta-card"><div class="wtmc-label">Season record</div><div class="wtmc-val" style="color:var(--green)">1W – 1L – 0D</div></div>
+                </div>
+                <div class="web-team-two-col">
+                  <div id="web-roster-section">
+                    <div class="web-team-section-label">Team roster (12 players)</div>
+                    <div class="web-team-roster-item"><div class="web-team-num">1</div><span style="flex:1;font-weight:500">Liam Johnson</span><span style="font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-light);padding:2px 7px;border-radius:4px">YOUR CHILD</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">2</div><span>Marcus Chen</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">3</div><span>Diego Rivera</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">4</div><span>Tyler Park</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">5</div><span>Sam Patel</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">6</div><span>Jordan Lee</span></div>
+                    <div class="web-team-roster-item"><div class="web-team-num">7</div><span>Alex Torres</span></div>
+                    <div class="web-team-roster-item" style="color:var(--text-tertiary);font-size:12px">+ 5 more players</div>
+                  </div>
+                  <div id="web-sched-section">
+                    <div class="web-team-section-label">Game schedule</div>
+                    <div class="web-game-row"><div class="web-game-date"><div class="wgd-m">JUN</div><div class="wgd-d">28</div></div><div class="web-game-info"><div class="wgi-opp">vs. Riverside Rockets</div><div class="wgi-loc">Centennial Field 2 · 10:00 AM</div></div><span class="tgr-result tgr-w">W 3–1</span></div>
+                    <div class="web-game-row"><div class="web-game-date"><div class="wgd-m">JUL</div><div class="wgd-d">5</div></div><div class="web-game-info"><div class="wgi-opp">vs. Maple FC</div><div class="wgi-loc">Riverside Park · 11:00 AM</div></div><span class="tgr-result tgr-l">L 1–2</span></div>
+                    <div class="web-game-row"><div class="web-game-date"><div class="wgd-m">JUL</div><div class="wgd-d">12</div></div><div class="web-game-info"><div class="wgi-opp">vs. East Side United</div><div class="wgi-loc">Centennial Field 1 · 10:00 AM</div></div><span class="tgr-result tgr-next">NEXT GAME</span></div>
+                    <div class="web-game-row"><div class="web-game-date"><div class="wgd-m">JUL</div><div class="wgd-d">19</div></div><div class="web-game-info"><div class="wgi-opp">vs. Northside FC</div><div class="wgi-loc">Springfield Stadium · 2:00 PM</div></div><span class="tgr-result" style="background:var(--bg-tertiary);color:var(--text-tertiary)">TBD</span></div>
+                    <div class="web-game-row"><div class="web-game-date"><div class="wgd-m">JUL</div><div class="wgd-d">26</div></div><div class="web-game-info"><div class="wgi-opp">vs. Cedar Hill SC</div><div class="wgi-loc">Centennial Field 3 · 10:00 AM</div></div><span class="tgr-result" style="background:var(--bg-tertiary);color:var(--text-tertiary)">TBD</span></div>
+                  </div>
                 </div>
               </div>
               <!-- Basketball - balance due -->
@@ -3524,7 +3894,7 @@
 
             <div class="web-account-card">
               <div class="web-account-card-header">Past registrations</div>
-              <div class="web-txn-row">
+              <div class="web-txn-row" onclick="toggleWebTxn('wreg4')">
                 <div class="web-txn-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
                 <div class="web-txn-info">
                   <div class="web-txn-name">Adult Yoga Spring — Sarah</div>
@@ -3533,9 +3903,52 @@
                 <div class="web-txn-right">
                   <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Completed</span>
                   <div class="web-txn-actions">
-                    <button class="txn-btn" onclick="showReceipt('yoga')"><i class="ti ti-receipt"></i>Receipt</button>
-                    <button class="txn-btn primary"><i class="ti ti-rotate-clockwise"></i>Re-register</button>
+                    <button class="txn-btn" onclick="event.stopPropagation();showReceipt('yoga')"><i class="ti ti-receipt"></i>Receipt</button>
+                    <button class="txn-btn" onclick="event.stopPropagation();toggleWebTxn('wreg4attend')" style="color:var(--green);border-color:var(--green)"><i class="ti ti-file-certificate"></i>Insurance report</button>
+                    <button class="txn-btn primary" onclick="event.stopPropagation()"><i class="ti ti-rotate-clockwise"></i>Re-register</button>
                   </div>
+                </div>
+              </div>
+              <div id="wreg4" class="txn-detail" style="padding:14px 20px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+                  <div><span style="color:var(--text-secondary)">Sessions attended</span><div style="font-weight:500;margin-top:2px">7 of 8</div></div>
+                  <div><span style="color:var(--text-secondary)">Amount paid</span><div style="font-weight:500;margin-top:2px">$60.00 on Apr 1</div></div>
+                </div>
+              </div>
+              <!-- ATTENDANCE REPORT web -->
+              <div id="wreg4attend" class="web-attend-panel" style="display:none">
+                <div class="web-attend-label"><i class="ti ti-file-certificate"></i>Insurance attendance report — Adult Yoga Spring</div>
+                <div class="web-attend-controls">
+                  <div class="web-attend-field">
+                    <label>Start date</label>
+                    <input type="date" value="2026-04-01" id="web-attend-start">
+                  </div>
+                  <div class="web-attend-field">
+                    <label>End date</label>
+                    <input type="date" value="2026-05-31" id="web-attend-end">
+                  </div>
+                  <button class="attend-filter-btn" style="height:38px" onclick="filterAttend('web')"><i class="ti ti-filter"></i>Filter</button>
+                </div>
+                <table class="web-attend-table" id="web-attend-table">
+                  <thead>
+                    <tr><th>#</th><th>Date</th><th>Day</th><th>Check-in time</th><th>Location</th><th>Program</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>1</td><td>Apr 5, 2026</td><td>Saturday</td><td>8:03 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>2</td><td>Apr 12, 2026</td><td>Saturday</td><td>8:01 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>3</td><td>Apr 19, 2026</td><td>Saturday</td><td>7:58 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>4</td><td>Apr 26, 2026</td><td>Saturday</td><td>8:05 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>5</td><td>May 3, 2026</td><td>Saturday</td><td>8:02 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>6</td><td>May 17, 2026</td><td>Saturday</td><td>8:07 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                    <tr><td>7</td><td>May 31, 2026</td><td>Saturday</td><td>8:00 AM</td><td>Maple Street Gym, Studio A</td><td>Adult Yoga — Spring</td></tr>
+                  </tbody>
+                </table>
+                <div class="web-attend-footer">
+                  <div class="web-attend-summary">Member: <strong>Sarah Johnson</strong> &nbsp;·&nbsp; Total verified visits: <strong id="web-attend-count">7</strong> &nbsp;·&nbsp; Period: <strong>Apr 1 – May 31, 2026</strong></div>
+                  <button class="web-attend-pdf" onclick="attendPdfToast()"><i class="ti ti-download"></i> Download PDF</button>
+                </div>
+                <div style="margin-top:10px;font-size:12px;color:var(--text-tertiary);line-height:1.6">
+                  This report contains verified check-in records suitable for health insurance benefit reimbursement. It includes member name, program name, check-in date/time, and location for each visit.
                 </div>
               </div>
             </div>
@@ -4073,6 +4486,41 @@
               <div class="toggle on"><div class="toggle-thumb"></div></div>
             </div>
           </div>
+
+          <div class="settings-card">
+            <div class="settings-card-header" style="display:flex;align-items:center;gap:8px"><i class="ti ti-ball-football" style="color:var(--purple);font-size:16px"></i>Team &amp; roster visibility</div>
+            <div style="padding:10px 16px 14px;font-size:12px;color:var(--text-secondary);line-height:1.6;border-bottom:1px solid var(--border)">
+              Control which team information is visible to account holders on the public portal. These settings apply to all team and league programs. Changes take effect immediately for all residents.
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label" style="display:flex;align-items:center;gap:7px"><i class="ti ti-users" style="color:var(--purple);font-size:15px"></i>Show team roster to members</div>
+                <div class="toggle-desc">Account holders see the list of players on the same team as their child or family member</div>
+              </div>
+              <div id="admin-t-roster" class="toggle on" style="cursor:pointer;flex-shrink:0" onclick="toggleTeamInfo('roster')"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label" style="display:flex;align-items:center;gap:7px"><i class="ti ti-phone" style="color:var(--purple);font-size:15px"></i>Show coach contact information</div>
+                <div class="toggle-desc">Display coach name, email, and phone number to families of team members</div>
+              </div>
+              <div id="admin-t-coach" class="toggle on" style="cursor:pointer;flex-shrink:0" onclick="toggleTeamInfo('coach')"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label" style="display:flex;align-items:center;gap:7px"><i class="ti ti-calendar-event" style="color:var(--purple);font-size:15px"></i>Show game &amp; event schedule</div>
+                <div class="toggle-desc">Display upcoming and past game dates, times, locations, and scores on the public portal</div>
+              </div>
+              <div id="admin-t-sched" class="toggle on" style="cursor:pointer;flex-shrink:0" onclick="toggleTeamInfo('sched')"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label" style="display:flex;align-items:center;gap:7px"><i class="ti ti-file-certificate" style="color:var(--green);font-size:15px"></i>Enable insurance attendance reports</div>
+                <div class="toggle-desc">Members can generate and download verified check-in reports for fitness program insurance reimbursement</div>
+              </div>
+              <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4081,6 +4529,96 @@
 </div>
 
 <script>
+  /* ── TEAM ROSTER VISIBILITY ── */
+  var teamState = { roster: true, coach: true, sched: true };
+
+  function toggleTeamInfo(which) {
+    teamState[which] = !teamState[which];
+    var on = teamState[which];
+
+    // Update all toggle elements for this category
+    var ids = ['mob-t-'+which, 'web-t-'+which, 'admin-t-'+which];
+    ids.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (on) { el.classList.add('on'); el.classList.remove('off'); }
+      else { el.classList.remove('on'); el.classList.add('off'); }
+      // Admin toggles use different color system
+      if (id.startsWith('admin')) {
+        el.style.background = on ? 'var(--blue)' : 'var(--border-med)';
+        var th = el.querySelector('.toggle-thumb');
+        if (th) { th.style.left = on ? '18px' : '2px'; th.style.right = 'auto'; }
+      }
+    });
+
+    // Show/hide sections in mobile
+    var mobMap = { roster: 'mob-roster-section', coach: 'mob-coach-section', sched: 'mob-sched-section' };
+    var mobEl = document.getElementById(mobMap[which]);
+    if (mobEl) mobEl.style.display = on ? 'block' : 'none';
+
+    // Show/hide sections in web
+    var webMap = { roster: 'web-roster-section', coach: 'web-coach-section', sched: 'web-sched-section' };
+    var webEl = document.getElementById(webMap[which]);
+    if (webEl) webEl.style.display = on ? 'block' : 'none';
+  }
+
+  /* ── ATTENDANCE REPORT ── */
+  var allAttendData = [
+    { n:1, date:'Apr 5, 2026',  day:'Saturday', time:'8:03 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-04-05') },
+    { n:2, date:'Apr 12, 2026', day:'Saturday', time:'8:01 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-04-12') },
+    { n:3, date:'Apr 19, 2026', day:'Saturday', time:'7:58 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-04-19') },
+    { n:4, date:'Apr 26, 2026', day:'Saturday', time:'8:05 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-04-26') },
+    { n:5, date:'May 3, 2026',  day:'Saturday', time:'8:02 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-05-03') },
+    { n:6, date:'May 17, 2026', day:'Saturday', time:'8:07 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-05-17') },
+    { n:7, date:'May 31, 2026', day:'Saturday', time:'8:00 AM', loc:'Maple Street Gym, Studio A', ts: new Date('2026-05-31') }
+  ];
+
+  function filterAttend(view) {
+    var startEl, endEl, tableId, countId;
+    if (view === 'mob') {
+      startEl = document.getElementById('mob-attend-start');
+      endEl   = document.getElementById('mob-attend-end');
+      tableId = 'mob-attend-table';
+      countId = 'mob-attend-count';
+    } else {
+      startEl = document.getElementById('web-attend-start');
+      endEl   = document.getElementById('web-attend-end');
+      tableId = 'web-attend-table';
+      countId = 'web-attend-count';
+    }
+    var start = startEl ? new Date(startEl.value) : null;
+    var end   = endEl   ? new Date(endEl.value)   : null;
+    var filtered = allAttendData.filter(function(r) {
+      return (!start || r.ts >= start) && (!end || r.ts <= end);
+    });
+    var table = document.getElementById(tableId);
+    if (!table) return;
+    var tbody = table.querySelector('tbody');
+    if (!tbody) return;
+    if (view === 'mob') {
+      tbody.innerHTML = filtered.map(function(r, i) {
+        return '<tr><td>'+(i+1)+'</td><td>'+r.date.replace(', 2026','')+'</td><td>'+r.time+'</td><td>'+r.loc.replace(', Studio A','')+'</td></tr>';
+      }).join('');
+    } else {
+      tbody.innerHTML = filtered.map(function(r, i) {
+        return '<tr><td>'+(i+1)+'</td><td>'+r.date+'</td><td>'+r.day+'</td><td>'+r.time+'</td><td>'+r.loc+'</td><td>Adult Yoga — Spring</td></tr>';
+      }).join('');
+    }
+    var countEl = document.getElementById(countId);
+    if (countEl) countEl.textContent = filtered.length;
+  }
+
+  function attendPdfToast() {
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ Attendance report PDF downloaded';
+      toast.style.display = 'block';
+      setTimeout(function() { toast.style.display = 'none'; }, 3000);
+    } else {
+      alert('In the live product, this generates a formatted PDF with the member\'s verified check-in records, suitable for insurance reimbursement.');
+    }
+  }
+
   /* ── ID CARD SYSTEM ── */
   var idCards = {
     sarah: {
