@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--- PR 062226 - form flow added --->
+  <!--- Added beach passes --->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Springfield Recreation — Demo</title>
@@ -1015,6 +1015,212 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── DIGITAL PASSES & TICKETS ── */
+  .pass-card {
+    position: relative; border-radius: 16px; overflow: hidden;
+    margin-bottom: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .pass-card-header {
+    padding: 14px 16px 10px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .pass-org { font-size: 11px; font-weight: 600; opacity: 0.85; letter-spacing: 0.3px; text-transform: uppercase; }
+  .pass-name { font-size: 18px; font-weight: 700; margin-top: 3px; letter-spacing: -0.3px; }
+  .pass-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+  .pass-status-pill {
+    font-size: 10px; font-weight: 700; padding: 4px 10px;
+    border-radius: 20px; letter-spacing: 0.3px; flex-shrink: 0;
+  }
+  .pass-divider {
+    border: none; height: 0;
+    border-top: 2px dashed rgba(255,255,255,0.3);
+    margin: 0 16px;
+    position: relative;
+  }
+  .pass-divider::before, .pass-divider::after {
+    content: ''; position: absolute; top: -10px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--bg-tertiary);
+  }
+  .pass-divider::before { left: -25px; }
+  .pass-divider::after { right: -25px; }
+  .pass-card-body {
+    padding: 12px 16px 16px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .pass-qr-box {
+    width: 80px; height: 80px; background: #fff;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pass-qr-box svg { width: 66px; height: 66px; }
+  .pass-meta { flex: 1; }
+  .pass-meta-row { display: flex; flex-direction: column; gap: 4px; }
+  .pmr-label { font-size: 9px; font-weight: 600; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.4px; }
+  .pmr-val { font-size: 13px; font-weight: 600; }
+  .pass-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .pass-id { font-size: 9px; opacity: 0.5; letter-spacing: 2px; margin-top: 8px; }
+  .pass-wallet-row {
+    display: flex; gap: 6px; padding: 10px 16px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+  .pass-wallet-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15); color: #fff;
+    font-size: 11px; font-weight: 600; cursor: pointer; font-family: var(--font);
+  }
+  .pass-wallet-btn i { font-size: 15px; }
+
+  /* Beach pass = teal/ocean */
+  .pass-beach { background: linear-gradient(135deg, #0B6E5E 0%, #1EB89D 100%); color: #fff; }
+  .pass-beach .pass-status-pill.active { background: rgba(255,255,255,0.2); color: #fff; }
+  .pass-beach .pass-status-pill.used { background: rgba(0,0,0,0.2); color: rgba(255,255,255,0.6); }
+  /* Pool pass = blue */
+  .pass-pool { background: linear-gradient(135deg, #0C447C 0%, #378ADD 100%); color: #fff; }
+  .pass-pool .pass-status-pill.active { background: rgba(255,255,255,0.2); color: #fff; }
+  /* Guest pass = amber/gold */
+  .pass-guest { background: linear-gradient(135deg, #7A4D00 0%, #EF9F27 100%); color: #fff; }
+  .pass-guest .pass-status-pill.active { background: rgba(255,255,255,0.2); color: #fff; }
+  /* Expired / used overlay */
+  .pass-used-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 16px; z-index: 2;
+  }
+  .pass-used-stamp {
+    border: 3px solid rgba(255,255,255,0.7); border-radius: 8px;
+    padding: 6px 18px; color: rgba(255,255,255,0.9);
+    font-size: 20px; font-weight: 900; letter-spacing: 4px;
+    transform: rotate(-15deg); text-transform: uppercase;
+  }
+
+  /* Pass purchase flow */
+  .pass-store-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 32px;
+  }
+  .pass-store-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .pass-store-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .pass-store-img {
+    height: 100px; display: flex; align-items: center; justify-content: center; font-size: 44px;
+  }
+  .psi-beach { background: linear-gradient(135deg, #0B6E5E, #1EB89D); color: #fff; }
+  .psi-pool  { background: linear-gradient(135deg, #0C447C, #378ADD); color: #fff; }
+  .psi-guest { background: linear-gradient(135deg, #7A4D00, #EF9F27); color: #fff; }
+  .psi-fitness { background: linear-gradient(135deg, #3C3489, #7C6FD4); color: #fff; }
+  .pass-store-body { padding: 14px 16px; }
+  .psb-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .psb-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+  .psb-footer { display: flex; align-items: center; justify-content: space-between; }
+  .psb-price { font-size: 18px; font-weight: 700; color: var(--blue); }
+  .psb-validity { font-size: 11px; color: var(--text-tertiary); }
+
+  /* Pass purchase modal */
+  .pass-buy-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 600;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .pass-buy-modal-overlay.open { display: flex; }
+  .pass-buy-modal {
+    background: var(--bg-primary); border-radius: 20px;
+    width: 100%; max-width: 440px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow: hidden;
+  }
+  .pbm-header {
+    padding: 0;
+  }
+  .pbm-preview { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 52px; }
+  .pbm-body { padding: 20px; }
+  .pbm-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .pbm-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; }
+  .pbm-field { margin-bottom: 14px; }
+  .pbm-field label { font-size: 12px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+  .pbm-qty-row { display: flex; align-items: center; gap: 12px; }
+  .pbm-qty-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-primary); font-family: var(--font);
+  }
+  .pbm-qty-num { font-size: 20px; font-weight: 700; color: var(--text-primary); min-width: 24px; text-align: center; }
+  .pbm-validity-opts { display: flex; gap: 8px; }
+  .pbm-validity-opt {
+    flex: 1; border: 2px solid var(--border); border-radius: var(--radius-md);
+    padding: 8px; text-align: center; cursor: pointer; transition: all 0.15s;
+  }
+  .pbm-validity-opt.selected { border-color: var(--blue); background: var(--blue-light); }
+  .pbm-validity-opt .vdate { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .pbm-validity-opt .vday { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .pbm-order-line { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+  .pbm-order-line span:first-child { color: var(--text-secondary); }
+  .pbm-order-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 6px; color: var(--text-primary); }
+  .pbm-btns { display: flex; gap: 10px; margin-top: 16px; }
+  .pbm-btns button { flex: 1; padding: 12px; border-radius: var(--radius-md); font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .pbm-cancel { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-med); }
+  .pbm-buy { background: var(--blue); color: #fff; border: none; }
+
+  /* Mobile passes tab */
+  .pass-mini-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 8px; overflow: hidden; cursor: pointer;
+  }
+  .pmc-strip { height: 6px; }
+  .pmc-beach { background: linear-gradient(90deg, #0B6E5E, #1EB89D); }
+  .pmc-pool { background: linear-gradient(90deg, #0C447C, #378ADD); }
+  .pmc-guest { background: linear-gradient(90deg, #7A4D00, #EF9F27); }
+  .pmc-body { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+  .pmc-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+  .pmc-info { flex: 1; }
+  .pmc-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .pmc-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .pmc-actions { display: flex; gap: 6px; padding: 0 12px 10px; }
+  .pmc-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 6px; border-radius: 7px; border: 1px solid var(--border-med); background: none; font-family: var(--font); font-size: 11px; font-weight: 500; color: var(--text-secondary); cursor: pointer; }
+  .pmc-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* Admin pass scanner */
+  .scan-ring {
+    width: 200px; height: 200px; border-radius: 24px;
+    border: 3px solid var(--blue-border); margin: 0 auto 20px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+    background: var(--bg-secondary);
+  }
+  .scan-ring::before, .scan-ring::after {
+    content: ''; position: absolute;
+    width: 24px; height: 24px;
+    border: 3px solid var(--blue);
+  }
+  .scan-ring::before { top: 8px; left: 8px; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+  .scan-ring::after  { bottom: 8px; right: 8px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+  .scan-result {
+    border-radius: var(--radius-lg); padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px; margin-top: 16px;
+  }
+  .scan-result.valid { background: var(--green-bg); border: 1px solid #A3D9B4; }
+  .scan-result.used { background: var(--red-bg); border: 1px solid #F5B8B8; }
+  .scan-result.expired { background: var(--amber-bg); border: 1px solid #F0C97A; }
+  .scan-result-icon { font-size: 28px; flex-shrink: 0; }
+  .scan-result.valid .scan-result-icon { color: var(--green); }
+  .scan-result.used .scan-result-icon { color: var(--red); }
+  .scan-result.expired .scan-result-icon { color: var(--amber); }
+  .scan-result-title { font-size: 15px; font-weight: 700; }
+  .scan-result.valid .scan-result-title { color: var(--green); }
+  .scan-result.used .scan-result-title { color: var(--red); }
+  .scan-result.expired .scan-result-title { color: var(--amber); }
+  .scan-result-detail { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* Admin pass setup table */
+  .pass-type-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .pass-type-row:last-child { border-bottom: none; }
+  .pass-type-swatch { width: 12px; height: 40px; border-radius: 4px; flex-shrink: 0; }
 
   /* ── ATTENDANCE REPORT STYLES ── */
   .attend-report-wrap {
@@ -2561,6 +2767,7 @@
               <button class="pill">Arts</button>
               <button class="pill">Fitness</button>
               <button class="pill">Seniors</button>
+              <button class="pill">Passes</button>
             </div>
             <!-- Eligibility toggle -->
             <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">
@@ -2654,6 +2861,32 @@
                 </div>
               </div>
               <span class="badge badge-open">Open</span>
+            </div>
+
+            <div class="pub-section-label" style="margin-top:14px">Day passes &amp; tickets</div>
+            <div class="activity-card" onclick="openMobPassBuy('beach')">
+              <div class="activity-icon" style="background:linear-gradient(135deg,#0B6E5E,#1EB89D);color:#fff"><i class="ti ti-beach"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Riverside Beach Day Pass</div>
+                <div class="activity-meta">Single entry · Valid day of purchase · $8</div>
+              </div>
+              <span class="badge badge-open">Buy</span>
+            </div>
+            <div class="activity-card" onclick="openMobPassBuy('pool')">
+              <div class="activity-icon" style="background:linear-gradient(135deg,#0C447C,#378ADD);color:#fff"><i class="ti ti-swimming"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Community Pool Day Pass</div>
+                <div class="activity-meta">Single-day access · All ages · $6</div>
+              </div>
+              <span class="badge badge-open">Buy</span>
+            </div>
+            <div class="activity-card" onclick="openMobPassBuy('guest')">
+              <div class="activity-icon" style="background:linear-gradient(135deg,#7A4D00,#EF9F27);color:#fff"><i class="ti ti-user-plus"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Facility Guest Pass</div>
+                <div class="activity-meta">Bring a guest · Member + 1 · $5</div>
+              </div>
+              <span class="badge badge-open">Buy</span>
             </div>
           </div>
 
@@ -2875,6 +3108,7 @@
             <!-- Account tabs -->
             <div class="txn-tabs">
               <button class="txn-tab active" onclick="mobAcctTab(this,'mob-registrations')">Registered</button>
+              <button class="txn-tab" onclick="mobAcctTab(this,'mob-passes')">Passes</button>
               <button class="txn-tab" onclick="mobAcctTab(this,'mob-transactions')">Transactions</button>
               <button class="txn-tab" onclick="mobAcctTab(this,'mob-household')">Household</button>
             </div>
@@ -3093,6 +3327,67 @@
                   <button class="attend-pdf-btn" onclick="attendPdfToast()"><i class="ti ti-download"></i>Download PDF for insurance</button>
                   <div class="attend-insurance-note">This report is suitable for health insurance benefit reimbursement claims. It includes program name, member name, and verified check-in records.</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- PASSES TAB (mobile) -->
+            <div id="mob-passes" style="display:none">
+              <div class="pub-section-label">Active passes</div>
+
+              <!-- Beach Day Pass - active -->
+              <div class="pass-mini-card" onclick="openPassDetail('beach1')">
+                <div class="pmc-strip pmc-beach"></div>
+                <div class="pmc-body">
+                  <div class="pmc-icon" style="background:linear-gradient(135deg,#0B6E5E,#1EB89D);color:#fff"><i class="ti ti-beach"></i></div>
+                  <div class="pmc-info">
+                    <div class="pmc-name">Riverside Beach Day Pass</div>
+                    <div class="pmc-meta">Valid: Jun 22, 2026 · Single use · Untapped</div>
+                  </div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div class="pmc-actions">
+                  <button class="pmc-btn primary" onclick="event.stopPropagation();openPassDetail('beach1')"><i class="ti ti-qrcode"></i>Show pass</button>
+                  <button class="pmc-btn" onclick="event.stopPropagation();walletToast('Apple Wallet')"><i class="ti ti-brand-apple"></i>Apple</button>
+                  <button class="pmc-btn" onclick="event.stopPropagation();walletToast('Google Wallet')"><i class="ti ti-brand-google"></i>Google</button>
+                </div>
+              </div>
+
+              <!-- Pool Pass - active -->
+              <div class="pass-mini-card" onclick="openPassDetail('pool1')">
+                <div class="pmc-strip pmc-pool"></div>
+                <div class="pmc-body">
+                  <div class="pmc-icon" style="background:linear-gradient(135deg,#0C447C,#378ADD);color:#fff"><i class="ti ti-swimming"></i></div>
+                  <div class="pmc-info">
+                    <div class="pmc-name">Community Pool Day Pass</div>
+                    <div class="pmc-meta">Valid: Jun 22, 2026 · 3 uses remaining</div>
+                  </div>
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <div class="pmc-actions">
+                  <button class="pmc-btn primary" onclick="event.stopPropagation();openPassDetail('pool1')"><i class="ti ti-qrcode"></i>Show pass</button>
+                  <button class="pmc-btn" onclick="event.stopPropagation();walletToast('Apple Wallet')"><i class="ti ti-brand-apple"></i>Apple</button>
+                  <button class="pmc-btn" onclick="event.stopPropagation();walletToast('Google Wallet')"><i class="ti ti-brand-google"></i>Google</button>
+                </div>
+              </div>
+
+              <div class="pub-section-label" style="margin-top:10px">Used / expired</div>
+              <!-- Beach pass - used -->
+              <div class="pass-mini-card" style="opacity:0.65">
+                <div class="pmc-strip pmc-beach"></div>
+                <div class="pmc-body">
+                  <div class="pmc-icon" style="background:var(--bg-tertiary);color:var(--text-tertiary)"><i class="ti ti-beach"></i></div>
+                  <div class="pmc-info">
+                    <div class="pmc-name">Riverside Beach Day Pass</div>
+                    <div class="pmc-meta">Used: Jun 15, 2026 · Scanned at 10:42am</div>
+                  </div>
+                  <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Used</span>
+                </div>
+              </div>
+
+              <div style="margin-top:12px">
+                <button class="hero-card-btn" style="width:100%;text-align:center" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[1],'programs')">
+                  <i class="ti ti-plus" style="font-size:15px;vertical-align:-2px"></i> Buy more passes
+                </button>
               </div>
             </div>
 
@@ -3591,6 +3886,43 @@
               <span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span>
               <span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Passes section in programs -->
+      <div class="web-section-header" style="margin-top:8px"><h2>Day passes &amp; tickets</h2></div>
+      <div class="pass-store-grid">
+        <div class="pass-store-card" onclick="openWebPassBuy('beach')">
+          <div class="pass-store-img psi-beach"><i class="ti ti-beach"></i></div>
+          <div class="pass-store-body">
+            <div class="psb-name">Riverside Beach Day Pass</div>
+            <div class="psb-desc">Single-day access to Riverside Beach. Valid for one entry on the date of purchase. All ages welcome.</div>
+            <div class="psb-footer"><div class="psb-price">$8</div><span class="psb-validity">Day of purchase</span></div>
+          </div>
+        </div>
+        <div class="pass-store-card" onclick="openWebPassBuy('pool')">
+          <div class="pass-store-img psi-pool"><i class="ti ti-swimming"></i></div>
+          <div class="pass-store-body">
+            <div class="psb-name">Community Pool Day Pass</div>
+            <div class="psb-desc">Full-day access to the Community Center Pool, including lap lanes and open swim. All ages.</div>
+            <div class="psb-footer"><div class="psb-price">$6</div><span class="psb-validity">Day of purchase</span></div>
+          </div>
+        </div>
+        <div class="pass-store-card" onclick="openWebPassBuy('guest')">
+          <div class="pass-store-img psi-guest"><i class="ti ti-user-plus"></i></div>
+          <div class="pass-store-body">
+            <div class="psb-name">Facility Guest Pass</div>
+            <div class="psb-desc">Bring a non-member guest to any Springfield Recreation facility. Valid member required. Single use.</div>
+            <div class="psb-footer"><div class="psb-price">$5</div><span class="psb-validity">Member + 1 guest</span></div>
+          </div>
+        </div>
+        <div class="pass-store-card" onclick="openWebPassBuy('fitness')">
+          <div class="pass-store-img psi-fitness"><i class="ti ti-barbell"></i></div>
+          <div class="pass-store-body">
+            <div class="psb-name">10-Visit Fitness Punch Card</div>
+            <div class="psb-desc">Pre-purchase 10 gym visits at a discounted rate. Use any time within 6 months of purchase. Adults 18+.</div>
+            <div class="psb-footer"><div class="psb-price">$45</div><span class="psb-validity">10 visits · 6 months</span></div>
           </div>
         </div>
       </div>
@@ -4164,6 +4496,7 @@
           <!-- Account tabs -->
           <div class="web-acct-tabs">
             <button class="web-acct-tab active" onclick="webAcctTab(this,'wacct-regs')">Registrations</button>
+            <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-passes')">My Passes</button>
             <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-txns')">Transactions</button>
             <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-settings')">Settings</button>
           </div>
@@ -4406,6 +4739,96 @@
             </div>
           </div>
 
+          <!-- MY PASSES PANE -->
+          <div id="wacct-passes" class="web-acct-pane">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <div style="font-size:15px;font-weight:600;color:var(--text-primary)">My passes &amp; tickets</div>
+              <button class="btn-primary" style="font-size:13px" onclick="openWebPassBuy('beach')"><i class="ti ti-plus"></i>Buy a pass</button>
+            </div>
+
+            <!-- Active passes -->
+            <div class="web-account-card" style="margin-bottom:20px">
+              <div class="card-header"><h3 style="font-size:14px;font-weight:600">Active passes</h3><button class="card-action" onclick="walletToast('all active passes')"><i class="ti ti-download" style="font-size:13px;vertical-align:-1px"></i> Download all to wallet</button></div>
+
+              <!-- Beach pass -->
+              <div style="padding:20px;border-bottom:1px solid var(--border)">
+                <div class="pass-card pass-beach" style="max-width:480px">
+                  <div class="pass-card-header">
+                    <div>
+                      <div class="pass-org">Springfield Recreation</div>
+                      <div class="pass-name">Riverside Beach Day Pass</div>
+                      <div class="pass-sub">Riverside Beach · All areas</div>
+                    </div>
+                    <span class="pass-status-pill active">ACTIVE</span>
+                  </div>
+                  <div class="pass-divider"></div>
+                  <div class="pass-card-body">
+                    <div class="pass-qr-box" id="web-beach-qr"></div>
+                    <div class="pass-meta">
+                      <div class="pass-detail-grid">
+                        <div class="pass-meta-row"><div class="pmr-label">Valid date</div><div class="pmr-val">Jun 22, 2026</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Pass holder</div><div class="pmr-val">Sarah Johnson</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Usage</div><div class="pmr-val">Single use</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Status</div><div class="pmr-val" style="color:#4ADE80">Untapped ✓</div></div>
+                      </div>
+                      <div class="pass-id">PASS · SR-BEACH-20260622-4821</div>
+                    </div>
+                  </div>
+                  <div class="pass-wallet-row">
+                    <button class="pass-wallet-btn" onclick="walletToast('Apple Wallet')"><i class="ti ti-brand-apple"></i>Add to Apple Wallet</button>
+                    <button class="pass-wallet-btn" onclick="walletToast('Google Wallet')"><i class="ti ti-brand-google"></i>Google Wallet</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pool multi-use pass -->
+              <div style="padding:20px">
+                <div class="pass-card pass-pool" style="max-width:480px">
+                  <div class="pass-card-header">
+                    <div>
+                      <div class="pass-org">Springfield Recreation</div>
+                      <div class="pass-name">Community Pool Day Pass</div>
+                      <div class="pass-sub">Community Center Pool · <strong style="color:#4ADE80">3 uses remaining</strong></div>
+                    </div>
+                    <span class="pass-status-pill active">ACTIVE</span>
+                  </div>
+                  <div class="pass-divider"></div>
+                  <div class="pass-card-body">
+                    <div class="pass-qr-box" id="web-pool-qr"></div>
+                    <div class="pass-meta">
+                      <div class="pass-detail-grid">
+                        <div class="pass-meta-row"><div class="pmr-label">Purchased</div><div class="pmr-val">Jun 18, 2026</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Pass holder</div><div class="pmr-val">Johnson Family</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Uses remaining</div><div class="pmr-val" style="color:#4ADE80">3 of 5</div></div>
+                        <div class="pass-meta-row"><div class="pmr-label">Expires</div><div class="pmr-val">Jul 18, 2026</div></div>
+                      </div>
+                      <div class="pass-id">PASS · SR-POOL-20260618-7302</div>
+                    </div>
+                  </div>
+                  <div class="pass-wallet-row">
+                    <button class="pass-wallet-btn" onclick="walletToast('Apple Wallet')"><i class="ti ti-brand-apple"></i>Add to Apple Wallet</button>
+                    <button class="pass-wallet-btn" onclick="walletToast('Google Wallet')"><i class="ti ti-brand-google"></i>Google Wallet</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Past passes -->
+            <div class="web-account-card">
+              <div class="card-header"><h3 style="font-size:14px;font-weight:600">Used &amp; expired</h3></div>
+              <div class="web-txn-row">
+                <div class="web-txn-icon" style="background:linear-gradient(135deg,#0B6E5E,#1EB89D);color:#fff;opacity:0.5"><i class="ti ti-beach"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name" style="color:var(--text-secondary)">Riverside Beach Day Pass</div><div class="web-txn-meta">Used Jun 15, 2026 · Scanned at gate 10:42am · Riverside Beach</div></div>
+                <div class="web-txn-right"><span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Used</span><div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">$8.00</div></div>
+              </div>
+              <div class="web-txn-row">
+                <div class="web-txn-icon" style="background:linear-gradient(135deg,#0C447C,#378ADD);color:#fff;opacity:0.5"><i class="ti ti-swimming"></i></div>
+                <div class="web-txn-info"><div class="web-txn-name" style="color:var(--text-secondary)">Community Pool Day Pass</div><div class="web-txn-meta">Used Jun 1, 2026 · Fully redeemed (5 of 5 uses)</div></div>
+                <div class="web-txn-right"><span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Used</span><div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">$24.00</div></div>
+              </div>
+            </div>
+          </div>
+
           <!-- TRANSACTIONS PANE -->
           <div id="wacct-txns" class="web-acct-pane">
             <div class="web-account-card">
@@ -4556,6 +4979,8 @@
       <div class="sidebar-section-label">Programs</div>
       <button class="sidebar-item" onclick="adminNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
       <button class="sidebar-item" onclick="adminNav(this,'formbuilder')"><i class="ti ti-forms"></i>Form builder</button>
+      <button class="sidebar-item" onclick="adminNav(this,'passes')"><i class="ti ti-ticket"></i>Passes &amp; tickets</button>
+      <button class="sidebar-item" onclick="adminNav(this,'scanner')"><i class="ti ti-scan"></i>Pass scanner</button>
       <button class="sidebar-item" onclick="adminNav(this,'scheduler')"><i class="ti ti-calendar"></i>Facility scheduler</button>
       <div class="sidebar-section-label">Members</div>
       <button class="sidebar-item" onclick="adminNav(this,'members')"><i class="ti ti-users"></i>Members</button>
@@ -4617,6 +5042,143 @@
               <div class="prog-row"><div class="prog-dot" style="background:#F59E0B"></div><div class="prog-info"><div class="prog-name-cell">Basketball League</div><div class="prog-meta-cell">Wed evenings · 3 left</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:85%;background:#F59E0B"></div></div><div class="cap-text">17/20</div></div></div>
               <div class="prog-row"><div class="prog-dot" style="background:#4CAF50"></div><div class="prog-info"><div class="prog-name-cell">Adult Yoga</div><div class="prog-meta-cell">Saturday · 8am</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:40%;background:#4CAF50"></div></div><div class="cap-text">8/20</div></div></div>
               <div class="prog-row"><div class="prog-dot" style="background:#4CAF50"></div><div class="prog-info"><div class="prog-name-cell">Senior Fitness</div><div class="prog-meta-cell">MWF · 10am</div></div><div class="cap-wrap"><div class="cap-bar"><div class="cap-fill" style="width:65%;background:#4CAF50"></div></div><div class="cap-text">13/20</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASSES & TICKETS ADMIN -->
+      <div id="admin-passes" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Passes &amp; tickets</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export sales</button>
+            <button class="btn-primary" onclick="adminNav(document.querySelector('.sidebar-item[onclick*=scanner]'),'scanner')"><i class="ti ti-scan"></i>Open scanner</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>New pass type</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+            <div class="kpi-card"><div class="kpi-label">Passes sold (June)</div><div class="kpi-value">184</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+22% vs May</div></div>
+            <div class="kpi-card"><div class="kpi-label">Pass revenue (June)</div><div class="kpi-value">$1,296</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>On track</div></div>
+            <div class="kpi-card"><div class="kpi-label">Passes scanned today</div><div class="kpi-value">23</div><div class="kpi-delta up"><i class="ti ti-scan" style="font-size:13px"></i>Last at 11:38am</div></div>
+            <div class="kpi-card"><div class="kpi-label">Active passes</div><div class="kpi-value">61</div><div class="kpi-delta up"><i class="ti ti-ticket" style="font-size:13px"></i>Across all types</div></div>
+          </div>
+
+          <!-- Pass types table -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Pass types</h3><button class="card-action">+ Add new</button></div>
+            <!-- Beach -->
+            <div class="pass-type-row">
+              <div class="pass-type-swatch" style="background:linear-gradient(180deg,#0B6E5E,#1EB89D)"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Riverside Beach Day Pass</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Single entry · Day of purchase · Riverside Beach only</div>
+              </div>
+              <div style="text-align:right;min-width:80px"><div style="font-size:14px;font-weight:700;color:var(--blue)">$8.00</div><div style="font-size:11px;color:var(--text-secondary)">72 sold</div></div>
+              <div style="display:flex;gap:6px;align-items:center;margin-left:12px">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px;padding:5px 10px"><i class="ti ti-edit"></i></button>
+              </div>
+            </div>
+            <!-- Pool -->
+            <div class="pass-type-row">
+              <div class="pass-type-swatch" style="background:linear-gradient(180deg,#0C447C,#378ADD)"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Community Pool Day Pass</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">5-use pass · Expires 30 days from purchase · All ages</div>
+              </div>
+              <div style="text-align:right;min-width:80px"><div style="font-size:14px;font-weight:700;color:var(--blue)">$24.00</div><div style="font-size:11px;color:var(--text-secondary)">58 sold</div></div>
+              <div style="display:flex;gap:6px;align-items:center;margin-left:12px">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px;padding:5px 10px"><i class="ti ti-edit"></i></button>
+              </div>
+            </div>
+            <!-- Guest -->
+            <div class="pass-type-row">
+              <div class="pass-type-swatch" style="background:linear-gradient(180deg,#7A4D00,#EF9F27)"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Facility Guest Pass</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Single use · Requires valid membership · Any facility</div>
+              </div>
+              <div style="text-align:right;min-width:80px"><div style="font-size:14px;font-weight:700;color:var(--blue)">$5.00</div><div style="font-size:11px;color:var(--text-secondary)">31 sold</div></div>
+              <div style="display:flex;gap:6px;align-items:center;margin-left:12px">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px;padding:5px 10px"><i class="ti ti-edit"></i></button>
+              </div>
+            </div>
+            <!-- Fitness -->
+            <div class="pass-type-row">
+              <div class="pass-type-swatch" style="background:linear-gradient(180deg,#3C3489,#7C6FD4)"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary)">10-Visit Fitness Punch Card</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">10 uses · Expires 6 months from purchase · Adults 18+</div>
+              </div>
+              <div style="text-align:right;min-width:80px"><div style="font-size:14px;font-weight:700;color:var(--blue)">$45.00</div><div style="font-size:11px;color:var(--text-secondary)">23 sold</div></div>
+              <div style="display:flex;gap:6px;align-items:center;margin-left:12px">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px;padding:5px 10px"><i class="ti ti-edit"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent pass sales -->
+          <div class="card">
+            <div class="card-header"><h3>Recent pass sales</h3><button class="card-action">View all</button></div>
+            <div class="reg-row"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="reg-info"><div class="reg-name">Sarah Johnson</div><div class="reg-detail">Riverside Beach Day Pass · Jun 22 · Apple Pay</div></div><span class="reg-amount">$8.00</span></div>
+            <div class="reg-row"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="reg-info"><div class="reg-name">Marcus Rivera</div><div class="reg-detail">10-Visit Fitness Punch Card · Jun 22 · Visa ···7741</div></div><span class="reg-amount">$45.00</span></div>
+            <div class="reg-row"><div class="avatar av-amber" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">BC</div><div class="reg-info"><div class="reg-name">Brian Chen</div><div class="reg-detail">Community Pool Day Pass (5-visit) · Jun 21 · Google Pay</div></div><span class="reg-amount">$24.00</span></div>
+            <div class="reg-row"><div class="avatar av-purple" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">TP</div><div class="reg-info"><div class="reg-name">Tanya Patel</div><div class="reg-detail">Facility Guest Pass · Jun 21 · Visa ···9302</div></div><span class="reg-amount">$5.00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASS SCANNER -->
+      <div id="admin-scanner" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Pass scanner</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-filter"></i>Filter: All facilities</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="two-col" style="max-width:900px">
+            <!-- Scanner panel -->
+            <div class="card">
+              <div class="card-header"><h3>Scan a pass</h3></div>
+              <div style="padding:24px;text-align:center">
+                <div class="scan-ring">
+                  <i class="ti ti-qrcode" style="font-size:56px;color:var(--blue-border)"></i>
+                </div>
+                <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px">Point scanner at QR code</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px">Or search by pass ID or member name</div>
+                <input class="search-bar" type="text" placeholder="Search pass ID or member name..." style="max-width:300px;margin:0 auto;display:block">
+                <div style="margin-top:16px;display:flex;gap:10px;justify-content:center">
+                  <button class="btn-primary" onclick="simulateScan('valid')"><i class="ti ti-check"></i>Simulate — Valid</button>
+                  <button class="btn-secondary" onclick="simulateScan('used')">Simulate — Used</button>
+                  <button class="btn-secondary" onclick="simulateScan('expired')">Simulate — Expired</button>
+                </div>
+
+                <div id="scan-result-area" style="margin-top:16px;display:none">
+                  <div class="scan-result" id="scan-result-card">
+                    <i class="ti scan-result-icon" id="scan-result-icon"></i>
+                    <div>
+                      <div class="scan-result-title" id="scan-result-title"></div>
+                      <div class="scan-result-detail" id="scan-result-detail"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Today's scan log -->
+            <div class="card">
+              <div class="card-header"><h3>Today's scan log · 23</h3><button class="card-action">Export</button></div>
+              <div class="checkin-row"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="ci-info"><div class="ci-name">Sarah Johnson</div><div class="ci-loc"><span style="background:linear-gradient(90deg,#0B6E5E,#1EB89D);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">BEACH</span> Riverside Beach · Gate A</div></div><div><span class="ci-time">11:38am</span><div style="font-size:10px;color:var(--green);font-weight:600">✓ Valid</div></div></div>
+              <div class="checkin-row"><div class="avatar av-green" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="ci-info"><div class="ci-name">Marcus Rivera</div><div class="ci-loc"><span style="background:linear-gradient(90deg,#3C3489,#7C6FD4);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">FITNESS</span> Maple Street Gym · Entry</div></div><div><span class="ci-time">10:22am</span><div style="font-size:10px;color:var(--green);font-weight:600">✓ Valid (8 left)</div></div></div>
+              <div class="checkin-row"><div class="avatar av-amber" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">KL</div><div class="ci-info"><div class="ci-name">Karen Liu</div><div class="ci-loc"><span style="background:linear-gradient(90deg,#0C447C,#378ADD);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">POOL</span> Community Center Pool · Entry</div></div><div><span class="ci-time">9:55am</span><div style="font-size:10px;color:var(--green);font-weight:600">✓ Valid (4 left)</div></div></div>
+              <div class="checkin-row"><div class="avatar av-purple" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">DP</div><div class="ci-info"><div class="ci-name">David Park</div><div class="ci-loc"><span style="background:linear-gradient(90deg,#0B6E5E,#1EB89D);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">BEACH</span> Riverside Beach · Gate B</div></div><div><span class="ci-time">9:41am</span><div style="font-size:10px;color:var(--red);font-weight:600">✗ Already used</div></div></div>
+              <div class="checkin-row"><div class="avatar av-blue" style="width:34px;height:34px;font-size:11px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">AL</div><div class="ci-info"><div class="ci-name">Ana Lopez</div><div class="ci-loc"><span style="background:linear-gradient(90deg,#0C447C,#378ADD);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">POOL</span> Community Center Pool · Entry</div></div><div><span class="ci-time">9:18am</span><div style="font-size:10px;color:var(--green);font-weight:600">✓ Valid (2 left)</div></div></div>
             </div>
           </div>
         </div>
@@ -5938,6 +6500,153 @@
       });
     }
   }
+
+  /* ── PASSES & TICKETS ── */
+  var passConfig = {
+    beach:   { name:'Riverside Beach Day Pass',    desc:'Single-day access to Riverside Beach. Valid for one entry on the selected date. All ages welcome.', price:8.00,  icon:'ti-beach',    gradFrom:'#0B6E5E', gradTo:'#1EB89D', cssClass:'pass-beach', label:'BEACH' },
+    pool:    { name:'Community Pool Day Pass',     desc:'5-use pass valid for 30 days. Covers open swim and lap lanes at the Community Center Pool.',        price:24.00, icon:'ti-swimming',  gradFrom:'#0C447C', gradTo:'#378ADD', cssClass:'pass-pool',  label:'POOL'  },
+    guest:   { name:'Facility Guest Pass',         desc:'Bring one non-member guest to any Springfield Recreation facility. A valid membership is required.', price:5.00,  icon:'ti-user-plus', gradFrom:'#7A4D00', gradTo:'#EF9F27', cssClass:'pass-guest', label:'GUEST' },
+    fitness: { name:'10-Visit Fitness Punch Card', desc:'Pre-purchase 10 gym visits at a discounted rate. Valid at any fitness facility for 6 months.',       price:45.00, icon:'ti-barbell',   gradFrom:'#3C3489', gradTo:'#7C6FD4', cssClass:'pass-pool',  label:'FITNESS' }
+  };
+  var currentPassType = 'beach';
+  var passQty = 1;
+
+  function openWebPassBuy(type) { openMobPassBuy(type); }
+  function openMobPassBuy(type) {
+    currentPassType = type;
+    passQty = 1;
+    var cfg = passConfig[type];
+    var preview = document.getElementById('pbm-preview');
+    if (preview) preview.innerHTML = '<div style="height:120px;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,'+cfg.gradFrom+','+cfg.gradTo+');color:#fff"><i class="ti '+cfg.icon+'"></i></div>';
+    var setEl = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+    setEl('pbm-title', cfg.name);
+    setEl('pbm-desc', cfg.desc);
+    setEl('pbm-qty', '1');
+    setEl('pbm-qty-display', '1');
+    setEl('pbm-subtotal', '$'+cfg.price.toFixed(2));
+    setEl('pbm-total', '$'+(cfg.price+0.25).toFixed(2));
+    setEl('pbm-btn-total', '$'+(cfg.price+0.25).toFixed(2));
+    var modal = document.getElementById('pass-buy-modal');
+    if (modal) modal.classList.add('open');
+  }
+
+  function changePassQty(delta) {
+    passQty = Math.max(1, Math.min(10, passQty + delta));
+    var cfg = passConfig[currentPassType];
+    var sub = cfg.price * passQty;
+    var tot = sub + 0.25;
+    var setEl = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+    setEl('pbm-qty', passQty);
+    setEl('pbm-qty-display', passQty);
+    setEl('pbm-subtotal', '$'+sub.toFixed(2));
+    setEl('pbm-total', '$'+tot.toFixed(2));
+    setEl('pbm-btn-total', '$'+tot.toFixed(2));
+  }
+
+  function selectPassDate(opt) {
+    opt.closest('.pbm-validity-opts').querySelectorAll('.pbm-validity-opt').forEach(function(o){o.classList.remove('selected');});
+    opt.classList.add('selected');
+  }
+
+  function closePassBuyModal() {
+    var m = document.getElementById('pass-buy-modal'); if(m) m.classList.remove('open');
+  }
+
+  function completePassPurchase() {
+    closePassBuyModal();
+    var cfg = passConfig[currentPassType];
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ '+passQty+' × '+cfg.name+' purchased! Added to your passes.';
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display='none'; }, 3500);
+    }
+  }
+
+  function openPassDetail(passId) {
+    var passData = {
+      beach1: { type:'beach', name:'Riverside Beach Day Pass', holder:'Sarah Johnson', date:'Jun 22, 2026', usage:'Single use', status:'ACTIVE', id:'SR-BEACH-20260622-4821' },
+      pool1:  { type:'pool',  name:'Community Pool Day Pass',  holder:'Johnson Family', date:'Expires Jul 18, 2026', usage:'3 of 5 uses remaining', status:'ACTIVE', id:'SR-POOL-20260618-7302' }
+    };
+    var p = passData[passId]; if (!p) return;
+    var cfg = passConfig[p.type];
+    var modalTitle = document.getElementById('pass-detail-title');
+    var body = document.getElementById('pass-detail-body');
+    if (modalTitle) modalTitle.textContent = p.name;
+    if (body) body.innerHTML = [
+      '<div class="pass-card '+cfg.cssClass+'" style="margin:0">',
+        '<div class="pass-card-header">',
+          '<div><div class="pass-org">Springfield Recreation</div><div class="pass-name">'+p.name+'</div><div class="pass-sub">'+p.holder+'</div></div>',
+          '<span class="pass-status-pill active">'+p.status+'</span>',
+        '</div>',
+        '<div class="pass-divider"></div>',
+        '<div class="pass-card-body">',
+          '<div class="pass-qr-box">'+buildQrSvg(p.id)+'</div>',
+          '<div class="pass-meta">',
+            '<div class="pass-detail-grid">',
+              '<div class="pass-meta-row"><div class="pmr-label">Valid</div><div class="pmr-val">'+p.date+'</div></div>',
+              '<div class="pass-meta-row"><div class="pmr-label">Usage</div><div class="pmr-val">'+p.usage+'</div></div>',
+            '</div>',
+            '<div class="pass-id">'+p.id+'</div>',
+          '</div>',
+        '</div>',
+      '</div>'
+    ].join('');
+    var modal = document.getElementById('pass-detail-modal');
+    if (modal) modal.classList.add('open');
+  }
+
+  function closePassDetail() {
+    var m = document.getElementById('pass-detail-modal'); if(m) m.classList.remove('open');
+  }
+
+  // Build QR codes for web pass cards on account page
+  function buildWebPassQrs() {
+    var beachEl = document.getElementById('web-beach-qr');
+    var poolEl  = document.getElementById('web-pool-qr');
+    if (beachEl && !beachEl.hasChildNodes()) beachEl.innerHTML = buildQrSvg('SR-BEACH-20260622-4821');
+    if (poolEl  && !poolEl.hasChildNodes())  poolEl.innerHTML  = buildQrSvg('SR-POOL-20260618-7302');
+  }
+
+  // Scan simulator for admin scanner
+  var scanResults = {
+    valid:   { cls:'valid',   icon:'ti-check',    title:'Valid — Entry granted',    detail:'Sarah Johnson · Riverside Beach Day Pass · Jun 22, 2026 · First use' },
+    used:    { cls:'used',    icon:'ti-x',        title:'Already used — Entry denied', detail:'David Park · Beach Day Pass · Used today at 9:41am at Gate B' },
+    expired: { cls:'expired', icon:'ti-alert-circle', title:'Pass expired — Entry denied', detail:'Ana Lopez · Pool Day Pass · Expired May 31, 2026' }
+  };
+  function simulateScan(type) {
+    var r = scanResults[type]; if (!r) return;
+    var area = document.getElementById('scan-result-area');
+    var card = document.getElementById('scan-result-card');
+    var icon = document.getElementById('scan-result-icon');
+    var title = document.getElementById('scan-result-title');
+    var detail = document.getElementById('scan-result-detail');
+    if (!area || !card) return;
+    area.style.display = 'block';
+    card.className = 'scan-result ' + r.cls;
+    if (icon) { icon.className = ''; icon.classList.add('ti', r.icon, 'scan-result-icon'); }
+    if (title) title.textContent = r.title;
+    if (detail) detail.textContent = r.detail;
+  }
+
+  // Build QR when passes tab opens
+  var origWebAcctTab = webAcctTab;
+  function webAcctTab(btn, pane) {
+    origWebAcctTab(btn, pane);
+    if (pane === 'wacct-passes') setTimeout(buildWebPassQrs, 50);
+  }
+
+  // Mobile account tab update for passes
+  var origMobAcctTab = mobAcctTab;
+  function mobAcctTab(btn, pane) {
+    document.querySelectorAll('.txn-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    ['mob-registrations','mob-passes','mob-transactions','mob-household'].forEach(function(p){
+      var el=document.getElementById(p); if(el) el.style.display='none';
+    });
+    var target = document.getElementById(pane);
+    if (target) target.style.display = 'block';
+  }
 </script>
 
 <!-- Password gate -->
@@ -5949,6 +6658,70 @@
     <input id="gate-input" class="gate-input" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()">
     <button class="gate-btn" onclick="checkPassword()">View demo</button>
     <div id="gate-error" class="gate-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- PASS PURCHASE MODAL -->
+<div id="pass-buy-modal" class="pass-buy-modal-overlay" onclick="if(event.target===this)closePassBuyModal()">
+  <div class="pass-buy-modal">
+    <div class="pbm-header">
+      <div class="pbm-preview" id="pbm-preview"></div>
+    </div>
+    <div class="pbm-body">
+      <div class="pbm-title" id="pbm-title">Beach Day Pass</div>
+      <div class="pbm-desc" id="pbm-desc">Single-day access to Riverside Beach.</div>
+      <div class="pbm-field">
+        <label>Quantity</label>
+        <div class="pbm-qty-row">
+          <button class="pbm-qty-btn" onclick="changePassQty(-1)">−</button>
+          <div class="pbm-qty-num" id="pbm-qty">1</div>
+          <button class="pbm-qty-btn" onclick="changePassQty(1)">+</button>
+        </div>
+      </div>
+      <div class="pbm-field">
+        <label>Valid date</label>
+        <div class="pbm-validity-opts">
+          <div class="pbm-validity-opt selected" onclick="selectPassDate(this)"><div class="vdate">Today</div><div class="vday">Jun 22</div></div>
+          <div class="pbm-validity-opt" onclick="selectPassDate(this)"><div class="vdate">Tomorrow</div><div class="vday">Jun 23</div></div>
+          <div class="pbm-validity-opt" onclick="selectPassDate(this)"><div class="vdate">Tue</div><div class="vday">Jun 24</div></div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="pbm-order-line"><span>Pass × <span id="pbm-qty-display">1</span></span><span id="pbm-subtotal">$8.00</span></div>
+        <div class="pbm-order-line"><span>Processing fee</span><span>$0.25</span></div>
+        <div class="pbm-order-total"><span>Total</span><span id="pbm-total">$8.25</span></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:8px">Payment method</div>
+        <div style="display:flex;gap:8px">
+          <div class="payment-method-card selected" style="flex:1" onclick="selectPayMethod(this)"><i class="ti ti-credit-card"></i><span>Visa ···4821</span></div>
+          <div class="payment-method-card" style="flex:1" onclick="selectPayMethod(this)"><i class="ti ti-brand-apple"></i><span>Apple Pay</span></div>
+          <div class="payment-method-card" style="flex:1" onclick="selectPayMethod(this)"><i class="ti ti-brand-google"></i><span>Google Pay</span></div>
+        </div>
+      </div>
+      <div class="pbm-btns">
+        <button class="pbm-cancel" onclick="closePassBuyModal()">Cancel</button>
+        <button class="pbm-buy" onclick="completePassPurchase()">Buy — <span id="pbm-btn-total">$8.25</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PASS DETAIL / QR MODAL -->
+<div id="pass-detail-modal" class="id-card-modal-overlay" onclick="if(event.target===this)closePassDetail()">
+  <div class="id-card-modal" style="max-width:360px">
+    <div class="id-card-modal-header">
+      <h3 id="pass-detail-title">Your pass</h3>
+      <button class="id-card-close-btn" onclick="closePassDetail()"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="pass-detail-body" style="padding:12px"></div>
+    <div class="wallet-btns">
+      <button class="wallet-btn apple-wallet-btn" onclick="walletToast('Apple Wallet')"><i class="ti ti-brand-apple"></i> Apple Wallet</button>
+      <button class="wallet-btn google-wallet-btn" onclick="walletToast('Google Wallet')"><i class="ti ti-brand-google"></i> Google Wallet</button>
+    </div>
+    <div style="padding:0 16px 16px">
+      <button class="wallet-all-btn" onclick="walletToast('all passes')"><i class="ti ti-download"></i> Download all my passes</button>
+    </div>
   </div>
 </div>
 
