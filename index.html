@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--- Added beach passes --->
+  <!--- fix design issue --->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Springfield Recreation — Demo</title>
@@ -166,7 +166,7 @@
     display: flex;
     justify-content: center;
     padding: 32px 16px 48px;
-    gap: 32px;
+    gap: 48px;
     align-items: flex-start;
   }
   .device-frame {
@@ -505,13 +505,14 @@
   .info-panel {
     background: var(--bg-primary);
     border-left: 1px solid var(--border);
-    width: 340px;
+    width: 300px;
     flex-shrink: 0;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
     position: sticky;
     top: 80px;
+    margin-left: auto;
   }
   .info-panel-header {
     background: var(--blue-dark);
@@ -1123,7 +1124,7 @@
   /* Pass purchase modal */
   .pass-buy-modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 600;
+    background: rgba(0,0,0,0.5); z-index: 800;
     align-items: center; justify-content: center; padding: 16px;
   }
   .pass-buy-modal-overlay.open { display: flex; }
@@ -1481,7 +1482,7 @@
   /* ── DIGITAL ID CARD STYLES ── */
   .id-card-modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.55); z-index: 600;
+    background: rgba(0,0,0,0.55); z-index: 800;
     align-items: center; justify-content: center;
     padding: 16px;
   }
