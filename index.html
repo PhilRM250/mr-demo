@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070126 added wishlist to public side --->
+  <!--- PR 070126 Added search and calendar reg display to public --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,468 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── CALENDAR VIEW STYLES ── */
+
+  /* View switcher */
+  .cal-view-switcher {
+    display: flex; background: var(--bg-secondary);
+    border-radius: var(--radius-lg); padding: 3px; gap: 0;
+  }
+  .cal-view-btn {
+    flex: 1; padding: 6px 10px; border-radius: var(--radius-md);
+    border: none; background: none; font-family: var(--font);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .cal-view-btn.active {
+    background: var(--bg-primary); color: var(--blue);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Category color dots */
+  .cat-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .cat-dot.aquatics  { background: #185FA5; }
+  .cat-dot.sports    { background: #3B6D11; }
+  .cat-dot.arts      { background: #854F0B; }
+  .cat-dot.fitness   { background: #534AB7; }
+  .cat-dot.seniors   { background: #0F6E56; }
+  .cat-dot.passes    { background: #0B6E5E; }
+  .cat-dot.preview   { background: #5B21B6; }
+
+  /* ── MOBILE CALENDAR ── */
+  .mob-cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px 6px;
+  }
+  .mob-cal-month { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .mob-cal-nav {
+    display: flex; gap: 4px;
+  }
+  .mob-cal-nav button {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer; color: var(--text-secondary);
+  }
+
+  .mob-cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+  }
+  .mob-cal-dow {
+    text-align: center; font-size: 10px; font-weight: 600;
+    color: var(--text-tertiary); padding: 4px 2px;
+    text-transform: uppercase;
+  }
+  .mob-cal-cell {
+    min-height: 44px; padding: 3px 2px;
+    border-top: 1px solid var(--border);
+    cursor: pointer; position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    transition: background 0.1s;
+  }
+  .mob-cal-cell:hover { background: var(--bg-secondary); }
+  .mob-cal-cell.other-month { opacity: 0.35; }
+  .mob-cal-cell.today .mob-cal-daynum {
+    background: var(--blue); color: #fff; border-radius: 50%;
+  }
+  .mob-cal-cell.selected { background: var(--blue-light); }
+  .mob-cal-daynum {
+    font-size: 12px; font-weight: 500; color: var(--text-primary);
+    width: 22px; height: 22px; display: flex; align-items: center;
+    justify-content: center; border-radius: 50%;
+  }
+  .mob-cal-dots {
+    display: flex; gap: 2px; flex-wrap: wrap; justify-content: center;
+    max-width: 30px;
+  }
+
+  /* Day programs panel */
+  .mob-day-panel {
+    background: var(--bg-primary);
+    border-top: 2px solid var(--blue);
+    min-height: 120px;
+  }
+  .mob-day-panel-header {
+    padding: 10px 14px 6px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mob-day-panel-date { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .mob-day-panel-count { font-size: 11px; color: var(--text-secondary); }
+  .mob-day-prog {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; border-top: 1px solid var(--border);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .mob-day-prog:hover { background: var(--bg-secondary); }
+  .mob-day-prog-time {
+    font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    min-width: 52px; text-align: right; flex-shrink: 0;
+  }
+  .mob-day-prog-bar {
+    width: 3px; border-radius: 2px; align-self: stretch; flex-shrink: 0;
+  }
+  .mob-day-prog-info { flex: 1; }
+  .mob-day-prog-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .mob-day-prog-meta { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+  .mob-day-no-progs {
+    padding: 20px 14px; text-align: center;
+    font-size: 12px; color: var(--text-tertiary);
+  }
+
+  /* ── WEB CALENDAR ── */
+  .web-cal-toolbar {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .web-cal-nav-group { display: flex; align-items: center; gap: 8px; }
+  .web-cal-nav-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; color: var(--text-primary);
+  }
+  .web-cal-nav-btn:hover { background: var(--bg-secondary); }
+  .web-cal-today-btn {
+    padding: 6px 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    cursor: pointer; color: var(--text-primary);
+  }
+  .web-cal-period { font-size: 16px; font-weight: 600; color: var(--text-primary); min-width: 180px; }
+  .web-cal-spacer { flex: 1; }
+
+  /* Category legend */
+  .cal-legend {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 16px;
+    padding: 10px 14px; background: var(--bg-primary);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    font-size: 12px;
+  }
+  .cal-legend-item {
+    display: flex; align-items: center; gap: 6px; color: var(--text-secondary);
+    cursor: pointer; font-weight: 500;
+  }
+  .cal-legend-item.active { color: var(--text-primary); }
+  .cal-legend-swatch {
+    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+  }
+
+  /* Month grid (web) */
+  .web-month-grid {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+  }
+  .web-month-dow-row {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .web-month-dow {
+    padding: 10px; text-align: center;
+    font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    border-right: 1px solid var(--border);
+  }
+  .web-month-dow:last-child { border-right: none; }
+  .web-month-weeks { display: flex; flex-direction: column; }
+  .web-month-week { display: grid; grid-template-columns: repeat(7,1fr); }
+  .web-month-cell {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    min-height: 100px; padding: 6px;
+    cursor: pointer; transition: background 0.1s; position: relative;
+    vertical-align: top;
+  }
+  .web-month-cell:last-child { border-right: none; }
+  .web-month-cell:hover { background: var(--bg-secondary); }
+  .web-month-cell.other-month { background: var(--bg-tertiary); }
+  .web-month-cell.other-month .web-month-daynum { color: var(--text-tertiary); }
+  .web-month-cell.today { background: var(--blue-light); }
+  .web-month-cell.selected { background: #EEF6FF; }
+  .web-month-daynum {
+    font-size: 13px; font-weight: 500; color: var(--text-primary);
+    width: 26px; height: 26px; display: flex; align-items: center;
+    justify-content: center; border-radius: 50%; margin-bottom: 4px;
+  }
+  .web-month-cell.today .web-month-daynum {
+    background: var(--blue); color: #fff;
+  }
+  .web-month-event {
+    font-size: 10px; font-weight: 600; padding: 2px 6px;
+    border-radius: 4px; margin-bottom: 2px; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: opacity 0.1s;
+  }
+  .web-month-event:hover { opacity: 0.8; }
+  .web-month-more {
+    font-size: 10px; color: var(--blue); font-weight: 600;
+    cursor: pointer; padding: 1px 2px;
+  }
+  /* Event colors */
+  .ev-aquatics  { background: #DBEAFE; color: #1E40AF; }
+  .ev-sports    { background: #DCFCE7; color: #166534; }
+  .ev-arts      { background: #FEF3C7; color: #92400E; }
+  .ev-fitness   { background: #EDE9FE; color: #4C1D95; }
+  .ev-seniors   { background: #CCFBF1; color: #065F46; }
+  .ev-preview   { background: #F3E8FF; color: #5B21B6; border: 1px dashed #A78BFA; }
+  .ev-passes    { background: #CCFBF1; color: #0F6E56; }
+
+  /* Week view (web) */
+  .web-week-grid {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+  }
+  .web-week-header {
+    display: grid; grid-template-columns: 60px repeat(7,1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .web-week-header-time { padding: 10px; }
+  .web-week-header-day {
+    padding: 10px 6px; text-align: center;
+    border-left: 1px solid var(--border);
+  }
+  .web-week-header-day .wwhd-dow { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; }
+  .web-week-header-day .wwhd-date { font-size: 20px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+  .web-week-header-day.today .wwhd-date { color: var(--blue); }
+  .web-week-body {
+    display: grid; grid-template-columns: 60px repeat(7,1fr);
+    overflow-y: auto; max-height: 480px;
+    position: relative;
+  }
+  .web-week-time-col { display: flex; flex-direction: column; }
+  .web-week-time-slot {
+    height: 60px; padding: 4px 8px;
+    border-top: 1px solid var(--border);
+    font-size: 10px; color: var(--text-tertiary); font-weight: 500;
+  }
+  .web-week-day-col {
+    border-left: 1px solid var(--border);
+    position: relative; min-height: 480px;
+  }
+  .web-week-slot-bg {
+    height: 60px; border-top: 1px solid var(--border);
+  }
+  .web-week-event {
+    position: absolute; left: 3px; right: 3px;
+    border-radius: 6px; padding: 4px 6px;
+    cursor: pointer; transition: opacity 0.15s; z-index: 1;
+    overflow: hidden;
+  }
+  .web-week-event:hover { opacity: 0.85; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .web-week-event-name { font-size: 11px; font-weight: 700; line-height: 1.3; }
+  .web-week-event-meta { font-size: 9px; opacity: 0.8; margin-top: 2px; }
+
+  /* Program detail popover */
+  .cal-prog-detail {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 18px 20px;
+    box-shadow: var(--shadow-md); margin-bottom: 20px;
+    display: none;
+  }
+  .cal-prog-detail.open { display: block; }
+  .cpd-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .cpd-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .cpd-name { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .cpd-meta { font-size: 12px; color: var(--text-secondary); display: flex; gap: 14px; flex-wrap: wrap; }
+  .cpd-meta span { display: flex; align-items: center; gap: 4px; }
+  .cpd-close { margin-left: auto; background: none; border: none; font-size: 18px; color: var(--text-tertiary); cursor: pointer; flex-shrink: 0; }
+  .cpd-body { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+  .cpd-details { display: flex; flex-direction: column; gap: 8px; }
+  .cpd-detail-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+  .cpd-detail-row i { font-size: 15px; color: var(--blue); flex-shrink: 0; }
+  .cpd-detail-row strong { color: var(--text-primary); }
+  .cpd-elig-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .cpd-actions { display: flex; flex-direction: column; gap: 8px; }
+  .cpd-reg-btn { padding: 10px 20px; border-radius: var(--radius-md); background: var(--blue); color: #fff; border: none; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .cpd-wl-btn { padding: 10px 20px; border-radius: var(--radius-md); border: 1.5px solid var(--purple); background: none; color: var(--purple); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+
+  /* ── SEARCH STYLES ── */
+  .mob-search-wrap {
+    position: relative;
+  }
+  .mob-search-input-row {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px; padding: 8px 12px;
+    transition: background 0.15s;
+  }
+  .mob-search-input-row.focused {
+    background: #fff;
+  }
+  .mob-search-input-row.focused i { color: var(--blue); }
+  .mob-search-input-row i { font-size: 16px; color: rgba(255,255,255,0.8); transition: color 0.15s; }
+  .mob-search-field {
+    flex: 1; background: none; border: none; outline: none;
+    font-size: 13px; color: #fff; font-family: var(--font);
+  }
+  .mob-search-field::placeholder { color: rgba(255,255,255,0.75); }
+  .mob-search-field.focused { color: var(--text-primary); }
+  .mob-search-field.focused::placeholder { color: var(--text-tertiary); }
+  .mob-search-clear {
+    background: none; border: none; color: rgba(255,255,255,0.7);
+    font-size: 16px; cursor: pointer; display: none; padding: 0;
+  }
+  .mob-search-clear.visible { display: flex; }
+  .mob-search-clear.focused { color: var(--text-tertiary); }
+
+  /* Mobile search overlay */
+  .mob-search-overlay {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--bg-primary); border-radius: 0 0 14px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 200; max-height: 420px; overflow-y: auto;
+    margin-top: 2px;
+  }
+  .mob-search-overlay.open { display: block; }
+
+  .search-recent {
+    padding: 12px 14px;
+  }
+  .search-recent-label {
+    font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .search-recent-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; font-size: 13px; color: var(--text-primary);
+  }
+  .search-recent-item:last-child { border-bottom: none; }
+  .search-recent-item i { font-size: 15px; color: var(--text-tertiary); }
+
+  .search-results-group { padding: 0; }
+  .search-group-label {
+    font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 10px 14px 4px;
+  }
+  .search-result-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .search-result-item:hover { background: var(--bg-secondary); }
+  .search-result-item:last-child { border-bottom: none; }
+  .sri-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .sri-info { flex: 1; min-width: 0; }
+  .sri-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sri-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .sri-elig { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+  .sri-right { text-align: right; flex-shrink: 0; }
+  .sri-price { font-size: 13px; font-weight: 600; color: var(--blue); }
+  .sri-badge { margin-top: 3px; }
+
+  .search-no-results {
+    padding: 24px 14px; text-align: center;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+  }
+  .search-no-results i { font-size: 28px; color: var(--text-tertiary); display: block; margin-bottom: 8px; }
+
+  .search-elig-filter {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .sef-label { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .sef-sub { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+
+  /* Web search page */
+  .wsearch-bar-wrap {
+    display: flex; gap: 10px; margin-bottom: 20px;
+  }
+  .wsearch-input {
+    flex: 1; border: 2px solid var(--blue); border-radius: 10px;
+    padding: 12px 16px; font-size: 15px; font-family: var(--font);
+    color: var(--text-primary); outline: none; background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(24,95,165,0.1);
+  }
+  .wsearch-btn {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 10px;
+    padding: 12px 22px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wsearch-filters {
+    display: flex; gap: 10px; align-items: center;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .wsearch-filter-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+  .wsearch-elig-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+  .wsearch-elig-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .wsearch-elig-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .wsearch-results-count {
+    font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;
+  }
+  .wsearch-results-count strong { color: var(--text-primary); }
+
+  .wsearch-result-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    margin-bottom: 12px; cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .wsearch-result-card:hover { box-shadow: var(--shadow-md); }
+  .wsearch-result-card.preview-result { border: 1.5px dashed #A78BFA; }
+  .wrc-main {
+    display: flex; align-items: center; gap: 16px; padding: 16px 20px;
+  }
+  .wrc-icon {
+    width: 52px; height: 52px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .wrc-info { flex: 1; }
+  .wrc-name { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .wrc-meta { font-size: 12px; color: var(--text-secondary); display: flex; gap: 14px; flex-wrap: wrap; }
+  .wrc-meta span { display: flex; align-items: center; gap: 4px; }
+  .wrc-right { text-align: right; flex-shrink: 0; }
+  .wrc-price { font-size: 18px; font-weight: 700; color: var(--blue); margin-bottom: 6px; }
+  .wrc-elig-row {
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .wrc-detail {
+    border-top: 1px solid var(--border); padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-secondary);
+  }
+  .wrc-detail-items { display: flex; gap: 20px; flex-wrap: wrap; }
+  .wrc-detail-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+  .wrc-detail-item i { font-size: 14px; color: var(--blue); }
+  .wrc-action {
+    display: flex; gap: 8px; flex-shrink: 0;
+  }
+
+  /* Web search nav */
+  .web-nav-search-btn {
+    padding: 0 12px; height: 50px;
+    display: flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.65); font-size: 13px;
+    border: none; background: none; cursor: pointer;
+    font-family: var(--font); font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .web-nav-search-btn:hover { color: rgba(255,255,255,0.9); }
+
+  /* Search highlight */
+  .search-highlight { background: #FEF08A; border-radius: 2px; padding: 0 1px; }
 
   /* ── WISHLIST STYLES ── */
   .cart-icon-wrap {
@@ -2744,15 +3206,53 @@
               <i class="ti ti-user-circle"></i>
             </div>
           </div>
-          <div class="pub-search">
-            <i class="ti ti-search"></i>
-            Search programs, facilities...
+          <div class="mob-search-wrap" id="mob-search-wrap">
+            <div class="mob-search-input-row" id="mob-search-row">
+              <i class="ti ti-search" id="mob-search-icon"></i>
+              <input
+                class="mob-search-field"
+                id="mob-search-field"
+                type="text"
+                placeholder="Search programs, facilities..."
+                oninput="mobSearchInput(this)"
+                onfocus="mobSearchFocus()"
+                onblur="setTimeout(mobSearchBlur, 150)"
+              >
+              <button class="mob-search-clear" id="mob-search-clear" onclick="clearMobSearch()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="mob-search-overlay" id="mob-search-overlay">
+              <!-- Recent searches (shown when empty) -->
+              <div id="mob-recent-searches" class="search-recent">
+                <div class="search-recent-label">Recent searches</div>
+                <div class="search-recent-item" onclick="mobSearchSetQuery('swim lessons')">
+                  <i class="ti ti-history"></i> swim lessons
+                </div>
+                <div class="search-recent-item" onclick="mobSearchSetQuery('soccer')">
+                  <i class="ti ti-history"></i> soccer
+                </div>
+                <div class="search-recent-item" onclick="mobSearchSetQuery('yoga')">
+                  <i class="ti ti-history"></i> yoga
+                </div>
+              </div>
+              <!-- Results (shown when typing) -->
+              <div id="mob-search-results" style="display:none">
+                <div class="search-elig-filter">
+                  <div>
+                    <div class="sef-label">Family eligible only</div>
+                    <div class="sef-sub">Filter to programs your family qualifies for</div>
+                  </div>
+                  <div id="mob-search-elig-toggle" class="toggle on" onclick="toggleSearchElig()" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+                </div>
+                <div id="mob-search-results-body"></div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="pub-nav">
           <button class="pub-nav-btn active" onclick="pubNav(this,'home')"><i class="ti ti-home"></i>Home</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+          <button class="pub-nav-btn" onclick="pubNav(this,'mobcal');initMobCal()"><i class="ti ti-calendar-month"></i>Calendar</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'famschedule')"><i class="ti ti-calendar-event"></i>Schedule</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'facilities')"><i class="ti ti-building"></i>Facilities</button>
           <button class="pub-nav-btn" onclick="pubNav(this,'mypass')"><i class="ti ti-id-badge"></i>My Pass</button>
@@ -3187,6 +3687,73 @@
               <div class="line-total"><span>Total</span><span>$86.50</span></div>
               <button class="register-btn">Complete registration</button>
               <div class="secure-note"><i class="ti ti-shield-check" style="font-size:13px"></i> Secure payment · <span class="fee-assist-link">Apply for fee assistance</span></div>
+            </div>
+          </div>
+
+          <!-- CALENDAR (mobile) -->
+          <div id="pub-mobcal" class="pub-page">
+
+            <!-- Toolbar -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 8px">
+              <div class="cal-view-switcher" style="flex-shrink:0">
+                <button class="cal-view-btn active" id="mob-view-month" onclick="setMobCalView('month',this)">Month</button>
+                <button class="cal-view-btn" id="mob-view-day" onclick="setMobCalView('day',this)">Day</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div class="toggle on" id="mob-cal-elig-toggle" onclick="toggleMobCalElig()" style="flex-shrink:0"></div>
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:500">My family</span>
+              </div>
+            </div>
+
+            <!-- Month view -->
+            <div id="mob-cal-month-view">
+              <div class="mob-cal-header">
+                <div class="mob-cal-month" id="mob-cal-month-label">June 2026</div>
+                <div class="mob-cal-nav">
+                  <button onclick="mobCalNav(-1)"><i class="ti ti-chevron-left"></i></button>
+                  <button onclick="mobCalNav(1)"><i class="ti ti-chevron-right"></i></button>
+                </div>
+              </div>
+
+              <!-- Day of week headers -->
+              <div class="mob-cal-grid" id="mob-cal-grid">
+                <div class="mob-cal-dow">S</div><div class="mob-cal-dow">M</div>
+                <div class="mob-cal-dow">T</div><div class="mob-cal-dow">W</div>
+                <div class="mob-cal-dow">T</div><div class="mob-cal-dow">F</div>
+                <div class="mob-cal-dow">S</div>
+              </div>
+
+              <!-- Day panels -->
+              <div class="mob-day-panel" id="mob-day-panel">
+                <div class="mob-day-panel-header">
+                  <div class="mob-day-panel-date" id="mob-day-panel-date">Select a day to see programs</div>
+                  <div class="mob-day-panel-count" id="mob-day-panel-count"></div>
+                </div>
+                <div id="mob-day-panel-body">
+                  <div class="mob-day-no-progs">Tap a day on the calendar above</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Day list view -->
+            <div id="mob-cal-day-view" style="display:none">
+              <div class="mob-cal-header">
+                <div class="mob-cal-month" id="mob-cal-day-label">June 22, 2026</div>
+                <div class="mob-cal-nav">
+                  <button onclick="mobDayNav(-1)"><i class="ti ti-chevron-left"></i></button>
+                  <button onclick="mobDayNav(1)"><i class="ti ti-chevron-right"></i></button>
+                </div>
+              </div>
+              <div id="mob-day-view-body"></div>
+            </div>
+
+            <!-- Color legend -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 0;margin-top:4px">
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-secondary)"><span class="cat-dot aquatics"></span>Aquatics</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-secondary)"><span class="cat-dot sports"></span>Sports</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-secondary)"><span class="cat-dot arts"></span>Arts</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-secondary)"><span class="cat-dot fitness"></span>Fitness</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-secondary)"><span class="cat-dot preview"></span>Coming soon</div>
             </div>
           </div>
 
@@ -4001,9 +4568,11 @@
     <div class="web-nav-logo">Springfield <span>Recreation</span></div>
     <button class="web-nav-link active" onclick="webNav(this,'whome')"><i class="ti ti-home"></i>Home</button>
     <button class="web-nav-link" onclick="webNav(this,'wprograms')"><i class="ti ti-run"></i>Programs</button>
+    <button class="web-nav-link" onclick="webNav(this,'wcalendar');initWebCal()"><i class="ti ti-calendar-month"></i>Calendar</button>
     <button class="web-nav-link" onclick="webNav(this,'wfamschedule')"><i class="ti ti-calendar-event"></i>Family Schedule</button>
     <button class="web-nav-link" onclick="webNav(this,'wfacilities')"><i class="ti ti-building"></i>Facilities</button>
     <button class="web-nav-link" onclick="webNav(this,'waccount')"><i class="ti ti-user-circle"></i>My Account</button>
+    <button class="web-nav-link" onclick="openWebSearch('')" style="padding:0 10px"><i class="ti ti-search"></i></button>
     <div class="web-nav-right">
       <div style="position:relative;cursor:pointer;display:inline-flex;align-items:center" onclick="webNav(document.querySelectorAll('.web-nav-link')[4],'waccount');setTimeout(function(){webAcctTab(document.querySelector('.web-acct-tab[onclick*=wacct-wishlist]'),'wacct-wishlist');},50)">
         <i class="ti ti-heart" style="font-size:22px;color:rgba(255,255,255,0.8)"></i>
@@ -4035,8 +4604,8 @@
       </div>
 
       <div class="web-search-bar">
-        <input class="web-search-input" type="text" placeholder="Search programs, activities, or facilities...">
-        <button class="web-search-btn"><i class="ti ti-search"></i>Search</button>
+        <input class="web-search-input" type="text" placeholder="Search programs, activities, or facilities..." id="web-home-search" onkeydown="if(event.key==='Enter')openWebSearch(this.value)">
+        <button class="web-search-btn" onclick="openWebSearch(document.getElementById('web-home-search').value)"><i class="ti ti-search"></i>Search</button>
       </div>
 
       <div class="web-section-header">
@@ -4168,6 +4737,46 @@
       </div></div>
     </div>
 
+    <!-- SEARCH RESULTS PAGE -->
+    <div id="wsearch" class="web-page">
+      <div class="web-section-header" style="margin-bottom:16px">
+        <h2 id="wsearch-heading">Search results</h2>
+        <a onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">Browse all programs →</a>
+      </div>
+
+      <!-- Search bar -->
+      <div class="wsearch-bar-wrap">
+        <input class="wsearch-input" type="text" id="wsearch-input" placeholder="Search programs, activities, facilities..." onkeydown="if(event.key==='Enter')runWebSearch(this.value)" oninput="runWebSearch(this.value)">
+        <button class="wsearch-btn" onclick="runWebSearch(document.getElementById('wsearch-input').value)"><i class="ti ti-search"></i>Search</button>
+      </div>
+
+      <!-- Category filters -->
+      <div class="wsearch-filters">
+        <span class="wsearch-filter-label">Category:</span>
+        <button class="web-filter-pill active" id="wf-all" onclick="setSearchCat(this,'all')">All</button>
+        <button class="web-filter-pill" id="wf-aquatics" onclick="setSearchCat(this,'aquatics')">Aquatics</button>
+        <button class="web-filter-pill" id="wf-sports" onclick="setSearchCat(this,'sports')">Youth Sports</button>
+        <button class="web-filter-pill" id="wf-arts" onclick="setSearchCat(this,'arts')">Arts</button>
+        <button class="web-filter-pill" id="wf-fitness" onclick="setSearchCat(this,'fitness')">Fitness</button>
+        <button class="web-filter-pill" id="wf-seniors" onclick="setSearchCat(this,'seniors')">Seniors</button>
+        <button class="web-filter-pill" id="wf-passes" onclick="setSearchCat(this,'passes')">Passes</button>
+      </div>
+
+      <!-- Eligibility filter -->
+      <div class="wsearch-elig-row">
+        <div>
+          <div class="wsearch-elig-label">Show only programs my family qualifies for</div>
+          <div class="wsearch-elig-sub">Filters results using age, grade, membership, ZIP code, and prerequisite rules</div>
+        </div>
+        <div id="wsearch-elig-toggle" class="toggle on" onclick="toggleWebSearchElig()"><div class="toggle-thumb"></div></div>
+      </div>
+
+      <div class="wsearch-results-count" id="wsearch-count">Showing <strong>9 results</strong></div>
+
+      <!-- Results -->
+      <div id="wsearch-results-body"></div>
+    </div>
+
     <!-- PROGRAMS -->
     <div id="wprograms" class="web-page">
       <div class="web-section-header" style="margin-bottom:16px"><h2>All programs</h2></div>
@@ -4191,8 +4800,8 @@
         <button class="web-filter-pill">Camps</button>
       </div>
       <div class="web-search-bar">
-        <input class="web-search-input" type="text" placeholder="Search programs...">
-        <button class="web-search-btn"><i class="ti ti-search"></i>Search</button>
+        <input class="web-search-input" type="text" placeholder="Search programs..." id="web-prog-search" onkeydown="if(event.key==='Enter')openWebSearch(this.value)">
+        <button class="web-search-btn" onclick="openWebSearch(document.getElementById('web-prog-search').value)"><i class="ti ti-search"></i>Search</button>
       </div>
       <div class="web-program-grid" style="grid-template-columns:repeat(3,1fr)">
         <div class="web-prog-card" onclick="startRegistration('swim')"><div class="web-prog-card-img bg-blue-img"><i class="ti ti-swimming"></i></div><div class="web-prog-card-body"><div class="web-prog-name">Youth Swim Lessons — Level 1</div><div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12</div><div class="web-prog-footer"><div class="web-prog-price">$85</div><span class="badge badge-few">4 left</span></div><div class="web-prog-elig"><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span><span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span></div></div></div>
@@ -4335,6 +4944,92 @@
             <div class="psb-desc">Pre-purchase 10 gym visits at a discounted rate. Use any time within 6 months of purchase. Adults 18+.</div>
             <div class="psb-footer"><div class="psb-price">$45</div><span class="psb-validity">10 visits · 6 months</span></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR (web) -->
+    <div id="wcalendar" class="web-page">
+
+      <!-- Toolbar -->
+      <div class="web-cal-toolbar">
+        <div class="web-cal-nav-group">
+          <button class="web-cal-nav-btn" onclick="webCalNav(-1)"><i class="ti ti-chevron-left"></i></button>
+          <button class="web-cal-today-btn" onclick="webCalToday()">Today</button>
+          <button class="web-cal-nav-btn" onclick="webCalNav(1)"><i class="ti ti-chevron-right"></i></button>
+        </div>
+        <div class="web-cal-period" id="web-cal-period">June 2026</div>
+        <div class="web-cal-spacer"></div>
+        <!-- Eligibility toggle -->
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8)">My family only</span>
+          <div class="wl-mini-toggle on" id="web-cal-elig" onclick="toggleWebCalElig()" style="background:#378ADD"><div class="wl-mini-thumb" style="left:14px"></div></div>
+        </div>
+        <!-- View switcher -->
+        <div class="cal-view-switcher" style="background:rgba(255,255,255,0.15)">
+          <button class="cal-view-btn active" id="web-view-month" onclick="setWebCalView('month',this)" style="color:#fff">Month</button>
+          <button class="cal-view-btn" id="web-view-week" onclick="setWebCalView('week',this)" style="color:rgba(255,255,255,0.65)">Week</button>
+          <button class="cal-view-btn" id="web-view-day" onclick="setWebCalView('day',this)" style="color:rgba(255,255,255,0.65)">Day</button>
+        </div>
+      </div>
+
+      <!-- Program detail popover -->
+      <div class="cal-prog-detail" id="cal-prog-detail">
+        <div class="cpd-header">
+          <div class="cpd-icon" id="cpd-icon"></div>
+          <div>
+            <div class="cpd-name" id="cpd-name"></div>
+            <div class="cpd-meta" id="cpd-meta"></div>
+          </div>
+          <button class="cpd-close" onclick="closeCalDetail()"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="cpd-body">
+          <div class="cpd-details" id="cpd-details"></div>
+          <div class="cpd-actions" id="cpd-actions"></div>
+        </div>
+      </div>
+
+      <!-- Category legend -->
+      <div class="cal-legend" id="cal-legend">
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'all')"><div class="cal-legend-swatch" style="background:#185FA5"></div>Aquatics</div>
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'sports')"><div class="cal-legend-swatch" style="background:#3B6D11"></div>Youth Sports</div>
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'arts')"><div class="cal-legend-swatch" style="background:#854F0B"></div>Arts</div>
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'fitness')"><div class="cal-legend-swatch" style="background:#534AB7"></div>Fitness</div>
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'seniors')"><div class="cal-legend-swatch" style="background:#0F6E56"></div>Seniors</div>
+        <div class="cal-legend-item active" onclick="toggleCalCat(this,'preview')"><div class="cal-legend-swatch" style="background:#5B21B6;border:1px dashed #A78BFA"></div>Coming soon</div>
+      </div>
+
+      <!-- MONTH VIEW -->
+      <div id="web-cal-month-view">
+        <div class="web-month-grid">
+          <div class="web-month-dow-row">
+            <div class="web-month-dow">Sun</div><div class="web-month-dow">Mon</div>
+            <div class="web-month-dow">Tue</div><div class="web-month-dow">Wed</div>
+            <div class="web-month-dow">Thu</div><div class="web-month-dow">Fri</div>
+            <div class="web-month-dow">Sat</div>
+          </div>
+          <div class="web-month-weeks" id="web-month-weeks"></div>
+        </div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div id="web-cal-week-view" style="display:none">
+        <div class="web-week-grid">
+          <div class="web-week-header" id="web-week-header">
+            <div class="web-week-header-time"></div>
+          </div>
+          <div class="web-week-body" id="web-week-body"></div>
+        </div>
+      </div>
+
+      <!-- DAY VIEW -->
+      <div id="web-cal-day-view" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <h3 id="web-day-view-title" style="font-size:15px;font-weight:600">Programs on June 22, 2026</h3>
+            <span id="web-day-count" style="font-size:12px;color:var(--text-secondary)"></span>
+          </div>
+          <div id="web-day-view-body"></div>
         </div>
       </div>
     </div>
@@ -7109,6 +7804,750 @@
         rl.appendChild(lbl);
       });
     }
+  }
+
+  /* ── CALENDAR ── */
+
+  // Program schedule data — days: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  // startH = start hour (24h), durH = duration in hours
+  var calProgs = [
+    { id:'swim1',    name:'Swim Lessons L1',    cat:'aquatics', icon:'ti-swimming',           iconClass:'bg-blue-img',  evCls:'ev-aquatics', days:[1,3,5], startH:9,  durH:1,    loc:'Community Center Pool',  price:'$85',  elig:{emma:true,liam:true,sarah:false},  type:'program', opens:null },
+    { id:'swim2',    name:'Swim Lessons L2',    cat:'aquatics', icon:'ti-swimming',           iconClass:'bg-blue-img',  evCls:'ev-aquatics', days:[2,4],   startH:9,  durH:1,    loc:'Community Center Pool',  price:'$85',  elig:{emma:false,liam:true,sarah:false}, type:'program', opens:null },
+    { id:'soccer',   name:'Soccer Skills Camp', cat:'sports',   icon:'ti-ball-football',      iconClass:'bg-green-img', evCls:'ev-sports',   days:[2,4],   startH:10, durH:1.5,  loc:'Centennial Fields',      price:'$120', elig:{emma:false,liam:true,sarah:false}, type:'program', opens:null },
+    { id:'art',      name:'Summer Art Studio',  cat:'arts',     icon:'ti-palette',            iconClass:'bg-amber-img', evCls:'ev-preview',  days:[1,2,3,4,5], startH:13, durH:2,loc:'Recreation Center',      price:'$150', elig:{emma:true,liam:true,sarah:false},  type:'preview', opens:'Jul 1' },
+    { id:'yoga',     name:'Adult Yoga',         cat:'fitness',  icon:'ti-yoga',               iconClass:'bg-purple-img',evCls:'ev-fitness',  days:[6],     startH:8,  durH:1,    loc:'Maple Street Gym',       price:'$60',  elig:{emma:false,liam:false,sarah:true}, type:'program', opens:null },
+    { id:'bball',    name:'Basketball League',  cat:'sports',   icon:'ti-ball-basketball',    iconClass:'bg-green-img', evCls:'ev-sports',   days:[3],     startH:18, durH:3,    loc:'Maple Street Gym',       price:'$45',  elig:{emma:false,liam:false,sarah:true}, type:'program', opens:null },
+    { id:'bootcamp', name:'Fitness Bootcamp',   cat:'fitness',  icon:'ti-barbell',            iconClass:'bg-red-img',   evCls:'ev-fitness',  days:[2,4],   startH:8,  durH:1,    loc:'Maple Street Gym',       price:'$95',  elig:{emma:false,liam:false,sarah:true}, type:'program', opens:null },
+    { id:'senior',   name:'Senior Fitness',     cat:'seniors',  icon:'ti-heart-rate-monitor', iconClass:'bg-teal-img',  evCls:'ev-seniors',  days:[1,3,5], startH:10, durH:1,    loc:'Senior Activity Center', price:'$30',  elig:{emma:false,liam:false,sarah:false},type:'program', opens:null },
+    { id:'soccer2',  name:'Fall Soccer League', cat:'sports',   icon:'ti-ball-football',      iconClass:'bg-green-img', evCls:'ev-preview',  days:[6],     startH:9,  durH:2,    loc:'Centennial Fields',      price:'$85',  elig:{emma:false,liam:true,sarah:false}, type:'preview', opens:'Jul 1' },
+    { id:'tennis',   name:'Junior Tennis Acad', cat:'sports',   icon:'ti-ball-tennis',        iconClass:'bg-blue-img',  evCls:'ev-preview',  days:[6,0],   startH:10, durH:2,    loc:'Riverside Courts',       price:'$110', elig:{emma:true,liam:true,sarah:false},  type:'preview', opens:'Jul 15' },
+  ];
+
+  var calState = { year:2026, month:5, selectedDay:22, view:'month', eligOn:true };
+  var webCalState = { year:2026, month:5, selectedDay:22, view:'month', eligOn:true };
+  var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function getProgsForDay(dayOfWeek, eligOn) {
+    return calProgs.filter(function(p) {
+      return p.days.indexOf(dayOfWeek) >= 0 &&
+             (!eligOn || p.elig.emma || p.elig.liam || p.elig.sarah);
+    });
+  }
+
+  // ── MOBILE CALENDAR ──
+  var mobCalEligOn = true;
+  var mobCalView = 'month';
+  var mobSelectedDate = new Date(2026, 5, 22); // June 22
+
+  function initMobCal() {
+    if (document.getElementById('mob-cal-grid').children.length > 7) return;
+    renderMobCal();
+    showMobDayPanel(mobSelectedDate);
+  }
+
+  function renderMobCal() {
+    var grid = document.getElementById('mob-cal-grid');
+    // Remove existing day cells (keep DOW headers = first 7)
+    while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+    var y = mobSelectedDate.getFullYear(), m = mobSelectedDate.getMonth();
+    var label = document.getElementById('mob-cal-month-label');
+    if (label) label.textContent = MONTH_NAMES[m] + ' ' + y;
+
+    var firstDay = new Date(y, m, 1).getDay();
+    var daysInMonth = new Date(y, m+1, 0).getDate();
+    var daysInPrev = new Date(y, m, 0).getDate();
+    var today = new Date(2026, 5, 22); // demo today
+
+    // Fill grid
+    var totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+    for (var i = 0; i < totalCells; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'mob-cal-cell';
+      var day, inMonth = true;
+      if (i < firstDay) { day = daysInPrev - firstDay + i + 1; inMonth = false; }
+      else if (i >= firstDay + daysInMonth) { day = i - firstDay - daysInMonth + 1; inMonth = false; }
+      else { day = i - firstDay + 1; }
+
+      if (!inMonth) cell.classList.add('other-month');
+
+      var cellDate = new Date(y, inMonth ? m : (i < firstDay ? m-1 : m+1), day);
+      var isToday = cellDate.toDateString() === today.toDateString();
+      var isSelected = cellDate.toDateString() === mobSelectedDate.toDateString();
+      if (isToday) cell.classList.add('today');
+      if (isSelected) cell.classList.add('selected');
+
+      var dayNum = document.createElement('div');
+      dayNum.className = 'mob-cal-daynum';
+      dayNum.textContent = day;
+      cell.appendChild(dayNum);
+
+      // Dots for programs on this day
+      if (inMonth) {
+        var dow = cellDate.getDay();
+        var progs = getProgsForDay(dow, mobCalEligOn);
+        if (progs.length) {
+          var dotsWrap = document.createElement('div');
+          dotsWrap.className = 'mob-cal-dots';
+          var maxDots = Math.min(progs.length, 3);
+          for (var d = 0; d < maxDots; d++) {
+            var dot = document.createElement('span');
+            dot.className = 'cat-dot ' + (progs[d].type === 'preview' ? 'preview' : progs[d].cat);
+            dotsWrap.appendChild(dot);
+          }
+          cell.appendChild(dotsWrap);
+        }
+      }
+
+      (function(date, inM) {
+        cell.addEventListener('click', function() {
+          if (!inM) return;
+          mobSelectedDate = date;
+          renderMobCal();
+          showMobDayPanel(date);
+        });
+      })(cellDate, inMonth);
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function showMobDayPanel(date) {
+    var dow = date.getDay();
+    var progs = getProgsForDay(dow, mobCalEligOn);
+    var dateLabel = document.getElementById('mob-day-panel-date');
+    var countLabel = document.getElementById('mob-day-panel-count');
+    var body = document.getElementById('mob-day-panel-body');
+    if (dateLabel) dateLabel.textContent = DOW_SHORT[dow] + ', ' + MONTH_NAMES[date.getMonth()] + ' ' + date.getDate();
+    if (countLabel) countLabel.textContent = progs.length + ' program' + (progs.length !== 1 ? 's' : '');
+    if (!body) return;
+    if (!progs.length) {
+      body.innerHTML = '<div class="mob-day-no-progs">No programs on this day</div>';
+      return;
+    }
+    progs.sort(function(a,b){ return a.startH - b.startH; });
+    body.innerHTML = progs.map(function(p) {
+      var timeStr = formatTime(p.startH) + ' – ' + formatTime(p.startH + p.durH);
+      var barColor = getCatColor(p.cat, p.type);
+      var eligBadge = p.elig.emma ? '<span class="elig-tag elig-yes" style="font-size:9px"><i class="ti ti-check"></i>Emma</span>' :
+                      p.elig.liam ? '<span class="elig-tag elig-yes" style="font-size:9px"><i class="ti ti-check"></i>Liam</span>' :
+                      p.elig.sarah ? '<span class="web-elig-chip wec-adult" style="font-size:9px;padding:2px 6px"><i class="ti ti-check" style="font-size:9px"></i>Sarah</span>' : '';
+      var previewTag = p.type === 'preview' ? '<span class="preview-badge" style="font-size:8px;margin-left:4px"><i class="ti ti-clock"></i>'+p.opens+'</span>' : '';
+      return '<div class="mob-day-prog" onclick="mobCalProgClick(\''+p.id+'\',\''+p.type+'\')">'
+        + '<div class="mob-day-prog-time">'+timeStr+'</div>'
+        + '<div class="mob-day-prog-bar" style="background:'+barColor+'"></div>'
+        + '<div class="mob-day-prog-info">'
+        +   '<div class="mob-day-prog-name">'+p.name+previewTag+'</div>'
+        +   '<div class="mob-day-prog-meta">'+p.loc+' · '+p.price+'</div>'
+        +   (eligBadge ? '<div style="margin-top:3px">'+eligBadge+'</div>' : '')
+        + '</div>'
+        + '<i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:16px"></i>'
+        + '</div>';
+    }).join('');
+  }
+
+  function mobCalProgClick(id, type) {
+    if (type === 'preview') {
+      pubNav(document.querySelectorAll('.pub-nav-btn')[1], 'programs');
+    } else if (id === 'swim1') {
+      showRegister();
+    } else {
+      pubNav(document.querySelectorAll('.pub-nav-btn')[1], 'programs');
+    }
+  }
+
+  function mobCalNav(dir) {
+    mobSelectedDate = new Date(mobSelectedDate.getFullYear(), mobSelectedDate.getMonth() + dir, 1);
+    renderMobCal();
+    showMobDayPanel(mobSelectedDate);
+  }
+
+  function mobDayNav(dir) {
+    mobSelectedDate = new Date(mobSelectedDate.getFullYear(), mobSelectedDate.getMonth(), mobSelectedDate.getDate() + dir);
+    renderMobDayView();
+  }
+
+  function setMobCalView(view, btn) {
+    mobCalView = view;
+    document.querySelectorAll('[id^="mob-view-"]').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var monthView = document.getElementById('mob-cal-month-view');
+    var dayView = document.getElementById('mob-cal-day-view');
+    if (view === 'month') {
+      if (monthView) monthView.style.display = 'block';
+      if (dayView) dayView.style.display = 'none';
+    } else {
+      if (monthView) monthView.style.display = 'none';
+      if (dayView) dayView.style.display = 'block';
+      renderMobDayView();
+    }
+  }
+
+  function renderMobDayView() {
+    var dow = mobSelectedDate.getDay();
+    var label = document.getElementById('mob-cal-day-label');
+    if (label) label.textContent = DOW_SHORT[dow] + ', ' + MONTH_NAMES[mobSelectedDate.getMonth()] + ' ' + mobSelectedDate.getDate() + ', ' + mobSelectedDate.getFullYear();
+    var body = document.getElementById('mob-day-view-body');
+    var progs = getProgsForDay(dow, mobCalEligOn);
+    progs.sort(function(a,b){ return a.startH - b.startH; });
+    if (!progs.length) {
+      if (body) body.innerHTML = '<div class="mob-day-no-progs">No programs scheduled for this day</div>';
+      return;
+    }
+    if (body) body.innerHTML = progs.map(function(p) {
+      var timeStr = formatTime(p.startH) + ' – ' + formatTime(p.startH + p.durH);
+      var barColor = getCatColor(p.cat, p.type);
+      return '<div class="mob-day-prog" onclick="mobCalProgClick(\''+p.id+'\',\''+p.type+'\')"><div class="mob-day-prog-time">'+timeStr+'</div><div class="mob-day-prog-bar" style="background:'+barColor+'"></div><div class="mob-day-prog-info"><div class="mob-day-prog-name">'+p.name+'</div><div class="mob-day-prog-meta">'+p.loc+' · '+p.price+'</div></div><i class="ti ti-chevron-right" style="color:var(--text-tertiary);font-size:16px"></i></div>';
+    }).join('');
+  }
+
+  function toggleMobCalElig() {
+    mobCalEligOn = !mobCalEligOn;
+    var t = document.getElementById('mob-cal-elig-toggle');
+    if (t) t.className = 'toggle ' + (mobCalEligOn ? 'on' : 'off');
+    renderMobCal();
+    showMobDayPanel(mobSelectedDate);
+  }
+
+  // ── WEB CALENDAR ──
+  var webCalEligOn = true;
+  var webCalView = 'month';
+  var webCalDate = new Date(2026, 5, 22);
+  var webCalInited = false;
+
+  function initWebCal() {
+    if (webCalInited) return;
+    webCalInited = true;
+    renderWebCal();
+  }
+
+  function renderWebCal() {
+    var period = document.getElementById('web-cal-period');
+    if (webCalView === 'month') {
+      if (period) period.textContent = MONTH_NAMES[webCalDate.getMonth()] + ' ' + webCalDate.getFullYear();
+      renderWebMonth();
+    } else if (webCalView === 'week') {
+      var weekStart = getWeekStart(webCalDate);
+      var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+6);
+      if (period) period.textContent = MONTH_NAMES[weekStart.getMonth()] + ' ' + weekStart.getDate() + ' – ' + MONTH_NAMES[weekEnd.getMonth()] + ' ' + weekEnd.getDate() + ', ' + weekEnd.getFullYear();
+      renderWebWeek();
+    } else {
+      if (period) period.textContent = DOW_SHORT[webCalDate.getDay()] + ', ' + MONTH_NAMES[webCalDate.getMonth()] + ' ' + webCalDate.getDate() + ', ' + webCalDate.getFullYear();
+      renderWebDay();
+    }
+  }
+
+  function renderWebMonth() {
+    var weeks = document.getElementById('web-month-weeks');
+    if (!weeks) return;
+    weeks.innerHTML = '';
+    var y = webCalDate.getFullYear(), m = webCalDate.getMonth();
+    var firstDay = new Date(y, m, 1).getDay();
+    var daysInMonth = new Date(y, m+1, 0).getDate();
+    var daysInPrev = new Date(y, m, 0).getDate();
+    var today = new Date(2026, 5, 22);
+    var totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+    for (var w = 0; w < totalCells/7; w++) {
+      var weekEl = document.createElement('div');
+      weekEl.className = 'web-month-week';
+      for (var d = 0; d < 7; d++) {
+        var i = w*7 + d;
+        var cell = document.createElement('div');
+        cell.className = 'web-month-cell';
+        var day, inMonth = true;
+        if (i < firstDay) { day = daysInPrev - firstDay + i + 1; inMonth = false; }
+        else if (i >= firstDay + daysInMonth) { day = i - firstDay - daysInMonth + 1; inMonth = false; }
+        else { day = i - firstDay + 1; }
+        if (!inMonth) cell.classList.add('other-month');
+        var cellDate = new Date(y, inMonth ? m : (i < firstDay ? m-1 : m+1), day);
+        if (cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
+        if (cellDate.toDateString() === webCalDate.toDateString()) cell.classList.add('selected');
+
+        var dayNumEl = document.createElement('div');
+        dayNumEl.className = 'web-month-daynum';
+        dayNumEl.textContent = day;
+        cell.appendChild(dayNumEl);
+
+        if (inMonth) {
+          var dow = cellDate.getDay();
+          var progs = getProgsForDay(dow, webCalEligOn);
+          var maxShow = 3;
+          progs.slice(0, maxShow).forEach(function(p) {
+            var ev = document.createElement('div');
+            ev.className = 'web-month-event ' + p.evCls;
+            ev.textContent = formatTime(p.startH) + ' ' + p.name;
+            ev.title = p.name + ' · ' + formatTime(p.startH) + ' – ' + formatTime(p.startH + p.durH);
+            (function(prog){ ev.addEventListener('click', function(e){ e.stopPropagation(); showCalDetail(prog); }); })(p);
+            cell.appendChild(ev);
+          });
+          if (progs.length > maxShow) {
+            var more = document.createElement('div');
+            more.className = 'web-month-more';
+            more.textContent = '+' + (progs.length - maxShow) + ' more';
+            (function(date){ more.addEventListener('click', function(e){ e.stopPropagation(); webCalDate = date; setWebCalView('day', document.getElementById('web-view-day')); }); })(cellDate);
+            cell.appendChild(more);
+          }
+        }
+        (function(date, inM){ cell.addEventListener('click', function(){ if(!inM) return; webCalDate=date; setWebCalView('day', document.getElementById('web-view-day')); }); })(cellDate, inMonth);
+        weekEl.appendChild(cell);
+      }
+      weeks.appendChild(weekEl);
+    }
+  }
+
+  function renderWebWeek() {
+    var header = document.getElementById('web-week-header');
+    var body = document.getElementById('web-week-body');
+    if (!header || !body) return;
+    var weekStart = getWeekStart(webCalDate);
+    var today = new Date(2026, 5, 22);
+
+    // Header
+    header.innerHTML = '<div class="web-week-header-time"></div>';
+    for (var d = 0; d < 7; d++) {
+      var date = new Date(weekStart); date.setDate(date.getDate() + d);
+      var col = document.createElement('div');
+      col.className = 'web-week-header-day' + (date.toDateString()===today.toDateString()?' today':'');
+      col.innerHTML = '<div class="wwhd-dow">'+DOW_SHORT[date.getDay()]+'</div><div class="wwhd-date">'+date.getDate()+'</div>';
+      header.appendChild(col);
+    }
+
+    // Body
+    body.innerHTML = '';
+    var timeCol = document.createElement('div');
+    timeCol.className = 'web-week-time-col';
+    var hours = [7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    hours.forEach(function(h) {
+      var slot = document.createElement('div');
+      slot.className = 'web-week-time-slot';
+      slot.textContent = formatTime(h);
+      timeCol.appendChild(slot);
+    });
+    body.appendChild(timeCol);
+
+    for (var d = 0; d < 7; d++) {
+      var date = new Date(weekStart); date.setDate(date.getDate() + d);
+      var dow = date.getDay();
+      var dayCol = document.createElement('div');
+      dayCol.className = 'web-week-day-col';
+      hours.forEach(function() {
+        var bg = document.createElement('div'); bg.className = 'web-week-slot-bg'; dayCol.appendChild(bg);
+      });
+      var progs = getProgsForDay(dow, webCalEligOn);
+      progs.forEach(function(p) {
+        var topPx = (p.startH - 7) * 60;
+        var heightPx = p.durH * 60;
+        var ev = document.createElement('div');
+        ev.className = 'web-week-event ' + p.evCls;
+        ev.style.top = topPx + 'px';
+        ev.style.height = (heightPx - 4) + 'px';
+        ev.innerHTML = '<div class="web-week-event-name">' + p.name + '</div><div class="web-week-event-meta">' + formatTime(p.startH) + ' – ' + formatTime(p.startH + p.durH) + '</div>';
+        (function(prog){ ev.addEventListener('click', function(e){ e.stopPropagation(); showCalDetail(prog); }); })(p);
+        dayCol.appendChild(ev);
+      });
+      body.appendChild(dayCol);
+    }
+  }
+
+  function renderWebDay() {
+    var dow = webCalDate.getDay();
+    var body = document.getElementById('web-day-view-body');
+    var title = document.getElementById('web-day-view-title');
+    var countEl = document.getElementById('web-day-count');
+    var progs = getProgsForDay(dow, webCalEligOn);
+    if (title) title.textContent = 'Programs on ' + DOW_SHORT[dow] + ', ' + MONTH_NAMES[webCalDate.getMonth()] + ' ' + webCalDate.getDate() + ', ' + webCalDate.getFullYear();
+    if (countEl) countEl.textContent = progs.length + ' program' + (progs.length !== 1 ? 's' : '');
+    if (!body) return;
+    if (!progs.length) {
+      body.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-tertiary);font-size:13px">No programs scheduled for this day</div>';
+      return;
+    }
+    progs.sort(function(a,b){ return a.startH - b.startH; });
+    body.innerHTML = progs.map(function(p) {
+      var barColor = getCatColor(p.cat, p.type);
+      var eligChips = '';
+      ['emma','liam','sarah'].forEach(function(m) {
+        var label = m.charAt(0).toUpperCase()+m.slice(1);
+        if (p.elig[m]) eligChips += '<span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>'+label+'</span>';
+        else eligChips += '<span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>'+label+'</span>';
+      });
+      var previewBadge = p.type === 'preview' ? '<span class="preview-badge" style="margin-left:8px"><i class="ti ti-clock"></i>Opens '+p.opens+'</span>' : '';
+      var actionBtn = p.type === 'preview'
+        ? '<button class="wishlist-add-btn" onclick="addToWishlistWeb(this,\''+p.name+'\')"><i class="ti ti-heart"></i>Add to wishlist</button>'
+        : '<button class="btn-primary" style="font-size:13px" onclick="startRegistration(\'swim\')"><i class="ti ti-calendar-plus"></i>Register</button>';
+      return '<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border)" onclick="showCalDetail(calProgs.find(function(x){return x.id===\''+p.id+'\';}))">'
+        + '<div style="text-align:right;min-width:80px;flex-shrink:0"><div style="font-size:13px;font-weight:600;color:var(--text-primary)">'+formatTime(p.startH)+'</div><div style="font-size:11px;color:var(--text-tertiary)">'+formatTime(p.startH+p.durH)+'</div></div>'
+        + '<div style="width:4px;align-self:stretch;border-radius:2px;background:'+barColor+';flex-shrink:0"></div>'
+        + '<div class="wrc-icon '+p.iconClass+'" style="width:44px;height:44px;border-radius:11px;flex-shrink:0"><i class="ti '+p.icon+'"></i></div>'
+        + '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:3px">'+p.name+previewBadge+'</div>'
+        + '<div style="font-size:12px;color:var(--text-secondary)">'+p.loc+' · '+p.price+'</div>'
+        + '<div class="web-prog-elig" style="margin-top:6px">'+eligChips+'</div></div>'
+        + '<div style="flex-shrink:0">'+actionBtn+'</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function showCalDetail(p) {
+    if (!p) return;
+    var detail = document.getElementById('cal-prog-detail');
+    if (!detail) return;
+    var iconEl = document.getElementById('cpd-icon');
+    if (iconEl) iconEl.innerHTML = '<div class="'+p.iconClass+'" style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px"><i class="ti '+p.icon+'"></i></div>';
+    var nameEl = document.getElementById('cpd-name');
+    if (nameEl) nameEl.textContent = p.name + (p.type==='preview' ? ' (Preview — Opens '+p.opens+')' : '');
+    var metaEl = document.getElementById('cpd-meta');
+    if (metaEl) metaEl.innerHTML = '<span><i class="ti ti-clock" style="font-size:12px"></i>'+formatTime(p.startH)+' – '+formatTime(p.startH+p.durH)+'</span><span><i class="ti ti-building" style="font-size:12px"></i>'+p.loc+'</span>';
+    var daysStr = p.days.map(function(d){ return DOW_SHORT[d]; }).join(', ');
+    var eligChips = ['emma','liam','sarah'].map(function(m) {
+      var label = m.charAt(0).toUpperCase()+m.slice(1);
+      return p.elig[m]
+        ? '<span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>'+label+'</span>'
+        : '<span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>'+label+'</span>';
+    }).join('');
+    var detailsEl = document.getElementById('cpd-details');
+    if (detailsEl) detailsEl.innerHTML =
+      '<div class="cpd-detail-row"><i class="ti ti-calendar"></i><span>'+daysStr+'</span></div>'
+      +'<div class="cpd-detail-row"><i class="ti ti-clock"></i><span>'+formatTime(p.startH)+' – '+formatTime(p.startH+p.durH)+'</span></div>'
+      +'<div class="cpd-detail-row"><i class="ti ti-map-pin"></i><span>'+p.loc+'</span></div>'
+      +'<div class="cpd-detail-row"><i class="ti ti-tag"></i><strong>'+p.price+'</strong></div>'
+      +'<div class="cpd-elig-row">'+eligChips+'</div>';
+    var actionsEl = document.getElementById('cpd-actions');
+    if (actionsEl) actionsEl.innerHTML = p.type === 'preview'
+      ? '<button class="cpd-wl-btn" onclick="addToWishlistWeb(this,\''+p.name+'\')"><i class="ti ti-heart"></i>Add to wishlist</button>'
+      : '<button class="cpd-reg-btn" onclick="startRegistration(\'swim\')"><i class="ti ti-calendar-plus"></i>Register now</button>';
+    detail.classList.add('open');
+    detail.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function closeCalDetail() {
+    var d = document.getElementById('cal-prog-detail'); if(d) d.classList.remove('open');
+  }
+
+  function setWebCalView(view, btn) {
+    webCalView = view;
+    document.querySelectorAll('[id^="web-view-"]').forEach(function(b){ b.classList.remove('active'); if(b) b.style.color='rgba(255,255,255,0.65)'; });
+    if (btn) { btn.classList.add('active'); btn.style.color='#fff'; }
+    ['web-cal-month-view','web-cal-week-view','web-cal-day-view'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+    var viewMap = { month:'web-cal-month-view', week:'web-cal-week-view', day:'web-cal-day-view' };
+    var target = document.getElementById(viewMap[view]); if(target) target.style.display='block';
+    closeCalDetail();
+    renderWebCal();
+  }
+
+  function webCalNav(dir) {
+    if (webCalView === 'month') {
+      webCalDate = new Date(webCalDate.getFullYear(), webCalDate.getMonth() + dir, 1);
+    } else if (webCalView === 'week') {
+      webCalDate = new Date(webCalDate.getFullYear(), webCalDate.getMonth(), webCalDate.getDate() + dir*7);
+    } else {
+      webCalDate = new Date(webCalDate.getFullYear(), webCalDate.getMonth(), webCalDate.getDate() + dir);
+    }
+    renderWebCal();
+  }
+
+  function webCalToday() { webCalDate = new Date(2026,5,22); renderWebCal(); }
+
+  function toggleWebCalElig() {
+    webCalEligOn = !webCalEligOn;
+    var t = document.getElementById('web-cal-elig');
+    if (t) { t.className = 'wl-mini-toggle ' + (webCalEligOn ? 'on' : 'off'); t.style.background = webCalEligOn ? '#378ADD' : 'rgba(255,255,255,0.2)'; var th = t.querySelector('.wl-mini-thumb'); if(th) th.style.left = webCalEligOn ? '14px' : '2px'; }
+    renderWebCal();
+  }
+
+  function toggleCalCat(el) {
+    el.classList.toggle('active');
+    renderWebCal();
+  }
+
+  function getWeekStart(date) {
+    var d = new Date(date); d.setDate(d.getDate() - d.getDay()); return d;
+  }
+
+  function formatTime(h) {
+    var hours = Math.floor(h);
+    var mins = Math.round((h - hours) * 60);
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    var h12 = hours > 12 ? hours - 12 : (hours === 0 ? 12 : hours);
+    return h12 + (mins ? ':' + (mins < 10 ? '0' : '') + mins : '') + ampm;
+  }
+
+  function getCatColor(cat, type) {
+    if (type === 'preview') return '#5B21B6';
+    var colors = { aquatics:'#185FA5', sports:'#3B6D11', arts:'#854F0B', fitness:'#534AB7', seniors:'#0F6E56' };
+    return colors[cat] || '#185FA5';
+  }
+
+  /* ── SEARCH ── */
+  var searchData = [
+    { id:'swim1',    name:'Youth Swim Lessons — Level 1', cat:'aquatics', icon:'ti-swimming',          iconClass:'bg-blue-img',   price:'$85',  meta:'MWF · 9–10am · Ages 6–12',    loc:'Community Center Pool',    avail:'4 spots left',   availCls:'badge-few',  elig:{emma:true,liam:true,sarah:false},  eligReason:{emma:'Age 6–12 ✓',liam:'Age 6–12 ✓',sarah:'Adults only'},  opens:null,   type:'program' },
+    { id:'swim2',    name:'Youth Swim Lessons — Level 2', cat:'aquatics', icon:'ti-swimming',          iconClass:'bg-blue-img',   price:'$85',  meta:'T/Th · 9–10am · Ages 6–12',   loc:'Community Center Pool',    avail:'Open',           availCls:'badge-open', elig:{emma:false,liam:true,sarah:false}, eligReason:{emma:'Prereq: L1',liam:'Prereq: L1 ✓',sarah:'Adults only'}, opens:null,   type:'program' },
+    { id:'soccer',   name:'Soccer Skills Camp',           cat:'sports',   icon:'ti-ball-football',     iconClass:'bg-green-img',  price:'$120', meta:'T/Th · 10–11:30am · Ages 8–14',loc:'Centennial Fields',         avail:'Open',           availCls:'badge-open', elig:{emma:false,liam:true,sarah:false},  eligReason:{emma:'Age min 8',liam:'Age 8–14 ✓',sarah:'Youth only'},    opens:null,   type:'program' },
+    { id:'art',      name:'Summer Art Studio',            cat:'arts',     icon:'ti-palette',           iconClass:'bg-amber-img',  price:'$150', meta:'M–F · 1–3pm · Ages 7–13',     loc:'Recreation Center Room B', avail:'Waitlist',       availCls:'badge-wait', elig:{emma:true,liam:true,sarah:false},  eligReason:{emma:'Age 7–13 ✓',liam:'Age 7–13 ✓',sarah:'Youth only'},  opens:'Jul 1', type:'preview' },
+    { id:'yoga',     name:'Adult Yoga',                   cat:'fitness',  icon:'ti-yoga',              iconClass:'bg-purple-img', price:'$60',  meta:'Saturday · 8–9am · All levels',loc:'Maple Street Gym',          avail:'Open',           availCls:'badge-open', elig:{emma:false,liam:false,sarah:true},  eligReason:{emma:'Adults only',liam:'Adults only',sarah:'Member ✓'},   opens:null,   type:'program' },
+    { id:'basketball',name:'Adult Basketball League',     cat:'sports',   icon:'ti-ball-basketball',   iconClass:'bg-green-img',  price:'$45',  meta:'Wed evenings · Adults 18+',    loc:'Maple Street Gym',          avail:'3 left',         availCls:'badge-few',  elig:{emma:false,liam:false,sarah:true},  eligReason:{emma:'Adults only',liam:'Adults only',sarah:'Member ✓'},   opens:null,   type:'program' },
+    { id:'senior',   name:'Senior Fitness',               cat:'seniors',  icon:'ti-heart-rate-monitor',iconClass:'bg-teal-img',   price:'$30',  meta:'MWF · 10–11am · Ages 60+',    loc:'Senior Activity Center',    avail:'Open',           availCls:'badge-open', elig:{emma:false,liam:false,sarah:false}, eligReason:{emma:'Ages 60+',liam:'Ages 60+',sarah:'Ages 60+'},         opens:null,   type:'program' },
+    { id:'bootcamp', name:'Adult Fitness Bootcamp',       cat:'fitness',  icon:'ti-barbell',           iconClass:'bg-red-img',    price:'$95',  meta:'T/Th · 8–9am · Adults 18+',   loc:'Maple Street Gym',          avail:'Open',           availCls:'badge-open', elig:{emma:false,liam:false,sarah:true},  eligReason:{emma:'Adults only',liam:'Adults only',sarah:'Member ✓'},   opens:null,   type:'program' },
+    { id:'soccer2',  name:'Fall Soccer League',           cat:'sports',   icon:'ti-ball-football',     iconClass:'bg-green-img',  price:'$85',  meta:'Sat · 9–11am · Ages 8–14',    loc:'Centennial Fields',         avail:'Preview',        availCls:'badge-wait', elig:{emma:false,liam:true,sarah:false},  eligReason:{emma:'Age min 8',liam:'Age 8–14 ✓',sarah:'Youth only'},    opens:'Jul 1', type:'preview' },
+    { id:'tennis',   name:'Junior Tennis Academy',        cat:'sports',   icon:'ti-ball-tennis',       iconClass:'bg-blue-img',   price:'$110', meta:'Sat/Sun · 10am–12pm · Ages 7–16',loc:'Riverside Courts',        avail:'Preview',        availCls:'badge-wait', elig:{emma:true,liam:true,sarah:false},  eligReason:{emma:'Age 7–16 ✓',liam:'Age 7–16 ✓',sarah:'Youth only'},  opens:'Jul 15', type:'preview' },
+    { id:'beach',    name:'Riverside Beach Day Pass',     cat:'passes',   icon:'ti-beach',             iconClass:'psi-beach',     price:'$8',   meta:'Day of purchase · Single entry',loc:'Riverside Beach',           avail:'Available',      availCls:'badge-open', elig:{emma:true,liam:true,sarah:true},   eligReason:{emma:'All ages ✓',liam:'All ages ✓',sarah:'All ages ✓'},  opens:null,   type:'pass' },
+    { id:'pool',     name:'Community Pool Day Pass',      cat:'passes',   icon:'ti-swimming',          iconClass:'psi-pool',      price:'$24',  meta:'5-use pass · 30 days',         loc:'Community Center Pool',     avail:'Available',      availCls:'badge-open', elig:{emma:true,liam:true,sarah:true},   eligReason:{emma:'All ages ✓',liam:'All ages ✓',sarah:'All ages ✓'},  opens:null,   type:'pass' },
+    { id:'pool-fac', name:'Community Center Pool',        cat:'aquatics', icon:'ti-swimming',          iconClass:'bg-blue-img',   price:'Free', meta:'Lap swimming · Open swim',     loc:'Community Center',          avail:'Open now',       availCls:'badge-open', elig:{emma:true,liam:true,sarah:true},   eligReason:{},  opens:null,   type:'facility' },
+    { id:'gym-fac',  name:'Maple Street Gym',             cat:'fitness',  icon:'ti-building',          iconClass:'bg-purple-img', price:'Free', meta:'Basketball · Fitness room',    loc:'Maple Street',              avail:'Open now',       availCls:'badge-open', elig:{emma:true,liam:true,sarah:true},   eligReason:{},  opens:null,   type:'facility' },
+  ];
+
+  var searchEligOn = true;
+  var searchCat = 'all';
+  var mobSearchEligOn = true;
+
+  // ── MOBILE SEARCH ──
+  function mobSearchFocus() {
+    var row = document.getElementById('mob-search-row');
+    var field = document.getElementById('mob-search-field');
+    var icon = document.getElementById('mob-search-icon');
+    var overlay = document.getElementById('mob-search-overlay');
+    if (row) row.classList.add('focused');
+    if (field) field.classList.add('focused');
+    if (icon) icon.classList.add('focused');
+    if (overlay) overlay.classList.add('open');
+    var val = field ? field.value : '';
+    if (!val) showMobRecent(); else runMobSearch(val);
+  }
+
+  function mobSearchBlur() {
+    var overlay = document.getElementById('mob-search-overlay');
+    var row = document.getElementById('mob-search-row');
+    var field = document.getElementById('mob-search-field');
+    var icon = document.getElementById('mob-search-icon');
+    if (!field || !field.value) {
+      if (row) row.classList.remove('focused');
+      if (field) field.classList.remove('focused');
+      if (icon) icon.classList.remove('focused');
+      if (overlay) overlay.classList.remove('open');
+    }
+  }
+
+  function mobSearchInput(input) {
+    var clear = document.getElementById('mob-search-clear');
+    if (clear) clear.classList.toggle('visible', input.value.length > 0);
+    if (clear) clear.classList.toggle('focused', input.value.length > 0);
+    if (input.value) runMobSearch(input.value);
+    else showMobRecent();
+  }
+
+  function clearMobSearch() {
+    var field = document.getElementById('mob-search-field');
+    var clear = document.getElementById('mob-search-clear');
+    if (field) field.value = '';
+    if (clear) { clear.classList.remove('visible'); clear.classList.remove('focused'); }
+    showMobRecent();
+    if (field) field.focus();
+  }
+
+  function mobSearchSetQuery(q) {
+    var field = document.getElementById('mob-search-field');
+    if (field) { field.value = q; field.focus(); }
+    var clear = document.getElementById('mob-search-clear');
+    if (clear) { clear.classList.add('visible'); clear.classList.add('focused'); }
+    runMobSearch(q);
+  }
+
+  function showMobRecent() {
+    var recent = document.getElementById('mob-recent-searches');
+    var results = document.getElementById('mob-search-results');
+    if (recent) recent.style.display = 'block';
+    if (results) results.style.display = 'none';
+  }
+
+  function runMobSearch(q) {
+    var recent = document.getElementById('mob-recent-searches');
+    var results = document.getElementById('mob-search-results');
+    var body = document.getElementById('mob-search-results-body');
+    if (recent) recent.style.display = 'none';
+    if (results) results.style.display = 'block';
+    if (!body) return;
+    var filtered = searchData.filter(function(p) {
+      var matchQ = !q || p.name.toLowerCase().indexOf(q.toLowerCase()) >= 0 ||
+                   p.meta.toLowerCase().indexOf(q.toLowerCase()) >= 0 ||
+                   p.cat.indexOf(q.toLowerCase()) >= 0;
+      var matchElig = !mobSearchEligOn || p.elig.emma || p.elig.liam || p.elig.sarah;
+      return matchQ && matchElig;
+    });
+    if (!filtered.length) {
+      body.innerHTML = '<div class="search-no-results"><i class="ti ti-search-off"></i>No results for "'+q+'"<br><span>Try a different keyword or remove filters</span></div>';
+      return;
+    }
+    // Group by type
+    var groups = {};
+    filtered.forEach(function(p) {
+      var g = p.type === 'facility' ? 'Facilities' : p.type === 'pass' ? 'Passes & Tickets' : p.type === 'preview' ? 'Coming soon' : 'Programs';
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(p);
+    });
+    var html = '';
+    Object.keys(groups).forEach(function(g) {
+      html += '<div class="search-results-group"><div class="search-group-label">'+g+'</div>';
+      groups[g].forEach(function(p) {
+        var eligChips = '';
+        if (p.type === 'program' || p.type === 'preview') {
+          if (p.elig.emma) eligChips += '<span class="elig-tag elig-yes" style="font-size:9px"><i class="ti ti-check"></i>Emma</span>';
+          else eligChips += '<span class="elig-tag elig-no" style="font-size:9px"><i class="ti ti-x"></i>Emma</span>';
+          if (p.elig.liam) eligChips += '<span class="elig-tag elig-yes" style="font-size:9px"><i class="ti ti-check"></i>Liam</span>';
+          if (p.elig.sarah) eligChips += '<span class="web-elig-chip wec-adult" style="font-size:9px;padding:2px 6px"><i class="ti ti-check" style="font-size:9px"></i>Sarah</span>';
+        }
+        var previewTag = p.type === 'preview' ? '<span class="preview-badge" style="font-size:8px;margin-left:4px"><i class="ti ti-clock"></i>Opens '+p.opens+'</span>' : '';
+        html += '<div class="search-result-item" onclick="mobSearchGoTo(\''+p.id+'\')">';
+        html += '<div class="sri-icon '+p.iconClass+'"><i class="ti '+p.icon+'"></i></div>';
+        html += '<div class="sri-info"><div class="sri-name">'+highlight(p.name, q)+previewTag+'</div>';
+        html += '<div class="sri-meta">'+p.meta+' · '+p.loc+'</div>';
+        if (eligChips) html += '<div class="sri-elig">'+eligChips+'</div>';
+        html += '</div>';
+        html += '<div class="sri-right"><div class="sri-price">'+p.price+'</div><div class="sri-badge"><span class="badge '+p.availCls+'" style="font-size:9px">'+p.avail+'</span></div></div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    body.innerHTML = html;
+  }
+
+  function mobSearchGoTo(id) {
+    var overlay = document.getElementById('mob-search-overlay');
+    if (overlay) overlay.classList.remove('open');
+    var p = searchData.find(function(x){ return x.id===id; });
+    if (!p) return;
+    if (p.type === 'pass') {
+      pubNav(document.querySelectorAll('.pub-nav-btn')[1], 'programs');
+    } else if (p.type === 'facility') {
+      pubNav(document.querySelectorAll('.pub-nav-btn')[3], 'facilities');
+    } else if (p.id === 'swim1') {
+      showRegister();
+    } else {
+      pubNav(document.querySelectorAll('.pub-nav-btn')[1], 'programs');
+    }
+  }
+
+  function toggleSearchElig() {
+    mobSearchEligOn = !mobSearchEligOn;
+    var t = document.getElementById('mob-search-elig-toggle');
+    if (t) { t.className = 'toggle ' + (mobSearchEligOn ? 'on' : 'off'); }
+    var field = document.getElementById('mob-search-field');
+    if (field && field.value) runMobSearch(field.value);
+  }
+
+  // ── WEB SEARCH ──
+  function openWebSearch(q) {
+    var inp = document.getElementById('wsearch-input');
+    if (inp) inp.value = q || '';
+    webNav(null, 'wsearch');
+    // Update nav active state
+    document.querySelectorAll('.web-nav-link').forEach(function(b){ b.classList.remove('active'); });
+    runWebSearch(q || '');
+    if (inp) inp.focus();
+  }
+
+  var webSearchEligOn = true;
+
+  function toggleWebSearchElig() {
+    webSearchEligOn = !webSearchEligOn;
+    var t = document.getElementById('wsearch-elig-toggle');
+    if (t) { t.className = 'toggle ' + (webSearchEligOn ? 'on' : 'off'); }
+    var inp = document.getElementById('wsearch-input');
+    runWebSearch(inp ? inp.value : '');
+  }
+
+  function setSearchCat(btn, cat) {
+    searchCat = cat;
+    document.querySelectorAll('[id^="wf-"]').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var inp = document.getElementById('wsearch-input');
+    runWebSearch(inp ? inp.value : '');
+  }
+
+  function runWebSearch(q) {
+    var body = document.getElementById('wsearch-results-body');
+    var countEl = document.getElementById('wsearch-count');
+    var heading = document.getElementById('wsearch-heading');
+    if (!body) return;
+    if (heading) heading.textContent = q ? 'Results for "' + q + '"' : 'All programs';
+
+    var filtered = searchData.filter(function(p) {
+      var matchQ = !q || p.name.toLowerCase().indexOf(q.toLowerCase()) >= 0 ||
+                   p.meta.toLowerCase().indexOf(q.toLowerCase()) >= 0 ||
+                   p.cat.indexOf(q.toLowerCase()) >= 0 ||
+                   p.loc.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+      var matchCat = searchCat === 'all' || p.cat === searchCat ||
+                     (searchCat === 'sports' && (p.cat === 'sports')) ||
+                     (searchCat === 'passes' && p.type === 'pass');
+      var matchElig = !webSearchEligOn || p.elig.emma || p.elig.liam || p.elig.sarah;
+      return matchQ && matchCat && matchElig;
+    });
+
+    if (countEl) countEl.innerHTML = 'Showing <strong>' + filtered.length + ' result' + (filtered.length !== 1 ? 's' : '') + '</strong>' + (q ? ' for "' + q + '"' : '') + (webSearchEligOn ? ' · <span style="color:var(--green);font-weight:500">Family eligible filter on</span>' : '');
+
+    if (!filtered.length) {
+      body.innerHTML = '<div style="text-align:center;padding:48px 24px"><i class="ti ti-search-off" style="font-size:48px;color:var(--text-tertiary);display:block;margin-bottom:14px"></i><div style="font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:6px">No results found</div><div style="font-size:13px;color:var(--text-secondary)">Try a different keyword or turn off the family filter</div></div>';
+      return;
+    }
+
+    body.innerHTML = filtered.map(function(p) {
+      var eligChips = '';
+      if (p.type !== 'facility') {
+        var members = [{key:'emma',label:'Emma',cls:'wec-yes',noclass:'wec-no'},{key:'liam',label:'Liam',cls:'wec-yes',noclass:'wec-no'},{key:'sarah',label:'Sarah',cls:'wec-adult',noclass:'wec-no'}];
+        members.forEach(function(m) {
+          if (p.elig[m.key]) {
+            eligChips += '<span class="web-elig-chip '+m.cls+'"><i class="ti ti-check" style="font-size:10px"></i>'+m.label+'</span>';
+          } else if (p.eligReason[m.key]) {
+            eligChips += '<span class="web-elig-chip wec-no" title="'+p.eligReason[m.key]+'"><i class="ti ti-x" style="font-size:10px"></i>'+m.label+'</span>';
+          }
+        });
+      }
+      var previewBadge = p.type === 'preview' ? '<span class="preview-badge" style="margin-left:8px"><i class="ti ti-clock"></i>Opens '+p.opens+'</span>' : '';
+      var actionBtn = p.type === 'pass' ? '<button class="btn-primary" style="font-size:12px;padding:7px 14px" onclick="event.stopPropagation();openWebPassBuy(\''+p.id.replace('-fac','')+'\')"><i class="ti ti-shopping-cart"></i>Buy</button>'
+                    : p.type === 'preview' ? '<button class="wishlist-add-btn" onclick="event.stopPropagation();addToWishlistWeb(this,\''+p.name+'\')"><i class="ti ti-heart"></i>Wishlist</button>'
+                    : p.type === 'facility' ? '<button class="btn-secondary" style="font-size:12px;padding:7px 14px">View</button>'
+                    : '<button class="btn-primary" style="font-size:12px;padding:7px 14px" onclick="event.stopPropagation();startRegistration(\'swim\')"><i class="ti ti-calendar-plus"></i>Register</button>';
+      return '<div class="wsearch-result-card'+(p.type==='preview'?' preview-result':'')+'" onclick="webSearchGoTo(\''+p.id+'\')">'
+        + '<div class="wrc-main">'
+        +   '<div class="wrc-icon '+p.iconClass+'"><i class="ti '+p.icon+'"></i></div>'
+        +   '<div class="wrc-info">'
+        +     '<div class="wrc-name">'+highlight(p.name, q)+previewBadge+'</div>'
+        +     '<div class="wrc-meta">'
+        +       '<span><i class="ti ti-clock" style="font-size:12px"></i>'+p.meta.split('·')[0].trim()+'</span>'
+        +       '<span><i class="ti ti-building" style="font-size:12px"></i>'+p.loc+'</span>'
+        +     '</div>'
+        +     (eligChips ? '<div class="web-prog-elig" style="margin-top:8px">'+eligChips+'</div>' : '')
+        +   '</div>'
+        +   '<div class="wrc-right">'
+        +     '<div class="wrc-price">'+p.price+'</div>'
+        +     '<span class="badge '+p.availCls+'">'+p.avail+'</span>'
+        +   '</div>'
+        + '</div>'
+        + '<div class="wrc-detail">'
+        +   '<div class="wrc-detail-items">'
+        +     '<span class="wrc-detail-item"><i class="ti ti-calendar"></i>'+p.meta+'</span>'
+        +     '<span class="wrc-detail-item"><i class="ti ti-map-pin"></i>'+p.loc+'</span>'
+        +   '</div>'
+        +   '<div class="wrc-action">'+actionBtn+'</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function webSearchGoTo(id) {
+    var p = searchData.find(function(x){ return x.id===id; });
+    if (!p) return;
+    if (p.id === 'swim1' || p.id === 'swim2') startRegistration('swim');
+    else if (p.id === 'bootcamp') startRegistration('bootcamp');
+    else if (p.type === 'pass') openWebPassBuy(p.id.replace('-pass','').replace('-fac',''));
+    else if (p.type === 'facility') webNav(document.querySelectorAll('.web-nav-link')[3], 'wfacilities');
+    else if (p.type === 'preview') webNav(document.querySelectorAll('.web-nav-link')[1], 'wprograms');
+    else webNav(document.querySelectorAll('.web-nav-link')[1], 'wprograms');
+  }
+
+  function highlight(text, q) {
+    if (!q) return text;
+    var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return text.replace(re, '<mark class="search-highlight">$1</mark>');
   }
 
   /* ── WISHLIST ── */
