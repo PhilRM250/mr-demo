@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!--- PR 070126 added wishlist to public side --->
 <head>
-  <!--- fix design issue --->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Springfield Recreation — Demo</title>
@@ -1016,6 +1016,222 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── WISHLIST STYLES ── */
+  .cart-icon-wrap {
+    position: relative; cursor: pointer; display: inline-flex;
+    align-items: center; justify-content: center;
+  }
+  .cart-badge {
+    position: absolute; top: -5px; right: -7px;
+    background: #F87171; color: #fff;
+    font-size: 9px; font-weight: 700;
+    width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--blue);
+  }
+  .web-cart-badge {
+    position: absolute; top: -4px; right: -6px;
+    background: #F87171; color: #fff;
+    font-size: 9px; font-weight: 700;
+    width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--blue-dark);
+  }
+
+  /* Preview / coming-soon program card state */
+  .preview-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: var(--radius-pill);
+    background: #EDE9FE; color: #5B21B6;
+    white-space: nowrap;
+  }
+  .preview-badge i { font-size: 11px; }
+  .opens-label {
+    font-size: 11px; color: var(--purple); font-weight: 500;
+    display: flex; align-items: center; gap: 4px; margin-top: 3px;
+  }
+  .wishlist-add-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: var(--radius-md);
+    border: 1.5px solid var(--purple); background: none;
+    color: var(--purple); font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: var(--font); white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .wishlist-add-btn:hover { background: var(--purple-bg); }
+  .wishlist-add-btn.added { background: var(--purple-bg); }
+  .wishlist-add-btn i { font-size: 14px; }
+
+  /* Web preview card */
+  .web-prog-card.preview-state { border: 1.5px dashed #A78BFA; opacity: 0.95; }
+  .web-prog-card.preview-state .web-prog-card-img { position: relative; }
+  .web-prog-preview-overlay {
+    position: absolute; inset: 0;
+    background: rgba(91,33,182,0.18);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .web-prog-preview-label {
+    background: #5B21B6; color: #fff;
+    font-size: 10px; font-weight: 700; padding: 4px 10px;
+    border-radius: var(--radius-pill); letter-spacing: 0.5px;
+  }
+
+  /* Wishlist cart page */
+  .wishlist-empty {
+    text-align: center; padding: 48px 24px;
+  }
+  .wishlist-empty i { font-size: 48px; color: var(--text-tertiary); display: block; margin-bottom: 14px; }
+  .wishlist-empty h3 { font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .wishlist-empty p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  .wishlist-open-banner {
+    background: linear-gradient(135deg, #064E3B, #10B981);
+    border-radius: var(--radius-xl); padding: 16px 20px;
+    color: #fff; display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .wob-icon { font-size: 28px; flex-shrink: 0; }
+  .wob-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .wob-text p { font-size: 12px; opacity: 0.85; line-height: 1.5; }
+  .wob-btn {
+    margin-left: auto; flex-shrink: 0;
+    background: #fff; color: #065F46;
+    border: none; border-radius: var(--radius-md);
+    padding: 10px 18px; font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: var(--font); white-space: nowrap;
+  }
+
+  .wishlist-item-card {
+    background: var(--bg-primary); border: 1.5px solid #A78BFA;
+    border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 14px;
+  }
+  .wishlist-item-card.open-state { border-color: #10B981; }
+  .wic-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .wic-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .wic-info { flex: 1; }
+  .wic-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .wic-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .wic-status { flex-shrink: 0; text-align: right; }
+  .wic-opens { font-size: 11px; color: var(--purple); font-weight: 600; }
+  .wic-opens.open { color: #10B981; }
+  .wic-body { padding: 14px 18px; }
+  .wic-checklist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .wic-check-row {
+    display: flex; align-items: center; gap: 10px; font-size: 13px;
+  }
+  .wic-check-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .wic-check-icon.done { background: var(--green-bg); color: var(--green); }
+  .wic-check-icon.pending { background: var(--amber-bg); color: var(--amber); }
+  .wic-check-icon.todo { background: var(--bg-tertiary); color: var(--text-tertiary); }
+  .wic-check-label { flex: 1; color: var(--text-primary); }
+  .wic-check-label.done { color: var(--text-secondary); text-decoration: none; }
+  .wic-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .wic-complete-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px; border-radius: var(--radius-md);
+    background: #10B981; color: #fff; border: none;
+    font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .wic-edit-btn {
+    padding: 10px 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-med); background: var(--bg-primary);
+    font-family: var(--font); font-size: 13px; color: var(--text-primary); cursor: pointer;
+  }
+  .wic-remove-btn {
+    padding: 10px 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--red-bg); background: var(--bg-primary);
+    font-family: var(--font); font-size: 13px; color: var(--red); cursor: pointer;
+  }
+
+  .wishlist-checkout-card {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    position: sticky; top: 110px;
+  }
+  .wcc-header {
+    background: #064E3B; padding: 14px 18px;
+    color: #fff; font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wcc-body { padding: 16px 18px; }
+  .wcc-line { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+  .wcc-line span:first-child { color: var(--text-secondary); }
+  .wcc-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; border-top: 2px solid var(--text-primary); padding-top: 12px; margin: 6px 0 14px; }
+  .wcc-checkout-btn {
+    width: 100%; padding: 13px; border-radius: var(--radius-md);
+    background: #10B981; color: #fff; border: none;
+    font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .wcc-pending-note {
+    font-size: 11px; color: var(--text-tertiary); text-align: center; margin-top: 10px; line-height: 1.5;
+  }
+
+  /* Mobile wishlist mini items */
+  .mob-wl-item {
+    background: var(--bg-primary); border: 1.5px solid #A78BFA;
+    border-radius: var(--radius-lg); margin-bottom: 8px; overflow: hidden;
+  }
+  .mob-wl-item.open { border-color: #10B981; }
+  .mob-wl-header {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+  }
+  .mob-wl-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .mob-wl-info { flex: 1; }
+  .mob-wl-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .mob-wl-meta { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+  .mob-wl-body { padding: 8px 12px 12px; border-top: 1px solid var(--border); }
+  .mob-wl-checks { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .mob-wl-check { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; }
+  .mob-wl-check.done { color: var(--green); }
+  .mob-wl-check.todo { color: var(--text-tertiary); }
+  .mob-wl-btns { display: flex; gap: 6px; }
+  .mob-wl-btn { flex: 1; padding: 8px 6px; border-radius: 8px; border: 1px solid var(--border-med); background: var(--bg-primary); font-family: var(--font); font-size: 11px; font-weight: 500; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .mob-wl-btn.green { background: #10B981; color: #fff; border-color: #10B981; }
+
+  /* Registration open banner (mobile) */
+  .mob-reg-open-banner {
+    background: linear-gradient(135deg, #064E3B, #10B981);
+    border-radius: var(--radius-lg); padding: 12px 14px;
+    color: #fff; margin-bottom: 10px;
+  }
+  .mrob-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+  .mrob-sub { font-size: 11px; opacity: 0.85; margin-bottom: 8px; }
+  .mrob-btn {
+    display: block; width: 100%; padding: 9px;
+    background: #fff; color: #065F46;
+    border: none; border-radius: 8px;
+    font-family: var(--font); font-size: 12px; font-weight: 700; cursor: pointer;
+    text-align: center;
+  }
+
+  /* Admin wishlist */
+  .wl-count-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: var(--radius-pill);
+    background: #EDE9FE; color: #5B21B6;
+  }
+  .wl-count-badge i { font-size: 12px; }
+  .preview-settings-card {
+    background: #FDF4FF; border: 1.5px solid #E9D5FF;
+    border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px;
+  }
+  .psc-header {
+    padding: 12px 16px; border-bottom: 1px solid #E9D5FF;
+    font-size: 13px; font-weight: 600; color: #5B21B6;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .psc-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .psc-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  .psc-label { color: var(--text-primary); font-weight: 500; }
+  .psc-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .psc-date { font-size: 12px; color: #5B21B6; font-weight: 600; background: #EDE9FE; padding: 4px 10px; border-radius: var(--radius-md); }
 
   /* ── DIGITAL PASSES & TICKETS ── */
   .pass-card {
@@ -2520,6 +2736,10 @@
           <div class="pub-header-top">
             <div class="pub-logo">Springfield <span>Recreation</span></div>
             <div class="pub-icons">
+              <div class="cart-icon-wrap" onclick="pubNav(document.querySelectorAll('.pub-nav-btn')[4],'mypass');setTimeout(function(){mobAcctTab(document.querySelectorAll('.txn-tab')[2],'mob-wishlist');},50)">
+                <i class="ti ti-heart" style="font-size:22px"></i>
+                <div class="cart-badge">2</div>
+              </div>
               <i class="ti ti-bell"></i>
               <i class="ti ti-user-circle"></i>
             </div>
@@ -2864,6 +3084,36 @@
               <span class="badge badge-open">Open</span>
             </div>
 
+            <div class="pub-section-label" style="margin-top:14px">Coming soon — add to wishlist</div>
+            <!-- Art Studio preview -->
+            <div class="activity-card" style="border:1.5px dashed #A78BFA;background:var(--bg-primary)">
+              <div class="activity-icon amber"><i class="ti ti-palette"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Summer Art Studio</div>
+                <div class="activity-meta">M–F · 1–3pm · Ages 7–13 · $150</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Emma</span>
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam</span>
+                  <span class="opens-label"><i class="ti ti-clock" style="font-size:11px"></i>Opens Jul 1</span>
+                </div>
+              </div>
+              <button class="wishlist-add-btn added" onclick="addToWishlistMob(this)"><i class="ti ti-heart"></i></button>
+            </div>
+            <!-- Fall Soccer preview -->
+            <div class="activity-card" style="border:1.5px dashed #A78BFA;background:var(--bg-primary)">
+              <div class="activity-icon green"><i class="ti ti-ball-football"></i></div>
+              <div class="activity-info">
+                <div class="activity-name">Fall Soccer League</div>
+                <div class="activity-meta">Sat · 9–11am · Ages 8–14 · $85</div>
+                <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+                  <span class="elig-tag elig-no"><i class="ti ti-x"></i>Emma (age 8 min)</span>
+                  <span class="elig-tag elig-yes"><i class="ti ti-check"></i>Liam</span>
+                  <span class="opens-label"><i class="ti ti-clock" style="font-size:11px"></i>Opens Jul 1</span>
+                </div>
+              </div>
+              <button class="wishlist-add-btn added" onclick="addToWishlistMob(this)"><i class="ti ti-heart"></i></button>
+            </div>
+
             <div class="pub-section-label" style="margin-top:14px">Day passes &amp; tickets</div>
             <div class="activity-card" onclick="openMobPassBuy('beach')">
               <div class="activity-icon" style="background:linear-gradient(135deg,#0B6E5E,#1EB89D);color:#fff"><i class="ti ti-beach"></i></div>
@@ -3109,6 +3359,7 @@
             <!-- Account tabs -->
             <div class="txn-tabs">
               <button class="txn-tab active" onclick="mobAcctTab(this,'mob-registrations')">Registered</button>
+              <button class="txn-tab" onclick="mobAcctTab(this,'mob-wishlist')">Wishlist <span style="background:#F87171;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:3px">2</span></button>
               <button class="txn-tab" onclick="mobAcctTab(this,'mob-passes')">Passes</button>
               <button class="txn-tab" onclick="mobAcctTab(this,'mob-transactions')">Transactions</button>
               <button class="txn-tab" onclick="mobAcctTab(this,'mob-household')">Household</button>
@@ -3329,6 +3580,78 @@
                   <div class="attend-insurance-note">This report is suitable for health insurance benefit reimbursement claims. It includes program name, member name, and verified check-in records.</div>
                 </div>
               </div>
+            </div>
+
+            <!-- WISHLIST TAB (mobile) -->
+            <div id="mob-wishlist" style="display:none">
+
+              <!-- Registration open banner -->
+              <div class="mob-reg-open-banner">
+                <div class="mrob-title"><i class="ti ti-bell-ringing" style="font-size:15px"></i>Registration is now open!</div>
+                <div class="mrob-sub">Summer Art Studio opened for registration today. Complete checkout to secure Emma's spot.</div>
+                <button class="mrob-btn" onclick="openWishlistCheckout()">Checkout wishlist — $235.00</button>
+              </div>
+
+              <div class="pub-section-label">Saved programs (2)</div>
+
+              <!-- Item 1: Art Studio — OPEN -->
+              <div class="mob-wl-item open">
+                <div class="mob-wl-header">
+                  <div class="mob-wl-icon bg-amber-img"><i class="ti ti-palette"></i></div>
+                  <div class="mob-wl-info">
+                    <div class="mob-wl-name">Summer Art Studio — Emma</div>
+                    <div class="mob-wl-meta">M–F · 1–3pm · Ages 7–13 · $150</div>
+                  </div>
+                  <span class="badge badge-open" style="background:#D1FAE5;color:#065F46">Open!</span>
+                </div>
+                <div class="mob-wl-body">
+                  <div class="mob-wl-checks">
+                    <span class="mob-wl-check done"><i class="ti ti-check" style="font-size:11px"></i>Form complete</span>
+                    <span class="mob-wl-check done"><i class="ti ti-check" style="font-size:11px"></i>Waiver signed</span>
+                  </div>
+                  <div class="mob-wl-btns">
+                    <button class="mob-wl-btn green" onclick="openWishlistCheckout()"><i class="ti ti-shopping-cart" style="font-size:13px"></i>Checkout now</button>
+                    <button class="mob-wl-btn"><i class="ti ti-edit" style="font-size:13px"></i>Edit</button>
+                    <button class="mob-wl-btn" style="color:var(--red)"><i class="ti ti-x" style="font-size:13px"></i>Remove</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 2: Soccer League — pending -->
+              <div class="mob-wl-item">
+                <div class="mob-wl-header">
+                  <div class="mob-wl-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                  <div class="mob-wl-info">
+                    <div class="mob-wl-name">Fall Soccer League — Liam</div>
+                    <div class="mob-wl-meta">Sat · 9–11am · Ages 8–14 · $85</div>
+                  </div>
+                  <span class="preview-badge" style="font-size:9px"><i class="ti ti-clock"></i>Opens Jul 1</span>
+                </div>
+                <div class="mob-wl-body">
+                  <div class="mob-wl-checks">
+                    <span class="mob-wl-check done"><i class="ti ti-check" style="font-size:11px"></i>Form complete</span>
+                    <span class="mob-wl-check todo"><i class="ti ti-clock" style="font-size:11px"></i>Waiver pending</span>
+                  </div>
+                  <div class="mob-wl-btns">
+                    <button class="mob-wl-btn" style="color:var(--amber);border-color:var(--amber)" onclick="startRegistration('soccer')"><i class="ti ti-pencil" style="font-size:13px"></i>Complete waiver</button>
+                    <button class="mob-wl-btn"><i class="ti ti-edit" style="font-size:13px"></i>Edit</button>
+                    <button class="mob-wl-btn" style="color:var(--red)"><i class="ti ti-x" style="font-size:13px"></i>Remove</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pub-section-label" style="margin-top:10px">Notification settings</div>
+              <div class="txn-item">
+                <div class="txn-item-header" style="cursor:default">
+                  <div class="txn-icon" style="background:var(--bg-tertiary)"><i class="ti ti-bell" style="color:var(--text-secondary);font-size:18px"></i></div>
+                  <div class="txn-info">
+                    <div class="txn-name">Wishlist alerts</div>
+                    <div class="txn-meta">Email + SMS when registration opens · Enabled</div>
+                  </div>
+                  <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+                </div>
+              </div>
+
             </div>
 
             <!-- PASSES TAB (mobile) -->
@@ -3682,6 +4005,10 @@
     <button class="web-nav-link" onclick="webNav(this,'wfacilities')"><i class="ti ti-building"></i>Facilities</button>
     <button class="web-nav-link" onclick="webNav(this,'waccount')"><i class="ti ti-user-circle"></i>My Account</button>
     <div class="web-nav-right">
+      <div style="position:relative;cursor:pointer;display:inline-flex;align-items:center" onclick="webNav(document.querySelectorAll('.web-nav-link')[4],'waccount');setTimeout(function(){webAcctTab(document.querySelector('.web-acct-tab[onclick*=wacct-wishlist]'),'wacct-wishlist');},50)">
+        <i class="ti ti-heart" style="font-size:22px;color:rgba(255,255,255,0.8)"></i>
+        <div class="web-cart-badge">2</div>
+      </div>
       <button class="web-nav-sign-in">Sign in</button>
       <button class="web-nav-register">Register</button>
     </div>
@@ -3886,6 +4213,89 @@
             <div class="web-prog-elig">
               <span class="web-elig-chip wec-adult"><i class="ti ti-check" style="font-size:10px"></i>Sarah</span>
               <span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Children (18+)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coming soon / wishlist programs -->
+      <div class="web-section-header" style="margin-top:8px">
+        <h2 style="display:flex;align-items:center;gap:10px">Coming soon <span class="preview-badge"><i class="ti ti-clock"></i>Preview mode</span></h2>
+        <span style="font-size:12px;color:var(--text-secondary)">Add to wishlist to pre-register before registration opens</span>
+      </div>
+      <div class="web-program-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:8px">
+
+        <!-- Art Studio - preview -->
+        <div class="web-prog-card preview-state">
+          <div class="web-prog-card-img bg-amber-img" style="position:relative">
+            <i class="ti ti-palette"></i>
+            <div class="web-prog-preview-overlay"><span class="web-prog-preview-label">PREVIEW</span></div>
+          </div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Summer Art Studio</div>
+            <div class="web-prog-meta">Mon–Fri · 1–3pm · Ages 7–13 · Recreation Center</div>
+            <div class="web-prog-footer" style="align-items:flex-start;flex-direction:column;gap:6px">
+              <div class="web-prog-price">$150</div>
+              <div class="opens-label"><i class="ti ti-clock" style="font-size:12px"></i>Registration opens Jul 1, 2026</div>
+            </div>
+            <div class="web-prog-elig" style="margin-top:8px">
+              <span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span>
+              <span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <button class="wishlist-add-btn added" style="flex:1;justify-content:center" onclick="addToWishlistWeb(this,'Summer Art Studio')">
+                <i class="ti ti-heart"></i>Added to wishlist
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fall Soccer - preview -->
+        <div class="web-prog-card preview-state">
+          <div class="web-prog-card-img bg-green-img" style="position:relative">
+            <i class="ti ti-ball-football"></i>
+            <div class="web-prog-preview-overlay"><span class="web-prog-preview-label">PREVIEW</span></div>
+          </div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Fall Soccer League</div>
+            <div class="web-prog-meta">Saturday · 9–11am · Ages 8–14 · Centennial Fields</div>
+            <div class="web-prog-footer" style="align-items:flex-start;flex-direction:column;gap:6px">
+              <div class="web-prog-price">$85</div>
+              <div class="opens-label"><i class="ti ti-clock" style="font-size:12px"></i>Registration opens Jul 1, 2026</div>
+            </div>
+            <div class="web-prog-elig" style="margin-top:8px">
+              <span class="web-elig-chip wec-no"><i class="ti ti-x" style="font-size:10px"></i>Emma (age min)</span>
+              <span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <button class="wishlist-add-btn added" style="flex:1;justify-content:center" onclick="addToWishlistWeb(this,'Fall Soccer League')">
+                <i class="ti ti-heart"></i>Added to wishlist
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fall Tennis - not yet wishlisted -->
+        <div class="web-prog-card preview-state">
+          <div class="web-prog-card-img bg-blue-img" style="position:relative">
+            <i class="ti ti-ball-tennis"></i>
+            <div class="web-prog-preview-overlay"><span class="web-prog-preview-label">PREVIEW</span></div>
+          </div>
+          <div class="web-prog-card-body">
+            <div class="web-prog-name">Junior Tennis Academy</div>
+            <div class="web-prog-meta">Sat/Sun · 10am–12pm · Ages 7–16 · Riverside Courts</div>
+            <div class="web-prog-footer" style="align-items:flex-start;flex-direction:column;gap:6px">
+              <div class="web-prog-price">$110</div>
+              <div class="opens-label"><i class="ti ti-clock" style="font-size:12px"></i>Registration opens Jul 15, 2026</div>
+            </div>
+            <div class="web-prog-elig" style="margin-top:8px">
+              <span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Emma</span>
+              <span class="web-elig-chip wec-yes"><i class="ti ti-check" style="font-size:10px"></i>Liam</span>
+            </div>
+            <div style="margin-top:10px">
+              <button class="wishlist-add-btn" style="width:100%;justify-content:center" onclick="addToWishlistWeb(this,'Junior Tennis Academy')">
+                <i class="ti ti-heart"></i>Add to wishlist
+              </button>
             </div>
           </div>
         </div>
@@ -4497,6 +4907,7 @@
           <!-- Account tabs -->
           <div class="web-acct-tabs">
             <button class="web-acct-tab active" onclick="webAcctTab(this,'wacct-regs')">Registrations</button>
+            <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-wishlist')">Wishlist <span style="background:#F87171;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:3px;vertical-align:1px">2</span></button>
             <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-passes')">My Passes</button>
             <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-txns')">Transactions</button>
             <button class="web-acct-tab" onclick="webAcctTab(this,'wacct-settings')">Settings</button>
@@ -4735,6 +5146,151 @@
                 </div>
                 <div style="margin-top:10px;font-size:12px;color:var(--text-tertiary);line-height:1.6">
                   This report contains verified check-in records suitable for health insurance benefit reimbursement. It includes member name, program name, check-in date/time, and location for each visit.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WISHLIST PANE -->
+          <div id="wacct-wishlist" class="web-acct-pane">
+
+            <!-- Registration open banner -->
+            <div class="wishlist-open-banner">
+              <div class="wob-icon"><i class="ti ti-bell-ringing"></i></div>
+              <div class="wob-text">
+                <h3>Registration is now open — Summer Art Studio!</h3>
+                <p>The program you wishlisted opened for registration today. Your form and waiver are complete — just checkout to secure Emma's spot before it fills up.</p>
+              </div>
+              <button class="wob-btn" onclick="openWishlistCheckout()">Checkout now →</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start">
+              <div>
+                <div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:16px">My wishlist (2 programs)</div>
+
+                <!-- Art Studio - OPEN -->
+                <div class="wishlist-item-card open-state">
+                  <div class="wic-header">
+                    <div class="wic-icon bg-amber-img"><i class="ti ti-palette"></i></div>
+                    <div class="wic-info">
+                      <div class="wic-name">Summer Art Studio</div>
+                      <div class="wic-meta">Mon–Fri · 1–3pm · Ages 7–13 · Recreation Center Room B</div>
+                    </div>
+                    <div class="wic-status">
+                      <div><span class="badge badge-open" style="background:#D1FAE5;color:#065F46">Registration open!</span></div>
+                      <div class="wic-opens open" style="margin-top:4px"><i class="ti ti-clock" style="font-size:12px"></i> Opened today</div>
+                    </div>
+                  </div>
+                  <div class="wic-body">
+                    <div style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Pre-registration checklist</div>
+                    <div class="wic-checklist">
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Participant selected — <strong>Emma Johnson</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Session selected — <strong>Session A · Jun 23 – Jul 11</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Registration form completed — <strong>Jun 14, 2026</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Waiver signed — <strong>Sarah Johnson · Jun 14, 2026</strong></span>
+                      </div>
+                    </div>
+                    <div class="wic-actions">
+                      <button class="wic-complete-btn" onclick="openWishlistCheckout()"><i class="ti ti-shopping-cart" style="font-size:16px"></i>Complete registration — $150.00</button>
+                      <button class="wic-edit-btn">Edit</button>
+                      <button class="wic-remove-btn">Remove</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fall Soccer - pending -->
+                <div class="wishlist-item-card">
+                  <div class="wic-header">
+                    <div class="wic-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+                    <div class="wic-info">
+                      <div class="wic-name">Fall Soccer League</div>
+                      <div class="wic-meta">Saturday · 9–11am · Ages 8–14 · Centennial Fields</div>
+                    </div>
+                    <div class="wic-status">
+                      <div><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1, 2026</span></div>
+                      <div class="wic-opens" style="margin-top:4px"><i class="ti ti-calendar" style="font-size:12px"></i> 9 days away</div>
+                    </div>
+                  </div>
+                  <div class="wic-body">
+                    <div style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Pre-registration checklist</div>
+                    <div class="wic-checklist">
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Participant selected — <strong>Liam Johnson</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Session selected — <strong>Session A · Sep 6 – Oct 25</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon done"><i class="ti ti-check" style="font-size:11px"></i></div>
+                        <span class="wic-check-label">Registration form completed — <strong>Jun 15, 2026</strong></span>
+                      </div>
+                      <div class="wic-check-row">
+                        <div class="wic-check-icon pending"><i class="ti ti-alert-circle" style="font-size:11px"></i></div>
+                        <span class="wic-check-label" style="color:var(--amber);font-weight:500">Waiver not yet signed — <span style="text-decoration:underline;cursor:pointer" onclick="regGoStep(3);webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')">Complete waiver now</span></span>
+                      </div>
+                    </div>
+                    <div style="background:var(--amber-bg);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                      <i class="ti ti-alert-circle" style="font-size:15px;flex-shrink:0"></i>
+                      Complete the waiver before Jul 1 so you're ready to checkout the moment registration opens.
+                    </div>
+                    <div class="wic-actions">
+                      <button class="wic-edit-btn" style="flex:1;background:var(--amber);color:#fff;border-color:var(--amber)" onclick="regGoStep(3);webNav(document.querySelectorAll('.web-nav-link')[1],'wregister')"><i class="ti ti-pencil" style="font-size:14px;vertical-align:-1px"></i> Complete waiver</button>
+                      <button class="wic-edit-btn">Edit</button>
+                      <button class="wic-remove-btn">Remove</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Notification prefs -->
+                <div class="card" style="margin-top:8px">
+                  <div class="card-header"><h3 style="font-size:14px;font-weight:600">Wishlist notifications</h3></div>
+                  <div class="toggle-row">
+                    <div><div class="toggle-label">Email alerts when registration opens</div><div class="toggle-desc">Receive an email the moment a wishlisted program opens for registration</div></div>
+                    <div class="toggle on"><div class="toggle-thumb"></div></div>
+                  </div>
+                  <div class="toggle-row">
+                    <div><div class="toggle-label">SMS / text message alerts</div><div class="toggle-desc">Get a text to (413) 555-0198 when a program opens</div></div>
+                    <div class="toggle on"><div class="toggle-thumb"></div></div>
+                  </div>
+                  <div class="toggle-row">
+                    <div><div class="toggle-label">Reminder if waiver or form is incomplete</div><div class="toggle-desc">Remind me 48 hours before registration opens if my pre-registration is incomplete</div></div>
+                    <div class="toggle on"><div class="toggle-thumb"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Checkout summary -->
+              <div class="wishlist-checkout-card">
+                <div class="wcc-header"><i class="ti ti-heart" style="font-size:16px"></i>Wishlist checkout</div>
+                <div class="wcc-body">
+                  <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Ready to checkout (1)</div>
+                  <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--green-bg);border-radius:var(--radius-md);margin-bottom:12px">
+                    <div class="wic-check-icon done" style="flex-shrink:0"><i class="ti ti-check" style="font-size:11px"></i></div>
+                    <div><div style="font-size:12px;font-weight:600;color:var(--green)">Summer Art Studio</div><div style="font-size:11px;color:var(--text-secondary)">Emma · Session A · $150</div></div>
+                  </div>
+                  <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;margin-top:14px">Pending registration opens (1)</div>
+                  <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--amber-bg);border-radius:var(--radius-md);margin-bottom:14px;opacity:0.75">
+                    <div class="wic-check-icon pending" style="flex-shrink:0"><i class="ti ti-clock" style="font-size:11px"></i></div>
+                    <div><div style="font-size:12px;font-weight:600;color:var(--amber)">Fall Soccer League</div><div style="font-size:11px;color:var(--text-secondary)">Liam · Opens Jul 1 · $85</div></div>
+                  </div>
+                  <div class="wcc-line"><span>Summer Art Studio</span><span>$150.00</span></div>
+                  <div class="wcc-line"><span>Processing fee</span><span>$1.50</span></div>
+                  <div class="wcc-total"><span>Due now</span><span>$151.50</span></div>
+                  <button class="wcc-checkout-btn" onclick="openWishlistCheckout()"><i class="ti ti-lock" style="font-size:16px"></i>Complete registration — $151.50</button>
+                  <div class="wcc-pending-note">Fall Soccer League will be ready to checkout when registration opens on Jul 1. You'll receive an alert automatically.</div>
                 </div>
               </div>
             </div>
@@ -5443,6 +5999,16 @@
           </div>
         </div>
         <div class="admin-body">
+          <!-- Wishlist signups banner -->
+          <div style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);border:1px solid #C4B5FD;border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+            <i class="ti ti-heart" style="font-size:24px;color:#5B21B6;flex-shrink:0"></i>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:600;color:#3B0764;margin-bottom:2px">21 wishlist signups across 3 programs</div>
+              <div style="font-size:12px;color:#5B21B6">Summer Art Studio (14), Fall Soccer (5), Junior Tennis (2) — all forms &amp; waivers submitted and ready for when registration opens</div>
+            </div>
+            <button class="btn-secondary" style="white-space:nowrap;font-size:12px"><i class="ti ti-users"></i>View signups</button>
+          </div>
+
           <div class="card">
             <table class="data-table">
               <thead>
@@ -5451,6 +6017,7 @@
                   <th>Category</th>
                   <th>Schedule</th>
                   <th>Enrollment</th>
+                  <th>Wishlist</th>
                   <th>Status</th>
                   <th></th>
                 </tr>
@@ -5461,6 +6028,7 @@
                   <td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Aquatics</span></td>
                   <td>MWF · 9–10am</td>
                   <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:80%;background:#F59E0B"></div></div><span style="font-size:11px;color:var(--text-secondary)">16/20</span></td>
+                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
                   <td><span class="badge badge-few">Almost full</span></td>
                   <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
                 </tr>
@@ -5469,15 +6037,35 @@
                   <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td>
                   <td>T/Th · 10–11:30am</td>
                   <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:55%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">11/20</span></td>
+                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
                   <td><span class="badge badge-open">Open</span></td>
                   <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
                 </tr>
-                <tr>
+                <tr style="background:#FDFAFF">
                   <td><div style="font-weight:500">Summer Art Studio</div><div style="font-size:11px;color:var(--text-secondary)">Ages 7–13</div></td>
                   <td><span class="prog-tag" style="background:var(--amber-bg);color:var(--amber)">Arts</span></td>
                   <td>M–F · 1–3pm</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:100%;background:#EF4444"></div></div><span style="font-size:11px;color:var(--text-secondary)">20/20</span></td>
-                  <td><span class="badge badge-full">Full · 14 waitlist</span></td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/20</span></td>
+                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>14 saved</span></td>
+                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr style="background:#FDFAFF">
+                  <td><div style="font-weight:500">Fall Soccer League</div><div style="font-size:11px;color:var(--text-secondary)">Ages 8–14</div></td>
+                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td>
+                  <td>Sat · 9–11am</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/20</span></td>
+                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>5 saved</span></td>
+                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
+                </tr>
+                <tr style="background:#FDFAFF">
+                  <td><div style="font-weight:500">Junior Tennis Academy</div><div style="font-size:11px;color:var(--text-secondary)">Ages 7–16</div></td>
+                  <td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Sports</span></td>
+                  <td>Sat/Sun · 10am–12pm</td>
+                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/24</span></td>
+                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>2 saved</span></td>
+                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 15</span></td>
                   <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
                 </tr>
                 <tr>
@@ -5485,27 +6073,48 @@
                   <td><span class="prog-tag" style="background:var(--purple-bg);color:var(--purple)">Fitness</span></td>
                   <td>Sat · 8–9am</td>
                   <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:40%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">8/20</span></td>
+                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
                   <td><span class="badge badge-open">Open</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr>
-                  <td><div style="font-weight:500">Senior Fitness</div><div style="font-size:11px;color:var(--text-secondary)">Ages 60+</div></td>
-                  <td><span class="prog-tag" style="background:var(--teal-bg);color:var(--teal)">Seniors</span></td>
-                  <td>MWF · 10–11am</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:65%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">13/20</span></td>
-                  <td><span class="badge badge-open">Open</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr>
-                  <td><div style="font-weight:500">Adult Basketball League</div><div style="font-size:11px;color:var(--text-secondary)">Adults 18+</div></td>
-                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Sports</span></td>
-                  <td>Wed · 6–9pm</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:85%;background:#F59E0B"></div></div><span style="font-size:11px;color:var(--text-secondary)">17/20</span></td>
-                  <td><span class="badge badge-few">Almost full</span></td>
                   <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Preview & Wishlist settings example -->
+          <div style="margin-top:20px;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:10px">Program setup: Preview &amp; wishlist settings</div>
+          <div class="preview-settings-card">
+            <div class="psc-header"><i class="ti ti-eye" style="font-size:16px"></i>Preview &amp; wishlist configuration — Summer Art Studio</div>
+            <div class="psc-body">
+              <div class="psc-row">
+                <div><div class="psc-label">Show program in public catalog before registration opens</div><div class="psc-sub">Residents can view details but not register</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Preview start date</div><div class="psc-sub">When the program first appears publicly</div></div>
+                <div class="psc-date">Jun 1, 2026 · 8:00 AM</div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Registration open date &amp; time</div><div class="psc-sub">When residents can complete checkout and pay</div></div>
+                <div class="psc-date">Jul 1, 2026 · 9:00 AM</div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Allow residents to add to wishlist</div><div class="psc-sub">Residents can pre-submit form, waiver, and participant selection</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Require form &amp; waiver before wishlist</div><div class="psc-sub">Residents must complete pre-registration before saving to wishlist</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Send notification when registration opens</div><div class="psc-sub">Email + SMS alert to all residents with this program in their wishlist</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="psc-row">
+                <div><div class="psc-label">Wishlist signups so far</div><div class="psc-sub">Residents with form &amp; waiver complete</div></div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="wl-count-badge"><i class="ti ti-heart"></i>14 saved</span><span style="font-size:12px;color:var(--text-secondary)">12 fully complete</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -6500,6 +7109,47 @@
         rl.appendChild(lbl);
       });
     }
+  }
+
+  /* ── WISHLIST ── */
+  function addToWishlistWeb(btn, progName) {
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="ti ti-heart"></i>Added to wishlist';
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ ' + progName + ' added to your wishlist. Complete your form & waiver to finish.';
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display='none'; }, 3500);
+    }
+  }
+
+  function addToWishlistMob(btn) {
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="ti ti-heart"></i>';
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ Added to wishlist — complete your form & waiver';
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display='none'; }, 3000);
+    }
+  }
+
+  function openWishlistCheckout() {
+    // Launch the registration flow for Art Studio (already pre-filled from wishlist)
+    startRegistration('swim');
+    // Jump to step 4 (review & pay) since form/waiver are complete
+    setTimeout(function() { regGoStep(4); }, 100);
+  }
+
+  // Override mobile account tab to include wishlist
+  function mobAcctTab(btn, pane) {
+    document.querySelectorAll('.txn-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    ['mob-registrations','mob-wishlist','mob-passes','mob-transactions','mob-household'].forEach(function(p){
+      var el=document.getElementById(p); if(el) el.style.display='none';
+    });
+    var target = document.getElementById(pane);
+    if (target) target.style.display = 'block';
   }
 
   /* ── PASSES & TICKETS ── */
