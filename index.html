@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070126 Added search and calendar reg display to public --->
+  <!--- PR 070226 Add reporting console with templates, report builder, custom reports, and GL code management --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,77 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── REPORTING CONSOLE ── */
+  .report-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .report-tab { padding:13px 22px; border:none; background:none; font-family:var(--font); font-size:13px; font-weight:500; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; display:flex; align-items:center; gap:7px; }
+  .report-tab.active { color:var(--blue); border-bottom-color:var(--blue); background:var(--blue-light); }
+  .report-tab i { font-size:16px; }
+  .report-pane { display:none; }
+  .report-pane.active { display:block; }
+  .report-category-label { font-size:11px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.6px; margin:20px 0 10px; display:flex; align-items:center; gap:8px; }
+  .report-category-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .report-card { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; gap:14px; transition:all 0.1s; }
+  .report-card:hover { border-color:var(--blue-border); background:var(--blue-light); }
+  .report-card-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .report-card-info { flex:1; }
+  .report-card-name { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+  .report-card-desc { font-size:11px; color:var(--text-secondary); line-height:1.5; }
+  .report-card-meta { font-size:10px; color:var(--text-tertiary); margin-top:3px; }
+  .badge-custom { background:#EDE9FE; color:#5B21B6; font-size:10px; font-weight:700; padding:2px 7px; border-radius:var(--radius-pill); margin-left:6px; }
+  .report-card-actions { display:flex; gap:6px; flex-shrink:0; }
+  .rca-btn { display:flex; align-items:center; gap:5px; padding:7px 12px; border-radius:var(--radius-md); border:1px solid var(--border-med); background:var(--bg-primary); font-family:var(--font); font-size:12px; font-weight:500; color:var(--text-primary); cursor:pointer; white-space:nowrap; }
+  .rca-btn.primary { background:var(--blue); color:#fff; border-color:var(--blue); }
+  .rca-btn.green { background:var(--green); color:#fff; border-color:var(--green); }
+  .rca-btn i { font-size:14px; }
+  /* Schedule modal */
+  .sched-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:800; align-items:center; justify-content:center; padding:16px; }
+  .sched-modal-overlay.open { display:flex; }
+  .sched-modal { background:var(--bg-primary); border-radius:18px; width:100%; max-width:500px; box-shadow:0 24px 60px rgba(0,0,0,0.2); overflow:hidden; }
+  .sched-modal-header { background:var(--blue-dark); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+  .sched-modal-header h3 { font-size:15px; font-weight:600; }
+  .sched-modal-body { padding:20px; }
+  .sched-field { margin-bottom:14px; }
+  .sched-field label { font-size:12px; font-weight:500; color:var(--text-secondary); display:block; margin-bottom:5px; }
+  .sched-field select, .sched-field input { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:8px 12px; font-size:13px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; }
+  .sched-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .sched-existing { background:var(--bg-secondary); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:14px; }
+  .sched-existing-label { font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; }
+  .sched-existing-row { display:flex; align-items:center; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+  .sched-existing-row:last-child { border-bottom:none; }
+  /* Report builder */
+  .rb-layout { display:grid; grid-template-columns:260px 1fr; gap:20px; align-items:start; }
+  .rb-panel { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+  .rb-panel-header { padding:12px 16px; border-bottom:1px solid var(--border); font-size:13px; font-weight:600; color:var(--text-primary); background:var(--bg-secondary); }
+  .rb-step { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
+  .rb-step-num { width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  .rb-step-num.done { background:var(--green); }
+  .rb-step-body { flex:1; }
+  .rb-step-label { font-size:12px; font-weight:600; color:var(--text-primary); margin-bottom:6px; }
+  .rb-step select, .rb-step input { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:7px 10px; font-size:12px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; margin-bottom:6px; }
+  .rb-col-list { display:flex; flex-direction:column; gap:5px; }
+  .rb-col-item { display:flex; align-items:center; gap:8px; padding:5px 8px; background:var(--bg-secondary); border-radius:6px; font-size:11px; color:var(--text-secondary); cursor:grab; }
+  .rb-col-item.selected { background:var(--blue-light); color:var(--blue-dark); font-weight:500; }
+  .rb-col-item .drag { color:var(--text-tertiary); font-size:14px; }
+  .rb-col-item .del { margin-left:auto; color:var(--text-tertiary); cursor:pointer; font-size:14px; }
+  .rb-filter-grid { display:flex; flex-direction:column; gap:8px; }
+  .rb-filter-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  /* Preview table */
+  .preview-table-wrap { overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border); }
+  .preview-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .preview-table th { background:var(--bg-secondary); padding:9px 12px; text-align:left; font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.3px; border-bottom:1px solid var(--border); white-space:nowrap; }
+  .preview-table td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text-primary); white-space:nowrap; }
+  .preview-table tr:last-child td { border-bottom:none; }
+  .preview-table tr:hover td { background:var(--bg-secondary); }
+  /* GL code table */
+  .gl-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .gl-table th { background:var(--bg-secondary); padding:10px 14px; text-align:left; font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.4px; border-bottom:1px solid var(--border); }
+  .gl-table td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  .gl-table tr:last-child td { border-bottom:none; }
+  .gl-table tr:hover td { background:var(--bg-secondary); }
+  .gl-code-pill { font-size:12px; font-weight:700; color:var(--blue-dark); background:var(--blue-light); padding:3px 10px; border-radius:var(--radius-pill); font-family:monospace; letter-spacing:0.5px; }
+  .gl-input { border:1px solid var(--border-med); border-radius:6px; padding:5px 9px; font-size:12px; font-family:monospace; color:var(--text-primary); background:var(--bg-primary); outline:none; width:110px; }
+  .gl-input:focus { border-color:var(--blue); }
 
   /* ── CALENDAR VIEW STYLES ── */
 
@@ -6239,6 +6310,7 @@
       <button class="sidebar-item" onclick="adminNav(this,'checkin')"><i class="ti ti-scan"></i>Check-in</button>
       <div class="sidebar-section-label">Finance</div>
       <button class="sidebar-item" onclick="adminNav(this,'finance')"><i class="ti ti-cash"></i>Payments</button>
+      <button class="sidebar-item" onclick="adminNav(this,'glcodes')"><i class="ti ti-list-numbers"></i>GL Codes</button>
       <button class="sidebar-item" onclick="adminNav(this,'reports')"><i class="ti ti-chart-bar"></i>Reports</button>
       <div class="sidebar-footer">
         <button class="sidebar-item" onclick="adminNav(this,'settings')"><i class="ti ti-settings"></i>Settings</button>
@@ -6958,41 +7030,447 @@
       <!-- REPORTS -->
       <div id="admin-reports" class="admin-section">
         <div class="admin-topbar">
-          <div class="topbar-title">Reports</div>
+          <div class="topbar-title">Reporting console</div>
           <div class="topbar-actions">
-            <button class="btn-secondary"><i class="ti ti-download"></i>Export PDF</button>
-            <button class="btn-secondary"><i class="ti ti-table"></i>Export CSV</button>
+            <button class="btn-secondary" onclick="openSchedModal('Scheduled Reports')"><i class="ti ti-clock"></i>Scheduled reports</button>
+            <button class="btn-primary" onclick="reportTab(document.querySelectorAll('.report-tab')[1],'rp-builder')"><i class="ti ti-plus"></i>New report</button>
           </div>
         </div>
         <div class="admin-body">
-          <div class="two-col">
-            <div class="card">
-              <div class="card-header"><h3>Enrollment by category</h3></div>
-              <div class="chart-wrap">
-                <div class="bar-chart" id="enroll-chart"></div>
-                <div style="display:flex;justify-content:space-around;margin-top:8px;" id="enroll-labels"></div>
+          <!-- Tabs -->
+          <div class="report-tabs">
+            <button class="report-tab active" onclick="reportTab(this,'rp-templates')"><i class="ti ti-layout-list"></i>Template reports</button>
+            <button class="report-tab" onclick="reportTab(this,'rp-builder')"><i class="ti ti-tools"></i>Report builder</button>
+            <button class="report-tab" onclick="reportTab(this,'rp-custom')"><i class="ti ti-code"></i>Custom reports</button>
+          </div>
+
+          <!-- ── PANE 1: TEMPLATES ── -->
+          <div id="rp-templates" class="report-pane active">
+
+            <div class="report-category-label"><i class="ti ti-cash" style="font-size:14px;color:var(--green)"></i>Financial</div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-receipt-2"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Revenue summary by program</div>
+                <div class="report-card-desc">Total revenue per program broken out by fee type — program fee, processing fee, out-of-town surcharge, late fee. Includes GL code mapping per line.</div>
+                <div class="report-card-meta">Last run: Jun 18, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Revenue Summary')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('revenue')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
               </div>
             </div>
-            <div class="card">
-              <div class="card-header"><h3>Revenue trend (2026)</h3></div>
-              <div class="chart-wrap">
-                <div class="bar-chart" id="rev-chart"></div>
-                <div style="display:flex;justify-content:space-between;margin-top:8px;" id="rev-labels"></div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-list-numbers"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Transaction ledger with GL codes</div>
+                <div class="report-card-desc">Every transaction line itemized with date, member, program, charge type, amount, and assigned GL code. Ready to import into accounting systems.</div>
+                <div class="report-card-meta">Last run: Jun 20, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Transaction Ledger')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('ledger')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-rotate-clockwise"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Refunds and adjustments</div>
+                <div class="report-card-desc">All refunds, credits, and manual adjustments within the date range, with original charge reference and GL offset code.</div>
+                <div class="report-card-meta">Last run: Jun 15, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Refunds')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('revenue')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-category-label"><i class="ti ti-users" style="font-size:14px;color:var(--blue)"></i>Enrollment</div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-clipboard-list"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Enrollment roster by program</div>
+                <div class="report-card-desc">Full participant list per program with name, age, household, registration date, session, and payment status. Includes emergency contact info.</div>
+                <div class="report-card-meta">Last run: Jun 21, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Enrollment Roster')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-list-check"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Waitlist report</div>
+                <div class="report-card-desc">All active waitlists with position, member name, program, session, and wait time. Includes conversion rate from waitlist to enrollment.</div>
+                <div class="report-card-meta">Last run: Jun 20, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Waitlist')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-chart-bar"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Enrollment trends by category</div>
+                <div class="report-card-desc">Registration counts by program category over time — useful for seasonal planning and identifying popular vs. under-enrolled program areas.</div>
+                <div class="report-card-meta">Last run: Jun 10, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Enrollment Trends')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-category-label"><i class="ti ti-scan" style="font-size:14px;color:var(--purple)"></i>Attendance</div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-file-certificate"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Attendance by member (insurance report)</div>
+                <div class="report-card-desc">Individual check-in history with date, time, location, and program. Formatted for health insurance fitness benefit reimbursement submissions.</div>
+                <div class="report-card-meta">Last run: Jun 18, 2026 · Excel / CSV / PDF</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Insurance Attendance')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('attendance')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-calendar-stats"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Facility utilization</div>
+                <div class="report-card-desc">Check-in counts by facility and time block. Identifies peak hours and underutilized slots for scheduling optimization.</div>
+                <div class="report-card-meta">Last run: Jun 12, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Facility Utilization')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('attendance')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-category-label"><i class="ti ti-id-badge" style="font-size:14px;color:var(--amber)"></i>Membership</div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-users-group"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Active membership roster</div>
+                <div class="report-card-desc">All current members with membership type, start/end date, household members, ZIP code, fee assistance status, and total spend YTD.</div>
+                <div class="report-card-meta">Last run: Jun 22, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Membership Roster')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-heart"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Fee assistance utilization</div>
+                <div class="report-card-desc">Residents receiving fee assistance with subsidy amount, program, and percentage of total enrollment. Useful for grant reporting and budget planning.</div>
+                <div class="report-card-meta">Last run: Jun 5, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Fee Assistance')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-category-label"><i class="ti ti-shield-check" style="font-size:14px;color:var(--red)"></i>Compliance</div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-writing"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Unsigned waivers</div>
+                <div class="report-card-desc">All enrollments where the required waiver has not been signed, grouped by program. Includes link to follow up with the account holder.</div>
+                <div class="report-card-meta">Last run: Jun 21, 2026 · Excel / CSV</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Unsigned Waivers')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <!-- Live preview panel -->
+            <div id="report-preview-panel" style="display:none;margin-top:24px">
+              <div class="card">
+                <div class="card-header">
+                  <h3 id="preview-title" style="font-size:14px;font-weight:600">Report preview</h3>
+                  <div style="display:flex;gap:8px">
+                    <button class="rca-btn green"><i class="ti ti-file-spreadsheet"></i>Download Excel</button>
+                    <button class="rca-btn"><i class="ti ti-file-text"></i>Download CSV</button>
+                    <button class="rca-btn" onclick="document.getElementById('report-preview-panel').style.display='none'"><i class="ti ti-x"></i>Close</button>
+                  </div>
+                </div>
+                <div style="padding:10px 18px;background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;gap:16px;font-size:12px;color:var(--text-secondary);flex-wrap:wrap">
+                  <span>Date range: <strong style="color:var(--text-primary)">Jun 1–22, 2026</strong></span>
+                  <span>Records: <strong style="color:var(--text-primary)" id="preview-count">—</strong></span>
+                  <span>Generated: <strong style="color:var(--text-primary)">Jun 22, 2026 · 11:42am</strong></span>
+                </div>
+                <div class="preview-table-wrap" id="preview-table-wrap" style="margin:0"></div>
               </div>
             </div>
           </div>
-          <div class="card one-col">
-            <div class="card-header"><h3>Program performance summary</h3></div>
-            <table class="perf-table">
-              <thead><tr><th>Program</th><th>Enrolled</th><th>Revenue</th><th>Fill rate</th><th>Avg satisfaction</th></tr></thead>
+
+          <!-- ── PANE 2: REPORT BUILDER ── -->
+          <div id="rp-builder" class="report-pane">
+            <div class="rb-layout">
+              <div class="rb-panel">
+                <div class="rb-panel-header">Build your report</div>
+                <div class="rb-step">
+                  <div class="rb-step-num done">1</div>
+                  <div class="rb-step-body">
+                    <div class="rb-step-label">Report type</div>
+                    <select><option selected>Registration / Enrollment</option><option>Financial / Revenue</option><option>Attendance / Check-in</option><option>Membership</option><option>Waitlist</option><option>Pass &amp; Ticket sales</option></select>
+                  </div>
+                </div>
+                <div class="rb-step">
+                  <div class="rb-step-num done">2</div>
+                  <div class="rb-step-body">
+                    <div class="rb-step-label">Columns <span style="font-size:10px;color:var(--text-tertiary);font-weight:400">drag to reorder</span></div>
+                    <div class="rb-col-list">
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Participant name<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Program<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Session<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Registration date<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Amount paid<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>GL code<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item selected"><i class="ti ti-grip-vertical drag"></i>Payment method<i class="ti ti-x del"></i></div>
+                      <div class="rb-col-item"><i class="ti ti-grip-vertical drag"></i>Age<i class="ti ti-plus del"></i></div>
+                      <div class="rb-col-item"><i class="ti ti-grip-vertical drag"></i>ZIP code<i class="ti ti-plus del"></i></div>
+                      <div class="rb-col-item"><i class="ti ti-grip-vertical drag"></i>Fee assistance<i class="ti ti-plus del"></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rb-step">
+                  <div class="rb-step-num done">3</div>
+                  <div class="rb-step-body">
+                    <div class="rb-step-label">Filters</div>
+                    <div class="rb-filter-grid">
+                      <div class="rb-filter-row">
+                        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px">Start date</div><input type="date" value="2026-06-01"></div>
+                        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px">End date</div><input type="date" value="2026-06-22"></div>
+                      </div>
+                      <select><option>All programs</option><option>Youth Swim Lessons</option><option>Soccer Skills Camp</option><option>Adult Yoga</option></select>
+                      <select><option>All categories</option><option>Aquatics</option><option>Youth Sports</option><option>Arts</option><option>Fitness</option><option>Seniors</option></select>
+                      <select><option>All statuses</option><option>Active</option><option>Waitlist</option><option>Cancelled</option><option>Completed</option></select>
+                      <select><option>All facilities</option><option>Community Center Pool</option><option>Maple Street Gym</option><option>Centennial Fields</option></select>
+                    </div>
+                  </div>
+                </div>
+                <div class="rb-step" style="border-bottom:none">
+                  <div class="rb-step-num">4</div>
+                  <div class="rb-step-body">
+                    <div class="rb-step-label">Sort by</div>
+                    <select><option>Registration date (newest first)</option><option>Participant name A–Z</option><option>Program name</option><option>Amount paid (high–low)</option></select>
+                  </div>
+                </div>
+                <div style="padding:14px 16px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
+                  <button class="btn-primary" style="width:100%;justify-content:center" onclick="previewReport('builder')"><i class="ti ti-play"></i>Run preview</button>
+                  <button class="btn-secondary" style="width:100%;justify-content:center"><i class="ti ti-device-floppy"></i>Save report</button>
+                  <button class="rca-btn green" style="width:100%;justify-content:center"><i class="ti ti-file-spreadsheet"></i>Export to Excel</button>
+                  <button class="rca-btn" style="width:100%;justify-content:center"><i class="ti ti-file-text"></i>Export to CSV</button>
+                  <button class="rca-btn" style="width:100%;justify-content:center" onclick="openSchedModal('Custom Report')"><i class="ti ti-clock"></i>Schedule delivery</button>
+                </div>
+              </div>
+              <div>
+                <div class="card" style="margin-bottom:16px">
+                  <div class="card-header">
+                    <h3 style="font-size:14px;font-weight:600">Report preview</h3>
+                    <span style="font-size:12px;color:var(--text-secondary)">7 records · Jun 1–22, 2026</span>
+                  </div>
+                  <div style="padding:10px 18px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-size:12px;color:var(--text-secondary)">
+                    Type: <strong style="color:var(--text-primary)">Registration / Enrollment</strong> · Columns: <strong style="color:var(--text-primary)">7 selected</strong>
+                  </div>
+                  <div class="preview-table-wrap" style="margin:0">
+                    <table class="preview-table">
+                      <thead><tr><th>Participant</th><th>Program</th><th>Session</th><th>Reg. date</th><th>Amount</th><th>GL code</th><th>Payment</th></tr></thead>
+                      <tbody>
+                        <tr><td>Emma Johnson</td><td>Youth Swim Lessons L1</td><td>Session A</td><td>Jun 1</td><td>$85.00</td><td><span class="gl-code-pill">4010-100</span></td><td>Visa ···4821</td></tr>
+                        <tr><td>Liam Johnson</td><td>Soccer Skills Camp</td><td>Session B</td><td>Jun 3</td><td>$120.00</td><td><span class="gl-code-pill">4010-200</span></td><td>Apple Pay</td></tr>
+                        <tr><td>Sarah Johnson</td><td>Adult Fitness Bootcamp</td><td>Session A</td><td>Jun 5</td><td>$95.00</td><td><span class="gl-code-pill">4010-400</span></td><td>Visa ···4821</td></tr>
+                        <tr><td>Marcus Rivera</td><td>Youth Swim Lessons L1</td><td>Session A</td><td>Jun 6</td><td>$85.00</td><td><span class="gl-code-pill">4010-100</span></td><td>Google Pay</td></tr>
+                        <tr><td>Karen Liu</td><td>Adult Yoga</td><td>Spring</td><td>Jun 8</td><td>$60.00</td><td><span class="gl-code-pill">4010-400</span></td><td>Visa ···9301</td></tr>
+                        <tr><td>Brian Chen</td><td>Soccer Skills Camp</td><td>Session A</td><td>Jun 10</td><td>$120.00</td><td><span class="gl-code-pill">4010-200</span></td><td>Visa ···7741</td></tr>
+                        <tr><td>Ana Lopez</td><td>Senior Fitness</td><td>Spring</td><td>Jun 12</td><td>$30.00</td><td><span class="gl-code-pill">4010-500</span></td><td>Cash</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div style="font-size:12px;color:var(--text-tertiary);text-align:center">Preview shows first 7 rows · Export will include all matching records</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PANE 3: CUSTOM REPORTS ── -->
+          <div id="rp-custom" class="report-pane">
+            <div style="background:linear-gradient(135deg,#1E1B4B,#3730A3);border-radius:var(--radius-xl);padding:18px 22px;margin-bottom:24px;color:#fff;display:flex;align-items:center;gap:16px">
+              <i class="ti ti-code" style="font-size:32px;color:#A5B4FC;flex-shrink:0"></i>
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:4px">Developer-installed custom reports</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6">These reports were built by your implementation team and installed into your account. They extend the template library with organization-specific logic, custom data joins, and branded output formatting.</div>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:#EEF2FF;color:#3730A3"><i class="ti ti-building-community"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Department budget vs. actual revenue <span class="badge-custom">Custom</span></div>
+                <div class="report-card-desc">Compares budgeted revenue targets against actual collections for each department and program category. Pulls budget figures from Springfield's annual plan upload.</div>
+                <div class="report-card-meta">Installed: Mar 12, 2026 · v1.2 · Last run: Jun 18, 2026</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Budget vs Actual')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('revenue')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:#EEF2FF;color:#3730A3"><i class="ti ti-map-pin"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Residency verification audit <span class="badge-custom">Custom</span></div>
+                <div class="report-card-desc">Flags enrollments where the registrant's ZIP falls outside Springfield boundaries and out-of-town surcharges should have been applied. Includes GL offset codes for corrections.</div>
+                <div class="report-card-meta">Installed: Mar 12, 2026 · v1.0 · Last run: Jun 14, 2026</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Residency Audit')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:#EEF2FF;color:#3730A3"><i class="ti ti-heart-handshake"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Fee assistance grant compliance report <span class="badge-custom">Custom</span></div>
+                <div class="report-card-desc">Formatted for the Springfield Community Foundation annual grant report. Shows subsidy amounts, participant demographics (anonymized), program types, and outcomes.</div>
+                <div class="report-card-meta">Installed: Apr 2, 2026 · v2.1 · Last run: May 31, 2026</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('Grant Compliance')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('enrollment')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-icon" style="background:#EEF2FF;color:#3730A3"><i class="ti ti-chart-line"></i></div>
+              <div class="report-card-info">
+                <div class="report-card-name">Year-over-year enrollment comparison <span class="badge-custom">Custom</span></div>
+                <div class="report-card-desc">Compares enrollment counts and revenue for each program against the same period in 2025 and 2024. Includes growth rate and trend line data for presentations.</div>
+                <div class="report-card-meta">Installed: Mar 12, 2026 · v1.1 · Last run: Jun 1, 2026</div>
+              </div>
+              <div class="report-card-actions">
+                <button class="rca-btn" onclick="openSchedModal('YoY Comparison')"><i class="ti ti-clock"></i>Schedule</button>
+                <button class="rca-btn" onclick="previewReport('revenue')"><i class="ti ti-eye"></i>Preview</button>
+                <button class="rca-btn green"><i class="ti ti-download"></i>Download</button>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding:16px 18px;background:var(--bg-secondary);border:1px dashed var(--border-med);border-radius:var(--radius-lg);font-size:13px;color:var(--text-secondary);text-align:center">
+              <i class="ti ti-plus" style="font-size:18px;display:block;margin-bottom:6px;color:var(--text-tertiary)"></i>
+              Need a custom report? Contact your implementation team.<br>
+              <span style="font-size:12px">Custom reports are typically delivered within 5 business days.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GL CODES ── -->
+      <div id="admin-glcodes" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">General ledger codes</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export GL mapping</button>
+            <button class="btn-primary"><i class="ti ti-device-floppy"></i>Save changes</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--blue-dark);display:flex;gap:12px;align-items:flex-start">
+            <i class="ti ti-info-circle" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>
+            <span>GL codes are applied to every transaction and included in all financial exports. Each charge type maps to its own GL code — and program category overrides let you route Aquatics revenue to a different account than Sports revenue.</span>
+          </div>
+
+          <!-- Base charge types -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Base charge types</h3><span style="font-size:12px;color:var(--text-secondary)">Applied when no category override is set</span></div>
+            <table class="gl-table">
+              <thead><tr><th>Charge type</th><th>GL code</th><th>Account name</th><th>Department</th><th>Notes</th></tr></thead>
               <tbody>
-                <tr><td style="font-weight:500">Youth Swim Lessons</td><td>36</td><td>$3,060</td><td><span class="badge badge-few">80%</span></td><td><span class="star-rating">★★★★★</span> 4.8</td></tr>
-                <tr><td style="font-weight:500">Soccer Skills Camp</td><td>22</td><td>$2,640</td><td><span class="badge badge-open">55%</span></td><td><span class="star-rating">★★★★★</span> 4.6</td></tr>
-                <tr><td style="font-weight:500">Summer Art Studio</td><td>20</td><td>$3,000</td><td><span class="badge badge-full">100%</span></td><td><span class="star-rating">★★★★★</span> 4.9</td></tr>
-                <tr><td style="font-weight:500">Adult Yoga</td><td>8</td><td>$480</td><td><span class="badge badge-open">40%</span></td><td><span class="star-rating">★★★★★</span> 4.7</td></tr>
-                <tr><td style="font-weight:500">Senior Fitness</td><td>13</td><td>$390</td><td><span class="badge badge-open">65%</span></td><td><span class="star-rating">★★★★★</span> 4.5</td></tr>
+                <tr><td><strong>Program / class fee</strong></td><td><input class="gl-input" value="4010-000"></td><td><input class="gl-input" style="width:170px" value="Recreation Program Revenue"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td><td style="font-size:11px;color:var(--text-tertiary)">Base registration fee</td></tr>
+                <tr><td><strong>Processing / transaction fee</strong></td><td><input class="gl-input" value="4090-010"></td><td><input class="gl-input" style="width:170px" value="Processing Fee Revenue"></td><td><input class="gl-input" style="width:130px" value="Finance"></td><td style="font-size:11px;color:var(--text-tertiary)">Credit card &amp; ACH fees</td></tr>
+                <tr><td><strong>Late registration fee</strong></td><td><input class="gl-input" value="4090-020"></td><td><input class="gl-input" style="width:170px" value="Miscellaneous Fees"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td><td style="font-size:11px;color:var(--text-tertiary)">Charged after cutoff date</td></tr>
+                <tr><td><strong>Out-of-town surcharge</strong></td><td><input class="gl-input" value="4090-030"></td><td><input class="gl-input" style="width:170px" value="Non-Resident Surcharge"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td><td style="font-size:11px;color:var(--text-tertiary)">ZIP outside Springfield</td></tr>
+                <tr><td><strong>Membership fee</strong></td><td><input class="gl-input" value="4020-000"></td><td><input class="gl-input" style="width:170px" value="Membership Revenue"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td><td style="font-size:11px;color:var(--text-tertiary)">Annual / family memberships</td></tr>
+                <tr><td><strong>Day pass / ticket</strong></td><td><input class="gl-input" value="4030-000"></td><td><input class="gl-input" style="width:170px" value="Pass &amp; Ticket Revenue"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td><td style="font-size:11px;color:var(--text-tertiary)">Beach, pool, guest passes</td></tr>
+                <tr><td><strong>Refund / credit offset</strong></td><td><input class="gl-input" value="4099-000"></td><td><input class="gl-input" style="width:170px" value="Revenue Refund Offset"></td><td><input class="gl-input" style="width:130px" value="Finance"></td><td style="font-size:11px;color:var(--text-tertiary)">Applied as negative line</td></tr>
+                <tr><td><strong>Fee assistance subsidy</strong></td><td><input class="gl-input" value="5010-100"></td><td><input class="gl-input" style="width:170px" value="Subsidy / Scholarship Exp."></td><td><input class="gl-input" style="width:130px" value="Community Dev."></td><td style="font-size:11px;color:var(--text-tertiary)">Expense — not revenue</td></tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Category overrides -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Program category overrides</h3><span style="font-size:12px;color:var(--text-secondary)">Override the base program fee GL code per category</span></div>
+            <div style="font-size:12px;color:var(--text-secondary);padding:10px 18px;border-bottom:1px solid var(--border)">When a registration belongs to one of these categories, the category GL code replaces the base <span class="gl-code-pill" style="font-size:11px">4010-000</span> code on the transaction.</div>
+            <table class="gl-table">
+              <thead><tr><th>Category</th><th>Program fee GL code</th><th>Account name</th><th>Department</th></tr></thead>
+              <tbody>
+                <tr><td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Aquatics</span></td><td><input class="gl-input" value="4010-100"></td><td><input class="gl-input" style="width:190px" value="Aquatics Program Revenue"></td><td><input class="gl-input" style="width:130px" value="Aquatics Div."></td></tr>
+                <tr><td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td><td><input class="gl-input" value="4010-200"></td><td><input class="gl-input" style="width:190px" value="Youth Sports Revenue"></td><td><input class="gl-input" style="width:130px" value="Youth Programs"></td></tr>
+                <tr><td><span class="prog-tag" style="background:var(--amber-bg);color:var(--amber)">Arts</span></td><td><input class="gl-input" value="4010-300"></td><td><input class="gl-input" style="width:190px" value="Arts Program Revenue"></td><td><input class="gl-input" style="width:130px" value="Arts &amp; Culture"></td></tr>
+                <tr><td><span class="prog-tag" style="background:var(--purple-bg);color:var(--purple)">Fitness</span></td><td><input class="gl-input" value="4010-400"></td><td><input class="gl-input" style="width:190px" value="Fitness Program Revenue"></td><td><input class="gl-input" style="width:130px" value="Parks &amp; Rec"></td></tr>
+                <tr><td><span class="prog-tag" style="background:var(--bg-tertiary);color:var(--text-secondary)">Seniors</span></td><td><input class="gl-input" value="4010-500"></td><td><input class="gl-input" style="width:190px" value="Senior Program Revenue"></td><td><input class="gl-input" style="width:130px" value="Senior Services"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Ledger preview -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Transaction ledger preview — with GL codes</h3>
+              <div style="display:flex;gap:8px">
+                <button class="rca-btn green"><i class="ti ti-file-spreadsheet"></i>Export Excel</button>
+                <button class="rca-btn"><i class="ti ti-file-text"></i>Export CSV</button>
+              </div>
+            </div>
+            <div class="preview-table-wrap" style="margin:0">
+              <table class="preview-table">
+                <thead><tr><th>Date</th><th>Member</th><th>Program</th><th>Charge type</th><th>Amount</th><th>GL code</th><th>Account name</th><th>Dept</th></tr></thead>
+                <tbody>
+                  <tr><td>Jun 1</td><td>Johnson, Emma</td><td>Youth Swim Lessons</td><td>Program fee</td><td>$85.00</td><td><span class="gl-code-pill">4010-100</span></td><td>Aquatics Program Revenue</td><td>Aquatics Div.</td></tr>
+                  <tr><td>Jun 1</td><td>Johnson, Emma</td><td>Youth Swim Lessons</td><td>Processing fee</td><td>$1.50</td><td><span class="gl-code-pill">4090-010</span></td><td>Processing Fee Revenue</td><td>Finance</td></tr>
+                  <tr><td>Jun 3</td><td>Johnson, Liam</td><td>Soccer Skills Camp</td><td>Program fee</td><td>$120.00</td><td><span class="gl-code-pill">4010-200</span></td><td>Youth Sports Revenue</td><td>Youth Programs</td></tr>
+                  <tr><td>Jun 3</td><td>Johnson, Liam</td><td>Soccer Skills Camp</td><td>Out-of-town surcharge</td><td>$15.00</td><td><span class="gl-code-pill">4090-030</span></td><td>Non-Resident Surcharge</td><td>Parks &amp; Rec</td></tr>
+                  <tr><td>Jun 5</td><td>Johnson, Sarah</td><td>Adult Fitness Bootcamp</td><td>Program fee</td><td>$95.00</td><td><span class="gl-code-pill">4010-400</span></td><td>Fitness Program Revenue</td><td>Parks &amp; Rec</td></tr>
+                  <tr><td>Jun 5</td><td>Johnson, Sarah</td><td>Adult Fitness Bootcamp</td><td>Late registration fee</td><td>$10.00</td><td><span class="gl-code-pill">4090-020</span></td><td>Miscellaneous Fees</td><td>Parks &amp; Rec</td></tr>
+                  <tr><td>Jun 8</td><td>Rivera, Marcus</td><td>Beach Day Pass</td><td>Day pass / ticket</td><td>$8.00</td><td><span class="gl-code-pill">4030-000</span></td><td>Pass &amp; Ticket Revenue</td><td>Parks &amp; Rec</td></tr>
+                  <tr><td>Jun 10</td><td>Lopez, Ana</td><td>Youth Swim Lessons</td><td>Fee assistance subsidy</td><td style="color:var(--red)">-$42.50</td><td><span class="gl-code-pill">5010-100</span></td><td>Subsidy / Scholarship Exp.</td><td>Community Dev.</td></tr>
+                  <tr><td>Jun 14</td><td>Chen, Brian</td><td>Soccer Skills Camp</td><td>Refund</td><td style="color:var(--red)">-$120.00</td><td><span class="gl-code-pill">4099-000</span></td><td>Revenue Refund Offset</td><td>Finance</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -8591,6 +9069,172 @@
     if (target) target.style.display = 'block';
   }
 
+  /* ── REPORTING CONSOLE ── */
+
+  function reportTab(btn, pane) {
+    document.querySelectorAll('.report-tab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.report-pane').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    var el = document.getElementById(pane); if (el) el.classList.add('active');
+    // Close any open preview when switching tabs
+    var prev = document.getElementById('report-preview-panel');
+    if (prev) prev.style.display = 'none';
+  }
+
+  var previewData = {
+    revenue: {
+      title: 'Revenue summary by program',
+      count: '12 records',
+      headers: ['Program','Category','Fee type','Amount','GL code','Account name'],
+      rows: [
+        ['Youth Swim Lessons L1','Aquatics','Program fee','$1,360.00','4010-100','Aquatics Program Revenue'],
+        ['Youth Swim Lessons L1','Aquatics','Processing fee','$24.00','4090-010','Processing Fee Revenue'],
+        ['Soccer Skills Camp','Youth Sports','Program fee','$2,640.00','4010-200','Youth Sports Revenue'],
+        ['Soccer Skills Camp','Youth Sports','Out-of-town surcharge','$45.00','4090-030','Non-Resident Surcharge'],
+        ['Adult Fitness Bootcamp','Fitness','Program fee','$475.00','4010-400','Fitness Program Revenue'],
+        ['Adult Fitness Bootcamp','Fitness','Late registration fee','$20.00','4090-020','Miscellaneous Fees'],
+        ['Adult Yoga','Fitness','Program fee','$480.00','4010-400','Fitness Program Revenue'],
+        ['Senior Fitness','Seniors','Program fee','$390.00','4010-500','Senior Program Revenue'],
+        ['Beach Day Pass','Passes','Day pass / ticket','$184.00','4030-000','Pass & Ticket Revenue'],
+        ['Membership — Family','Membership','Membership fee','$1,200.00','4020-000','Membership Revenue'],
+        ['Fee assistance','—','Subsidy offset','-$212.50','5010-100','Subsidy / Scholarship Exp.'],
+        ['Various','—','Refunds','-$240.00','4099-000','Revenue Refund Offset'],
+      ]
+    },
+    ledger: {
+      title: 'Transaction ledger with GL codes',
+      count: '9 records',
+      headers: ['Date','Member','Program','Charge type','Amount','GL code','Account name','Dept'],
+      rows: [
+        ['Jun 1','Johnson, Emma','Youth Swim Lessons','Program fee','$85.00','4010-100','Aquatics Program Revenue','Aquatics Div.'],
+        ['Jun 1','Johnson, Emma','Youth Swim Lessons','Processing fee','$1.50','4090-010','Processing Fee Revenue','Finance'],
+        ['Jun 3','Johnson, Liam','Soccer Skills Camp','Program fee','$120.00','4010-200','Youth Sports Revenue','Youth Programs'],
+        ['Jun 3','Johnson, Liam','Soccer Skills Camp','Out-of-town surcharge','$15.00','4090-030','Non-Resident Surcharge','Parks & Rec'],
+        ['Jun 5','Johnson, Sarah','Adult Fitness Bootcamp','Program fee','$95.00','4010-400','Fitness Program Revenue','Parks & Rec'],
+        ['Jun 5','Johnson, Sarah','Adult Fitness Bootcamp','Late registration fee','$10.00','4090-020','Miscellaneous Fees','Parks & Rec'],
+        ['Jun 8','Rivera, Marcus','Beach Day Pass','Day pass / ticket','$8.00','4030-000','Pass & Ticket Revenue','Parks & Rec'],
+        ['Jun 10','Lopez, Ana','Youth Swim Lessons','Fee assistance subsidy','-$42.50','5010-100','Subsidy / Scholarship Exp.','Community Dev.'],
+        ['Jun 14','Chen, Brian','Soccer Skills Camp','Refund','-$120.00','4099-000','Revenue Refund Offset','Finance'],
+      ]
+    },
+    enrollment: {
+      title: 'Enrollment roster by program',
+      count: '7 records',
+      headers: ['Participant','Program','Session','Age','Reg. date','Status','Amount paid'],
+      rows: [
+        ['Emma Johnson','Youth Swim Lessons L1','Session A','8','Jun 1','Active','$85.00'],
+        ['Liam Johnson','Soccer Skills Camp','Session B','11','Jun 3','Active','$120.00'],
+        ['Sarah Johnson','Adult Fitness Bootcamp','Session A','41','Jun 5','Active','$95.00'],
+        ['Marcus Rivera','Youth Swim Lessons L1','Session A','7','Jun 6','Active','$85.00'],
+        ['Karen Liu','Adult Yoga','Spring','38','Jun 8','Active','$60.00'],
+        ['Brian Chen','Soccer Skills Camp','Session A','10','Jun 10','Cancelled','$0.00'],
+        ['Ana Lopez','Senior Fitness','Spring','63','Jun 12','Active','$30.00'],
+      ]
+    },
+    attendance: {
+      title: 'Attendance by member (insurance report)',
+      count: '7 check-in records',
+      headers: ['#','Member','Date','Day','Check-in time','Program','Location'],
+      rows: [
+        ['1','Sarah Johnson','Apr 5, 2026','Saturday','8:03 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['2','Sarah Johnson','Apr 12, 2026','Saturday','8:01 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['3','Sarah Johnson','Apr 19, 2026','Saturday','7:58 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['4','Sarah Johnson','Apr 26, 2026','Saturday','8:05 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['5','Sarah Johnson','May 3, 2026','Saturday','8:02 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['6','Sarah Johnson','May 17, 2026','Saturday','8:07 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+        ['7','Sarah Johnson','May 31, 2026','Saturday','8:00 AM','Adult Yoga — Spring','Maple Street Gym, Studio A'],
+      ]
+    },
+    builder: {
+      title: 'Custom report — Registration / Enrollment',
+      count: '7 records',
+      headers: ['Participant','Program','Session','Reg. date','Amount','GL code','Payment'],
+      rows: [
+        ['Emma Johnson','Youth Swim Lessons L1','Session A','Jun 1','$85.00','4010-100','Visa ···4821'],
+        ['Liam Johnson','Soccer Skills Camp','Session B','Jun 3','$120.00','4010-200','Apple Pay'],
+        ['Sarah Johnson','Adult Fitness Bootcamp','Session A','Jun 5','$95.00','4010-400','Visa ···4821'],
+        ['Marcus Rivera','Youth Swim Lessons L1','Session A','Jun 6','$85.00','4010-100','Google Pay'],
+        ['Karen Liu','Adult Yoga','Spring','Jun 8','$60.00','4010-400','Visa ···9301'],
+        ['Brian Chen','Soccer Skills Camp','Session A','Jun 10','$120.00','4010-200','Visa ···7741'],
+        ['Ana Lopez','Senior Fitness','Spring','Jun 12','$30.00','4010-500','Cash'],
+      ]
+    }
+  };
+
+  function previewReport(type) {
+    var d = previewData[type];
+    if (!d) return;
+    var panel = document.getElementById('report-preview-panel');
+    var titleEl = document.getElementById('preview-title');
+    var countEl = document.getElementById('preview-count');
+    var wrap = document.getElementById('preview-table-wrap');
+    if (!panel || !wrap) return;
+
+    if (titleEl) titleEl.textContent = d.title;
+    if (countEl) countEl.textContent = d.count;
+
+    var glCols = ['GL code', 'gl code'];
+    var amountCols = ['Amount', 'Amount paid', 'amount'];
+
+    var thead = '<thead><tr>' + d.headers.map(function(h) {
+      return '<th>' + h + '</th>';
+    }).join('') + '</tr></thead>';
+
+    var tbody = '<tbody>' + d.rows.map(function(row) {
+      return '<tr>' + row.map(function(cell, i) {
+        var h = d.headers[i] || '';
+        // Style GL code cells
+        if (h.toLowerCase().indexOf('gl') >= 0 && cell.match(/^\d{4}-\d{3}/)) {
+          return '<td><span class="gl-code-pill">' + cell + '</span></td>';
+        }
+        // Red negative amounts
+        if ((h === 'Amount' || h === 'Amount paid') && cell.charAt(0) === '-') {
+          return '<td style="color:var(--red)">' + cell + '</td>';
+        }
+        // Status badge
+        if (h === 'Status') {
+          var cls = cell === 'Active' ? 'badge-open' : cell === 'Cancelled' ? 'badge-wait' : 'badge-few';
+          return '<td><span class="badge ' + cls + '">' + cell + '</span></td>';
+        }
+        return '<td>' + cell + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody>';
+
+    wrap.innerHTML = '<table class="preview-table">' + thead + tbody + '</table>';
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* Schedule modal */
+  function openSchedModal(reportName) {
+    var modal = document.getElementById('sched-modal');
+    var nameEl = document.getElementById('sched-report-name');
+    if (nameEl) nameEl.textContent = reportName;
+    if (modal) modal.classList.add('open');
+  }
+
+  function closeSchedModal() {
+    var modal = document.getElementById('sched-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function saveSchedule() {
+    closeSchedModal();
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ Report schedule saved — delivery starts next run';
+      toast.style.display = 'block';
+      setTimeout(function() { toast.style.display = 'none'; }, 3000);
+    }
+  }
+
+  function updateSchedFields() {
+    var freq = document.getElementById('sched-freq');
+    var dayWrap = document.getElementById('sched-day-wrap');
+    if (!freq || !dayWrap) return;
+    dayWrap.style.display = freq.value === 'Daily' ? 'none' : 'block';
+  }
+
   /* ── PASSES & TICKETS ── */
   var passConfig = {
     beach:   { name:'Riverside Beach Day Pass',    desc:'Single-day access to Riverside Beach. Valid for one entry on the selected date. All ages welcome.', price:8.00,  icon:'ti-beach',    gradFrom:'#0B6E5E', gradTo:'#1EB89D', cssClass:'pass-beach', label:'BEACH' },
@@ -8738,6 +9382,62 @@
     if (target) target.style.display = 'block';
   }
 </script>
+
+<!-- SCHEDULE DELIVERY MODAL -->
+<div id="sched-modal" class="sched-modal-overlay" onclick="if(event.target===this)closeSchedModal()">
+  <div class="sched-modal">
+    <div class="sched-modal-header">
+      <h3><i class="ti ti-clock" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>Schedule report delivery — <span id="sched-report-name"></span></h3>
+      <button onclick="closeSchedModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="sched-modal-body">
+      <!-- Existing schedules -->
+      <div class="sched-existing">
+        <div class="sched-existing-label">Active schedules</div>
+        <div class="sched-existing-row"><span style="color:var(--text-primary);font-weight:500">Weekly · Monday 7am</span><span>finance@springfield.gov</span><button style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer">Remove</button></div>
+        <div class="sched-existing-row"><span style="color:var(--text-primary);font-weight:500">Monthly · 1st · 6am</span><span>director@springfield.gov</span><button style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer">Remove</button></div>
+      </div>
+      <!-- New schedule -->
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px">Add new schedule</div>
+      <div class="sched-row" style="margin-bottom:12px">
+        <div class="sched-field" style="margin-bottom:0">
+          <label>Frequency</label>
+          <select id="sched-freq" onchange="updateSchedFields()">
+            <option>Daily</option>
+            <option selected>Weekly</option>
+            <option>Monthly</option>
+          </select>
+        </div>
+        <div class="sched-field" style="margin-bottom:0" id="sched-day-wrap">
+          <label>Day</label>
+          <select><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+        </div>
+      </div>
+      <div class="sched-row" style="margin-bottom:12px">
+        <div class="sched-field" style="margin-bottom:0">
+          <label>Delivery time</label>
+          <select><option>6:00 AM</option><option selected>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>12:00 PM</option><option>5:00 PM</option></select>
+        </div>
+        <div class="sched-field" style="margin-bottom:0">
+          <label>Format</label>
+          <select><option selected>Excel (.xlsx)</option><option>CSV (.csv)</option><option>Both</option></select>
+        </div>
+      </div>
+      <div class="sched-field">
+        <label>Send to email address(es)</label>
+        <input type="text" value="finance@springfield.gov" placeholder="email@example.com, another@example.com">
+      </div>
+      <div class="sched-field">
+        <label>Date range (applied each run)</label>
+        <select><option>Previous 7 days</option><option selected>Previous month</option><option>Previous quarter</option><option>Year to date</option><option>Custom range</option></select>
+      </div>
+      <div class="sched-btns">
+        <button style="background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-med)" onclick="closeSchedModal()">Cancel</button>
+        <button style="background:var(--blue);color:#fff;border:none" onclick="saveSchedule()">Save schedule</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Password gate -->
 <div id="login-gate">
