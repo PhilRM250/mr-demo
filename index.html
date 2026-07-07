@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070226 Add reporting console with templates, report builder, custom reports, and GL code management --->
+  <!--- PR 070726 Added session and season capability to admin side --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,94 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── CATALOG PERIODS & PROGRAM MANAGEMENT ── */
+  .period-card { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:12px; transition:box-shadow 0.15s; }
+  .period-card:hover { box-shadow:var(--shadow-md); }
+  .period-card-header { display:flex; align-items:center; gap:14px; padding:16px 20px; border-bottom:1px solid var(--border); }
+  .period-color-bar { width:6px; height:48px; border-radius:3px; flex-shrink:0; }
+  .period-info { flex:1; }
+  .period-name { font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:3px; }
+  .period-dates { font-size:12px; color:var(--text-secondary); display:flex; gap:14px; flex-wrap:wrap; }
+  .period-dates span { display:flex; align-items:center; gap:5px; }
+  .period-stats { display:flex; gap:20px; flex-shrink:0; text-align:right; }
+  .period-stat { font-size:11px; color:var(--text-secondary); }
+  .period-stat strong { font-size:20px; font-weight:700; color:var(--text-primary); display:block; line-height:1; margin-bottom:2px; }
+  .period-actions { display:flex; gap:8px; flex-shrink:0; }
+  .period-card-programs { padding:12px 20px; background:var(--bg-secondary); display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .period-prog-chip { font-size:11px; font-weight:500; padding:3px 10px; border-radius:var(--radius-pill); border:1px solid var(--border); background:var(--bg-primary); color:var(--text-secondary); }
+  .period-prog-chip.aquatics { background:var(--blue-light); color:var(--blue-dark); border-color:var(--blue-border); }
+  .period-prog-chip.sports   { background:var(--green-bg); color:var(--green); border-color:#A3D9B4; }
+  .period-prog-chip.arts     { background:var(--amber-bg); color:var(--amber); border-color:#F0C97A; }
+  .period-prog-chip.fitness  { background:var(--purple-bg); color:var(--purple); border-color:#C4B5FD; }
+  .period-prog-chip.seniors  { background:#CCFBF1; color:#065F46; border-color:#99F6E4; }
+  /* Program record two-layer */
+  .prog-record-card { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:16px; }
+  .prog-record-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:14px; cursor:pointer; background:var(--bg-primary); transition:background 0.1s; }
+  .prog-record-header:hover { background:var(--bg-secondary); }
+  .prog-record-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .prog-record-info { flex:1; }
+  .prog-record-name { font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:3px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .prog-type-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:var(--radius-pill); }
+  .ptb-seasonal  { background:#DBEAFE; color:#1E40AF; }
+  .ptb-recurring { background:#D1FAE5; color:#065F46; }
+  .ptb-dropin    { background:#FEF3C7; color:#92400E; }
+  .ptb-league    { background:#EDE9FE; color:#4C1D95; }
+  .prog-record-meta { font-size:12px; color:var(--text-secondary); display:flex; gap:12px; flex-wrap:wrap; }
+  .prog-record-stats { display:flex; gap:16px; flex-shrink:0; align-items:center; }
+  .prs-item { text-align:center; }
+  .prs-num { font-size:18px; font-weight:700; color:var(--text-primary); line-height:1; }
+  .prs-label { font-size:10px; color:var(--text-tertiary); margin-top:2px; }
+  /* Sessions panel */
+  .sessions-panel { border-top:1px solid var(--border); }
+  .sessions-panel-header { padding:12px 20px; background:var(--bg-secondary); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.4px; }
+  .session-row { display:flex; align-items:center; gap:14px; padding:13px 20px; border-bottom:1px solid var(--border); transition:background 0.1s; }
+  .session-row:last-child { border-bottom:none; }
+  .session-row:hover { background:var(--bg-secondary); }
+  .session-num { width:28px; height:28px; border-radius:50%; background:var(--bg-tertiary); color:var(--text-secondary); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .session-num.active   { background:var(--blue); color:#fff; }
+  .session-num.upcoming { background:var(--green-bg); color:var(--green); }
+  .session-num.preview  { background:#EDE9FE; color:#5B21B6; }
+  .session-num.archived { background:var(--bg-tertiary); color:var(--text-tertiary); }
+  .session-info { flex:1; }
+  .session-name { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+  .session-dates { font-size:11px; color:var(--text-secondary); display:flex; gap:12px; flex-wrap:wrap; }
+  .session-dates span { display:flex; align-items:center; gap:4px; }
+  .session-cap { text-align:center; min-width:80px; flex-shrink:0; }
+  .session-cap-bar { height:4px; background:var(--bg-tertiary); border-radius:2px; margin-top:4px; overflow:hidden; }
+  .session-cap-fill { height:100%; border-radius:2px; }
+  .session-price { font-size:15px; font-weight:700; color:var(--blue); min-width:60px; text-align:right; flex-shrink:0; }
+  .session-reg-window { font-size:11px; color:var(--text-secondary); min-width:140px; flex-shrink:0; }
+  .session-reg-window .rw-open { color:var(--green); font-weight:600; }
+  .session-reg-window .rw-upcoming { color:var(--purple); font-weight:600; }
+  .session-actions { display:flex; gap:6px; flex-shrink:0; }
+  /* Membership management */
+  .mbr-type-card { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:16px; }
+  .mbr-type-header { display:flex; align-items:center; gap:14px; padding:16px 20px; border-bottom:1px solid var(--border); }
+  .mbr-type-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .mbr-type-info { flex:1; }
+  .mbr-type-name { font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:3px; display:flex; align-items:center; gap:8px; }
+  .mbr-model-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:var(--radius-pill); }
+  .mmb-seasonal { background:#DBEAFE; color:#1E40AF; }
+  .mmb-monthly  { background:#D1FAE5; color:#065F46; }
+  .mmb-annual   { background:#EDE9FE; color:#4C1D95; }
+  .mmb-rolling  { background:#FEF3C7; color:#92400E; }
+  .mbr-type-desc { font-size:12px; color:var(--text-secondary); }
+  .mbr-type-stats { display:flex; gap:20px; flex-shrink:0; text-align:center; }
+  .mbr-stat { font-size:11px; color:var(--text-tertiary); }
+  .mbr-stat strong { font-size:20px; font-weight:700; color:var(--text-primary); display:block; line-height:1; margin-bottom:2px; }
+  .mbr-type-body { display:grid; grid-template-columns:1fr 1fr 1fr; }
+  .mbr-config-section { padding:16px 20px; border-right:1px solid var(--border); }
+  .mbr-config-section:last-child { border-right:none; }
+  .mbr-config-label { font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px; }
+  .mbr-config-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:7px; }
+  .mbr-config-row span:first-child { color:var(--text-secondary); }
+  .mbr-config-row strong { color:var(--text-primary); }
+  .mbr-price-row { display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .mbr-price-row:last-child { border-bottom:none; }
+  .mbr-price-row span { color:var(--text-secondary); }
+  .mbr-price-row strong { color:var(--blue); font-size:15px; font-weight:700; }
+  .mbr-access-chip { font-size:11px; font-weight:500; padding:3px 9px; border-radius:var(--radius-pill); margin:2px; display:inline-flex; align-items:center; gap:4px; }
 
   /* ── REPORTING CONSOLE ── */
   .report-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:24px; }
@@ -6300,7 +6388,9 @@
       <div class="sidebar-section-label">Overview</div>
       <button class="sidebar-item active" onclick="adminNav(this,'dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
       <div class="sidebar-section-label">Programs</div>
+      <button class="sidebar-item" onclick="adminNav(this,'catalog')"><i class="ti ti-calendar-month"></i>Catalog periods</button>
       <button class="sidebar-item" onclick="adminNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+      <button class="sidebar-item" onclick="adminNav(this,'memberships')"><i class="ti ti-id-badge"></i>Memberships</button>
       <button class="sidebar-item" onclick="adminNav(this,'formbuilder')"><i class="ti ti-forms"></i>Form builder</button>
       <button class="sidebar-item" onclick="adminNav(this,'passes')"><i class="ti ti-ticket"></i>Passes &amp; tickets</button>
       <button class="sidebar-item" onclick="adminNav(this,'scanner')"><i class="ti ti-scan"></i>Pass scanner</button>
@@ -6756,130 +6846,559 @@
         </div>
       </div>
 
-      <!-- PROGRAMS -->
+      <!-- CATALOG PERIODS -->
+      <div id="admin-catalog" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Catalog periods</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-archive"></i>View archived</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>New period</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:24px;font-size:13px;color:var(--blue-dark);display:flex;gap:12px;align-items:flex-start">
+            <i class="ti ti-info-circle" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>
+            <div>Catalog periods are optional organizational containers — seasonal, session-based, or custom. They group programs for browsing and reporting but don't control registration windows. Programs can belong to multiple periods, or none at all for rolling year-round offerings.</div>
+          </div>
+
+          <!-- Active periods -->
+          <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Active &amp; upcoming</div>
+
+          <div class="period-card">
+            <div class="period-card-header">
+              <div class="period-color-bar" style="background:linear-gradient(180deg,#F59E0B,#D97706)"></div>
+              <div class="period-info">
+                <div class="period-name">Summer 2026</div>
+                <div class="period-dates">
+                  <span><i class="ti ti-calendar" style="font-size:12px"></i>Jun 1 – Aug 31, 2026</span>
+                  <span><i class="ti ti-clock" style="font-size:12px"></i>Reg. opened Mar 1, 2026</span>
+                  <span><i class="ti ti-world" style="font-size:12px"></i>Public — visible in catalog</span>
+                </div>
+              </div>
+              <div class="period-stats">
+                <div class="period-stat"><strong>14</strong>Programs</div>
+                <div class="period-stat"><strong>287</strong>Enrolled</div>
+                <div class="period-stat"><strong>$24,390</strong>Revenue</div>
+              </div>
+              <div class="period-actions">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-copy"></i>Clone</button>
+              </div>
+            </div>
+            <div class="period-card-programs">
+              <span style="font-size:11px;color:var(--text-tertiary);margin-right:4px">Programs:</span>
+              <span class="period-prog-chip aquatics">Swim Lessons L1</span>
+              <span class="period-prog-chip aquatics">Swim Lessons L2</span>
+              <span class="period-prog-chip sports">Soccer Skills Camp</span>
+              <span class="period-prog-chip arts">Summer Art Studio</span>
+              <span class="period-prog-chip fitness">Fitness Bootcamp</span>
+              <span class="period-prog-chip fitness">Adult Yoga</span>
+              <span class="period-prog-chip seniors">Senior Fitness</span>
+              <span style="font-size:11px;color:var(--blue);cursor:pointer">+7 more</span>
+            </div>
+          </div>
+
+          <div class="period-card">
+            <div class="period-card-header">
+              <div class="period-color-bar" style="background:linear-gradient(180deg,#F87171,#DC2626)"></div>
+              <div class="period-info">
+                <div class="period-name">Fall 2026</div>
+                <div class="period-dates">
+                  <span><i class="ti ti-calendar" style="font-size:12px"></i>Sep 1 – Nov 30, 2026</span>
+                  <span><i class="ti ti-clock" style="font-size:12px"></i>Reg. opens Jul 1, 2026</span>
+                  <span><i class="ti ti-eye" style="font-size:12px"></i>Preview only — not yet public</span>
+                </div>
+              </div>
+              <div class="period-stats">
+                <div class="period-stat"><strong>8</strong>Programs</div>
+                <div class="period-stat"><strong>21</strong>Wishlisted</div>
+                <div class="period-stat"><strong>—</strong>Revenue</div>
+              </div>
+              <div class="period-actions">
+                <span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-copy"></i>Clone</button>
+              </div>
+            </div>
+            <div class="period-card-programs">
+              <span style="font-size:11px;color:var(--text-tertiary);margin-right:4px">Programs:</span>
+              <span class="period-prog-chip sports">Fall Soccer League</span>
+              <span class="period-prog-chip sports">Junior Tennis Academy</span>
+              <span class="period-prog-chip arts">Fall Art Workshop</span>
+              <span class="period-prog-chip fitness">Fall Bootcamp</span>
+              <span style="font-size:11px;color:var(--blue);cursor:pointer">+4 more</span>
+            </div>
+          </div>
+
+          <!-- Session-based -->
+          <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:20px 0 12px">Session-based periods</div>
+
+          <div class="period-card">
+            <div class="period-card-header">
+              <div class="period-color-bar" style="background:linear-gradient(180deg,#7C6FD4,#534AB7)"></div>
+              <div class="period-info">
+                <div class="period-name">Session 1 — Community Center Programs</div>
+                <div class="period-dates">
+                  <span><i class="ti ti-calendar" style="font-size:12px"></i>Jan 6 – Mar 14, 2026</span>
+                  <span><i class="ti ti-building" style="font-size:12px"></i>Community Center — year-round</span>
+                  <span><i class="ti ti-repeat" style="font-size:12px"></i>Repeats 4× per year</span>
+                </div>
+              </div>
+              <div class="period-stats">
+                <div class="period-stat"><strong>6</strong>Programs</div>
+                <div class="period-stat"><strong>142</strong>Enrolled</div>
+                <div class="period-stat"><strong>$8,520</strong>Revenue</div>
+              </div>
+              <div class="period-actions">
+                <span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary)">Completed</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-copy"></i>Clone as Session 2</button>
+              </div>
+            </div>
+            <div class="period-card-programs">
+              <span style="font-size:11px;color:var(--text-tertiary);margin-right:4px">Programs:</span>
+              <span class="period-prog-chip fitness">Adult Yoga</span>
+              <span class="period-prog-chip fitness">Pilates</span>
+              <span class="period-prog-chip arts">Watercolor</span>
+              <span class="period-prog-chip seniors">Senior Fitness</span>
+              <span class="period-prog-chip seniors">Senior Dance</span>
+            </div>
+          </div>
+
+          <!-- Year-round / no period -->
+          <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:20px 0 12px">Year-round (no catalog period)</div>
+          <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:14px">
+            <i class="ti ti-repeat" style="font-size:20px;color:var(--text-tertiary);flex-shrink:0"></i>
+            <div>
+              <div style="font-weight:500;color:var(--text-primary);margin-bottom:3px">3 programs run continuously without a catalog period</div>
+              <div style="font-size:12px">Open gym access · Drop-in lap swim · Personal training — these don't belong to a season or session. They appear in the catalog with rolling registration and no period label.</div>
+            </div>
+            <button class="btn-secondary" style="white-space:nowrap;flex-shrink:0">View programs</button>
+          </div>
+
+          <div style="margin-top:16px;padding:14px 18px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);font-size:13px;display:flex;align-items:center;gap:14px">
+            <i class="ti ti-archive" style="font-size:20px;color:var(--text-tertiary);flex-shrink:0"></i>
+            <div style="flex:1"><span style="color:var(--text-secondary)">Spring 2026, Winter 2025, and 6 other archived periods</span></div>
+            <button class="btn-secondary" style="font-size:12px;white-space:nowrap">View archived</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROGRAMS (two-layer model) -->
       <div id="admin-programs" class="admin-section">
         <div class="admin-topbar">
           <div class="topbar-title">Programs</div>
           <div class="topbar-actions">
-            <button class="btn-secondary"><i class="ti ti-filter"></i>Filter</button>
+            <div style="display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 12px">
+              <i class="ti ti-filter" style="font-size:14px;color:var(--text-secondary)"></i>
+              <select style="border:none;background:none;font-family:var(--font);font-size:12px;color:var(--text-primary);outline:none;cursor:pointer">
+                <option>All periods</option>
+                <option selected>Summer 2026</option>
+                <option>Fall 2026</option>
+                <option>Year-round</option>
+              </select>
+            </div>
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export</button>
             <button class="btn-primary"><i class="ti ti-plus"></i>New program</button>
           </div>
         </div>
         <div class="admin-body">
-          <!-- Wishlist signups banner -->
+
+          <!-- Wishlist banner -->
           <div style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);border:1px solid #C4B5FD;border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
             <i class="ti ti-heart" style="font-size:24px;color:#5B21B6;flex-shrink:0"></i>
-            <div style="flex:1">
-              <div style="font-size:14px;font-weight:600;color:#3B0764;margin-bottom:2px">21 wishlist signups across 3 programs</div>
-              <div style="font-size:12px;color:#5B21B6">Summer Art Studio (14), Fall Soccer (5), Junior Tennis (2) — all forms &amp; waivers submitted and ready for when registration opens</div>
-            </div>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#3B0764;margin-bottom:2px">21 wishlist signups across 3 programs in Fall 2026</div><div style="font-size:12px;color:#5B21B6">Summer Art Studio (14), Fall Soccer (5), Junior Tennis (2) — all forms &amp; waivers submitted</div></div>
             <button class="btn-secondary" style="white-space:nowrap;font-size:12px"><i class="ti ti-users"></i>View signups</button>
           </div>
 
-          <div class="card">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Program</th>
-                  <th>Category</th>
-                  <th>Schedule</th>
-                  <th>Enrollment</th>
-                  <th>Wishlist</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div style="font-weight:500">Youth Swim Lessons L1</div><div style="font-size:11px;color:var(--text-secondary)">Ages 6–12</div></td>
-                  <td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Aquatics</span></td>
-                  <td>MWF · 9–10am</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:80%;background:#F59E0B"></div></div><span style="font-size:11px;color:var(--text-secondary)">16/20</span></td>
-                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
-                  <td><span class="badge badge-few">Almost full</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr>
-                  <td><div style="font-weight:500">Soccer Skills Camp</div><div style="font-size:11px;color:var(--text-secondary)">Ages 8–14</div></td>
-                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td>
-                  <td>T/Th · 10–11:30am</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:55%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">11/20</span></td>
-                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
-                  <td><span class="badge badge-open">Open</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr style="background:#FDFAFF">
-                  <td><div style="font-weight:500">Summer Art Studio</div><div style="font-size:11px;color:var(--text-secondary)">Ages 7–13</div></td>
-                  <td><span class="prog-tag" style="background:var(--amber-bg);color:var(--amber)">Arts</span></td>
-                  <td>M–F · 1–3pm</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/20</span></td>
-                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>14 saved</span></td>
-                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr style="background:#FDFAFF">
-                  <td><div style="font-weight:500">Fall Soccer League</div><div style="font-size:11px;color:var(--text-secondary)">Ages 8–14</div></td>
-                  <td><span class="prog-tag" style="background:var(--green-bg);color:var(--green)">Youth Sports</span></td>
-                  <td>Sat · 9–11am</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/20</span></td>
-                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>5 saved</span></td>
-                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr style="background:#FDFAFF">
-                  <td><div style="font-weight:500">Junior Tennis Academy</div><div style="font-size:11px;color:var(--text-secondary)">Ages 7–16</div></td>
-                  <td><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark)">Sports</span></td>
-                  <td>Sat/Sun · 10am–12pm</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:0%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">0/24</span></td>
-                  <td><span class="wl-count-badge"><i class="ti ti-heart"></i>2 saved</span></td>
-                  <td><span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 15</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-                <tr>
-                  <td><div style="font-weight:500">Adult Yoga</div><div style="font-size:11px;color:var(--text-secondary)">All levels</div></td>
-                  <td><span class="prog-tag" style="background:var(--purple-bg);color:var(--purple)">Fitness</span></td>
-                  <td>Sat · 8–9am</td>
-                  <td><div class="cap-bar" style="width:70px;margin-bottom:3px"><div class="cap-fill" style="width:40%;background:#4CAF50"></div></div><span style="font-size:11px;color:var(--text-secondary)">8/20</span></td>
-                  <td><span style="font-size:12px;color:var(--text-tertiary)">—</span></td>
-                  <td><span class="badge badge-open">Open</span></td>
-                  <td><button class="btn-secondary" style="padding:5px 10px;font-size:12px"><i class="ti ti-edit"></i></button></td>
-                </tr>
-              </tbody>
-            </table>
+          <div style="font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:14px">Showing 4 programs in <strong style="color:var(--text-primary)">Summer 2026</strong> · Click any program to expand sessions</div>
+
+          <!-- Program 1: Swim Lessons — seasonal, multiple sessions -->
+          <div class="prog-record-card">
+            <div class="prog-record-header" onclick="toggleProgSessions('sessions-swim')">
+              <div class="prog-record-icon bg-blue-img"><i class="ti ti-swimming"></i></div>
+              <div class="prog-record-info">
+                <div class="prog-record-name">Youth Swim Lessons <span class="prog-type-badge ptb-seasonal">Seasonal</span><span class="prog-tag" style="background:var(--blue-light);color:var(--blue-dark);font-size:10px">Aquatics</span></div>
+                <div class="prog-record-meta">
+                  <span><i class="ti ti-users" style="font-size:12px"></i>Ages 6–12</span>
+                  <span><i class="ti ti-building" style="font-size:12px"></i>Community Center Pool</span>
+                  <span><i class="ti ti-forms" style="font-size:12px"></i>Custom form attached</span>
+                  <span><i class="ti ti-writing" style="font-size:12px"></i>Waiver required</span>
+                </div>
+              </div>
+              <div class="prog-record-stats">
+                <div class="prs-item"><div class="prs-num">3</div><div class="prs-label">Sessions</div></div>
+                <div class="prs-item"><div class="prs-num">52</div><div class="prs-label">Enrolled</div></div>
+                <div class="prs-item"><div class="prs-num">$4,420</div><div class="prs-label">Revenue</div></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <button class="btn-secondary" style="font-size:12px" onclick="event.stopPropagation()"><i class="ti ti-edit"></i>Edit</button>
+                <i class="ti ti-chevron-down" id="chevron-swim" style="font-size:18px;color:var(--text-tertiary);transition:transform 0.2s;margin-top:2px"></i>
+              </div>
+            </div>
+            <div class="sessions-panel" id="sessions-swim" style="display:none">
+              <div class="sessions-panel-header">
+                <span>Sessions (3)</span>
+                <div style="display:flex;gap:8px">
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-copy"></i>Clone session</button>
+                  <button class="btn-primary" style="font-size:11px;padding:4px 10px"><i class="ti ti-plus"></i>Add session</button>
+                </div>
+              </div>
+              <div class="session-row">
+                <div class="session-num active">A</div>
+                <div class="session-info">
+                  <div class="session-name">Session A — Summer 2026</div>
+                  <div class="session-dates">
+                    <span><i class="ti ti-calendar" style="font-size:10px"></i>Jun 23 – Jul 11</span>
+                    <span><i class="ti ti-clock" style="font-size:10px"></i>MWF · 9–10am</span>
+                    <span><i class="ti ti-user" style="font-size:10px"></i>Instructor: Coach Patel</span>
+                  </div>
+                </div>
+                <div class="session-cap">
+                  <div style="font-size:12px;font-weight:500;color:var(--text-primary)">16/20</div>
+                  <div class="session-cap-bar"><div class="session-cap-fill" style="width:80%;background:#F59E0B"></div></div>
+                  <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">Almost full</div>
+                </div>
+                <div class="session-price">$85</div>
+                <div class="session-reg-window"><span class="rw-open">✓ Open</span><br>Opened Mar 1 · Closes Jun 22</div>
+                <div class="session-actions">
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-users"></i>Roster</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i></button>
+                </div>
+              </div>
+              <div class="session-row">
+                <div class="session-num active">B</div>
+                <div class="session-info">
+                  <div class="session-name">Session B — Summer 2026</div>
+                  <div class="session-dates">
+                    <span><i class="ti ti-calendar" style="font-size:10px"></i>Jul 14 – Aug 1</span>
+                    <span><i class="ti ti-clock" style="font-size:10px"></i>MWF · 9–10am</span>
+                    <span><i class="ti ti-user" style="font-size:10px"></i>Instructor: Coach Patel</span>
+                  </div>
+                </div>
+                <div class="session-cap">
+                  <div style="font-size:12px;font-weight:500;color:var(--text-primary)">8/20</div>
+                  <div class="session-cap-bar"><div class="session-cap-fill" style="width:40%;background:#4CAF50"></div></div>
+                  <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">8 spots left</div>
+                </div>
+                <div class="session-price">$85</div>
+                <div class="session-reg-window"><span class="rw-open">✓ Open</span><br>Opened Mar 1 · Closes Jul 13</div>
+                <div class="session-actions">
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-users"></i>Roster</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i></button>
+                </div>
+              </div>
+              <div class="session-row">
+                <div class="session-num upcoming">C</div>
+                <div class="session-info">
+                  <div class="session-name">Session C — Summer 2026</div>
+                  <div class="session-dates">
+                    <span><i class="ti ti-calendar" style="font-size:10px"></i>Aug 4 – Aug 22</span>
+                    <span><i class="ti ti-clock" style="font-size:10px"></i>MWF · 9–10am</span>
+                    <span><i class="ti ti-user" style="font-size:10px"></i>Instructor: TBD</span>
+                  </div>
+                </div>
+                <div class="session-cap">
+                  <div style="font-size:12px;font-weight:500;color:var(--text-primary)">0/20</div>
+                  <div class="session-cap-bar"><div class="session-cap-fill" style="width:0%;background:#4CAF50"></div></div>
+                  <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">Not yet open</div>
+                </div>
+                <div class="session-price">$85</div>
+                <div class="session-reg-window"><span class="rw-upcoming">Opens Jul 1</span><br>Closes Aug 3</div>
+                <div class="session-actions">
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-eye"></i>Preview</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i></button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Preview & Wishlist settings example -->
-          <div style="margin-top:20px;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:10px">Program setup: Preview &amp; wishlist settings</div>
-          <div class="preview-settings-card">
-            <div class="psc-header"><i class="ti ti-eye" style="font-size:16px"></i>Preview &amp; wishlist configuration — Summer Art Studio</div>
-            <div class="psc-body">
-              <div class="psc-row">
-                <div><div class="psc-label">Show program in public catalog before registration opens</div><div class="psc-sub">Residents can view details but not register</div></div>
-                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+          <!-- Program 2: Adult Yoga — recurring/rolling -->
+          <div class="prog-record-card">
+            <div class="prog-record-header" onclick="toggleProgSessions('sessions-yoga')">
+              <div class="prog-record-icon bg-purple-img"><i class="ti ti-yoga"></i></div>
+              <div class="prog-record-info">
+                <div class="prog-record-name">Adult Yoga <span class="prog-type-badge ptb-recurring">Recurring / Rolling</span><span class="prog-tag" style="background:var(--purple-bg);color:var(--purple);font-size:10px">Fitness</span></div>
+                <div class="prog-record-meta">
+                  <span><i class="ti ti-repeat" style="font-size:12px"></i>Runs continuously — new session each 8 weeks</span>
+                  <span><i class="ti ti-building" style="font-size:12px"></i>Maple Street Gym</span>
+                  <span><i class="ti ti-users" style="font-size:12px"></i>Adults 18+ · All levels</span>
+                </div>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Preview start date</div><div class="psc-sub">When the program first appears publicly</div></div>
-                <div class="psc-date">Jun 1, 2026 · 8:00 AM</div>
+              <div class="prog-record-stats">
+                <div class="prs-item"><div class="prs-num">4</div><div class="prs-label">Sessions/yr</div></div>
+                <div class="prs-item"><div class="prs-num">8</div><div class="prs-label">Enrolled</div></div>
+                <div class="prs-item"><div class="prs-num">$480</div><div class="prs-label">Revenue</div></div>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Registration open date &amp; time</div><div class="psc-sub">When residents can complete checkout and pay</div></div>
-                <div class="psc-date">Jul 1, 2026 · 9:00 AM</div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <button class="btn-secondary" style="font-size:12px" onclick="event.stopPropagation()"><i class="ti ti-edit"></i>Edit</button>
+                <i class="ti ti-chevron-down" id="chevron-yoga" style="font-size:18px;color:var(--text-tertiary);transition:transform 0.2s;margin-top:2px"></i>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Allow residents to add to wishlist</div><div class="psc-sub">Residents can pre-submit form, waiver, and participant selection</div></div>
-                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="sessions-panel" id="sessions-yoga" style="display:none">
+              <div class="sessions-panel-header">
+                <span>Sessions</span>
+                <button class="btn-primary" style="font-size:11px;padding:4px 10px"><i class="ti ti-plus"></i>Add session</button>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Require form &amp; waiver before wishlist</div><div class="psc-sub">Residents must complete pre-registration before saving to wishlist</div></div>
-                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              <div class="session-row">
+                <div class="session-num archived">✓</div>
+                <div class="session-info">
+                  <div class="session-name">Spring 2026 (8-week)</div>
+                  <div class="session-dates"><span><i class="ti ti-calendar" style="font-size:10px"></i>Apr 5 – May 31</span><span><i class="ti ti-clock" style="font-size:10px"></i>Sat · 8–9am</span></div>
+                </div>
+                <div class="session-cap"><div style="font-size:12px;font-weight:500;color:var(--text-primary)">8/20</div><div class="session-cap-bar"><div class="session-cap-fill" style="width:40%;background:#4CAF50"></div></div></div>
+                <div class="session-price">$60</div>
+                <div class="session-reg-window"><span style="color:var(--text-tertiary)">Completed</span></div>
+                <div class="session-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-chart-bar"></i>Report</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-copy"></i>Clone</button></div>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Send notification when registration opens</div><div class="psc-sub">Email + SMS alert to all residents with this program in their wishlist</div></div>
-                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              <div class="session-row">
+                <div class="session-num active">▶</div>
+                <div class="session-info">
+                  <div class="session-name">Summer 2026 (8-week)</div>
+                  <div class="session-dates"><span><i class="ti ti-calendar" style="font-size:10px"></i>Jun 7 – Jul 26</span><span><i class="ti ti-clock" style="font-size:10px"></i>Sat · 8–9am</span></div>
+                </div>
+                <div class="session-cap"><div style="font-size:12px;font-weight:500;color:var(--text-primary)">12/20</div><div class="session-cap-bar"><div class="session-cap-fill" style="width:60%;background:#4CAF50"></div></div></div>
+                <div class="session-price">$60</div>
+                <div class="session-reg-window"><span class="rw-open">✓ Open</span></div>
+                <div class="session-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-users"></i>Roster</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i></button></div>
               </div>
-              <div class="psc-row">
-                <div><div class="psc-label">Wishlist signups so far</div><div class="psc-sub">Residents with form &amp; waiver complete</div></div>
-                <div style="display:flex;align-items:center;gap:8px"><span class="wl-count-badge"><i class="ti ti-heart"></i>14 saved</span><span style="font-size:12px;color:var(--text-secondary)">12 fully complete</span></div>
+            </div>
+          </div>
+
+          <!-- Program 3: Soccer — league type, with team features -->
+          <div class="prog-record-card">
+            <div class="prog-record-header" onclick="toggleProgSessions('sessions-soccer')">
+              <div class="prog-record-icon bg-green-img"><i class="ti ti-ball-football"></i></div>
+              <div class="prog-record-info">
+                <div class="prog-record-name">Fall Soccer League <span class="prog-type-badge ptb-league">League / Team</span><span class="prog-tag" style="background:var(--green-bg);color:var(--green);font-size:10px">Youth Sports</span></div>
+                <div class="prog-record-meta">
+                  <span><i class="ti ti-users" style="font-size:12px"></i>Ages 8–14</span>
+                  <span><i class="ti ti-building" style="font-size:12px"></i>Centennial Fields</span>
+                  <span><i class="ti ti-ball-football" style="font-size:12px"></i>Teams with rosters &amp; schedules</span>
+                </div>
+              </div>
+              <div class="prog-record-stats">
+                <div class="prs-item"><div class="prs-num">0</div><div class="prs-label">Enrolled</div></div>
+                <div class="prs-item"><div class="prs-num">5</div><div class="prs-label">Wishlisted</div></div>
+                <div class="prs-item"><div class="prs-num">—</div><div class="prs-label">Revenue</div></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span>
+                <button class="btn-secondary" style="font-size:12px" onclick="event.stopPropagation()"><i class="ti ti-edit"></i>Edit</button>
+                <i class="ti ti-chevron-down" id="chevron-soccer" style="font-size:18px;color:var(--text-tertiary);transition:transform 0.2s;margin-top:2px"></i>
+              </div>
+            </div>
+            <div class="sessions-panel" id="sessions-soccer" style="display:none">
+              <div class="sessions-panel-header"><span>Sessions</span><button class="btn-primary" style="font-size:11px;padding:4px 10px"><i class="ti ti-plus"></i>Add session</button></div>
+              <div class="session-row">
+                <div class="session-num preview">F26</div>
+                <div class="session-info">
+                  <div class="session-name">Fall 2026 Season</div>
+                  <div class="session-dates"><span><i class="ti ti-calendar" style="font-size:10px"></i>Sep 6 – Oct 25</span><span><i class="ti ti-clock" style="font-size:10px"></i>Sat · 9–11am</span><span><i class="ti ti-ball-football" style="font-size:10px"></i>4 teams · 10 games</span></div>
+                </div>
+                <div class="session-cap"><div style="font-size:12px;font-weight:500;color:var(--text-primary)">0/60</div><div class="session-cap-bar"><div class="session-cap-fill" style="width:0%;background:#4CAF50"></div></div></div>
+                <div class="session-price">$85</div>
+                <div class="session-reg-window"><span class="rw-upcoming">Opens Jul 1</span></div>
+                <div class="session-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Program 4: Summer Art Studio — preview -->
+          <div class="prog-record-card">
+            <div class="prog-record-header" onclick="toggleProgSessions('sessions-art')">
+              <div class="prog-record-icon bg-amber-img"><i class="ti ti-palette"></i></div>
+              <div class="prog-record-info">
+                <div class="prog-record-name">Summer Art Studio <span class="prog-type-badge ptb-seasonal">Seasonal</span><span class="prog-tag" style="background:var(--amber-bg);color:var(--amber);font-size:10px">Arts</span></div>
+                <div class="prog-record-meta">
+                  <span><i class="ti ti-users" style="font-size:12px"></i>Ages 7–13</span>
+                  <span><i class="ti ti-building" style="font-size:12px"></i>Recreation Center Room B</span>
+                  <span><i class="ti ti-heart" style="font-size:12px"></i>14 wishlist signups · forms &amp; waivers complete</span>
+                </div>
+              </div>
+              <div class="prog-record-stats">
+                <div class="prs-item"><div class="prs-num">0</div><div class="prs-label">Enrolled</div></div>
+                <div class="prs-item"><div class="prs-num">14</div><div class="prs-label">Wishlisted</div></div>
+                <div class="prs-item"><div class="prs-num">—</div><div class="prs-label">Revenue</div></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <span class="preview-badge"><i class="ti ti-clock"></i>Opens Jul 1</span>
+                <button class="btn-secondary" style="font-size:12px" onclick="event.stopPropagation()"><i class="ti ti-edit"></i>Edit</button>
+                <i class="ti ti-chevron-down" id="chevron-art" style="font-size:18px;color:var(--text-tertiary);transition:transform 0.2s;margin-top:2px"></i>
+              </div>
+            </div>
+            <div class="sessions-panel" id="sessions-art" style="display:none">
+              <div class="sessions-panel-header"><span>Sessions</span><button class="btn-primary" style="font-size:11px;padding:4px 10px"><i class="ti ti-plus"></i>Add session</button></div>
+              <div class="session-row">
+                <div class="session-num preview">A</div>
+                <div class="session-info">
+                  <div class="session-name">Session A — Summer 2026</div>
+                  <div class="session-dates"><span><i class="ti ti-calendar" style="font-size:10px"></i>Jul 7 – Aug 1</span><span><i class="ti ti-clock" style="font-size:10px"></i>M–F · 1–3pm</span></div>
+                </div>
+                <div class="session-cap"><div style="font-size:12px;font-weight:500;color:var(--text-primary)">0/20</div><div class="session-cap-bar"><div class="session-cap-fill" style="width:0%"></div></div><div style="font-size:10px;color:var(--purple);margin-top:2px">14 wishlisted</div></div>
+                <div class="session-price">$150</div>
+                <div class="session-reg-window"><span class="rw-upcoming">Opens Jul 1</span></div>
+                <div class="session-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i></button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERSHIPS -->
+      <div id="admin-memberships" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Memberships</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export members</button>
+            <button class="btn-primary"><i class="ti ti-plus"></i>New membership type</button>
+          </div>
+        </div>
+        <div class="admin-body">
+          <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+            <div class="kpi-card"><div class="kpi-label">Total active members</div><div class="kpi-value">412</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+18 this month</div></div>
+            <div class="kpi-card"><div class="kpi-label">Membership revenue (YTD)</div><div class="kpi-value">$48,240</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+12% vs last year</div></div>
+            <div class="kpi-card"><div class="kpi-label">Auto-renewals this month</div><div class="kpi-value">38</div><div class="kpi-delta up"><i class="ti ti-repeat" style="font-size:13px"></i>$2,280 recurring</div></div>
+            <div class="kpi-card"><div class="kpi-label">Expiring in 30 days</div><div class="kpi-value">24</div><div class="kpi-delta" style="color:var(--amber)"><i class="ti ti-alert-circle" style="font-size:13px"></i>Renewal reminders sent</div></div>
+          </div>
+
+          <!-- Pool Membership — Seasonal -->
+          <div class="mbr-type-card">
+            <div class="mbr-type-header">
+              <div class="mbr-type-icon" style="background:linear-gradient(135deg,#0C447C,#378ADD);color:#fff"><i class="ti ti-swimming"></i></div>
+              <div class="mbr-type-info">
+                <div class="mbr-type-name">Pool Membership <span class="mbr-model-badge mmb-seasonal">Seasonal</span></div>
+                <div class="mbr-type-desc">Summer pool access from Memorial Day through Labor Day. Does not auto-renew — must repurchase each season.</div>
+              </div>
+              <div class="mbr-type-stats">
+                <div class="mbr-stat"><strong>94</strong>Active</div>
+                <div class="mbr-stat"><strong>$8,460</strong>Season revenue</div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <span class="badge badge-open">Active season</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+              </div>
+            </div>
+            <div class="mbr-type-body">
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Duration &amp; renewal</div>
+                <div class="mbr-config-row"><span>Duration model</span><strong>Fixed seasonal window</strong></div>
+                <div class="mbr-config-row"><span>Season dates</span><strong>May 24 – Sep 1, 2026</strong></div>
+                <div class="mbr-config-row"><span>On-sale date</span><strong>Mar 1, 2026</strong></div>
+                <div class="mbr-config-row"><span>Auto-renew</span><strong style="color:var(--red)">No — manual repurchase</strong></div>
+                <div class="mbr-config-row"><span>Renewal reminder</span><strong>Apr 1 each year</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Pricing tiers</div>
+                <div class="mbr-price-row"><span>Individual — Resident</span><strong>$60</strong></div>
+                <div class="mbr-price-row"><span>Individual — Non-resident</span><strong>$90</strong></div>
+                <div class="mbr-price-row"><span>Family (up to 4) — Resident</span><strong>$90</strong></div>
+                <div class="mbr-price-row"><span>Family (up to 4) — Non-resident</span><strong>$130</strong></div>
+                <div class="mbr-price-row"><span>Senior (65+) — Resident</span><strong>$40</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Access &amp; benefits</div>
+                <div style="margin-bottom:8px">
+                  <span class="mbr-access-chip" style="background:var(--blue-light);color:var(--blue-dark)"><i class="ti ti-check" style="font-size:10px"></i>Riverside Beach</span>
+                  <span class="mbr-access-chip" style="background:var(--blue-light);color:var(--blue-dark)"><i class="ti ti-check" style="font-size:10px"></i>Community Pool</span>
+                </div>
+                <div class="mbr-config-row"><span>Program discount</span><strong>10% on aquatics</strong></div>
+                <div class="mbr-config-row"><span>Guest passes included</span><strong>2 per season</strong></div>
+                <div class="mbr-config-row"><span>Digital ID card</span><strong>Yes — QR scan at entry</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gym Membership — Monthly recurring -->
+          <div class="mbr-type-card">
+            <div class="mbr-type-header">
+              <div class="mbr-type-icon" style="background:linear-gradient(135deg,#534AB7,#7C6FD4);color:#fff"><i class="ti ti-barbell"></i></div>
+              <div class="mbr-type-info">
+                <div class="mbr-type-name">Gym Membership <span class="mbr-model-badge mmb-monthly">Monthly Recurring</span></div>
+                <div class="mbr-type-desc">Month-to-month gym access with automatic renewal. Cancel anytime with 30-day notice. Billed on the 1st of each month.</div>
+              </div>
+              <div class="mbr-type-stats">
+                <div class="mbr-stat"><strong>186</strong>Active</div>
+                <div class="mbr-stat"><strong>$6,510/mo</strong>Recurring</div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+              </div>
+            </div>
+            <div class="mbr-type-body">
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Duration &amp; renewal</div>
+                <div class="mbr-config-row"><span>Duration model</span><strong>Monthly recurring</strong></div>
+                <div class="mbr-config-row"><span>Billing date</span><strong>1st of each month</strong></div>
+                <div class="mbr-config-row"><span>Auto-renew</span><strong style="color:var(--green)">Yes — automatic</strong></div>
+                <div class="mbr-config-row"><span>Cancellation notice</span><strong>30 days</strong></div>
+                <div class="mbr-config-row"><span>Pause allowed</span><strong>Yes — up to 3 months</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Pricing tiers</div>
+                <div class="mbr-price-row"><span>Individual — Resident</span><strong>$35/mo</strong></div>
+                <div class="mbr-price-row"><span>Individual — Non-resident</span><strong>$45/mo</strong></div>
+                <div class="mbr-price-row"><span>Family (up to 4) — Resident</span><strong>$55/mo</strong></div>
+                <div class="mbr-price-row"><span>Senior (65+) — Resident</span><strong>$25/mo</strong></div>
+                <div class="mbr-price-row"><span>Annual prepay (2 months free)</span><strong>$350/yr</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Access &amp; benefits</div>
+                <div style="margin-bottom:8px">
+                  <span class="mbr-access-chip" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-check" style="font-size:10px"></i>Maple Street Gym</span>
+                  <span class="mbr-access-chip" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-check" style="font-size:10px"></i>Recreation Center</span>
+                </div>
+                <div class="mbr-config-row"><span>Program discount</span><strong>15% on fitness programs</strong></div>
+                <div class="mbr-config-row"><span>Guest passes/month</span><strong>2 included</strong></div>
+                <div class="mbr-config-row"><span>Insurance reports</span><strong>Yes — check-in history</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Family Membership — Annual -->
+          <div class="mbr-type-card">
+            <div class="mbr-type-header">
+              <div class="mbr-type-icon" style="background:linear-gradient(135deg,#185FA5,#378ADD);color:#fff"><i class="ti ti-users"></i></div>
+              <div class="mbr-type-info">
+                <div class="mbr-type-name">Family Recreation Membership <span class="mbr-model-badge mmb-annual">Annual</span></div>
+                <div class="mbr-type-desc">Full-access annual family membership covering all facilities and discounted program registration. Auto-renews each January.</div>
+              </div>
+              <div class="mbr-type-stats">
+                <div class="mbr-stat"><strong>132</strong>Active</div>
+                <div class="mbr-stat"><strong>$33,000/yr</strong>Revenue</div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <span class="badge badge-open">Active</span>
+                <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+              </div>
+            </div>
+            <div class="mbr-type-body">
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Duration &amp; renewal</div>
+                <div class="mbr-config-row"><span>Duration model</span><strong>Annual — calendar year</strong></div>
+                <div class="mbr-config-row"><span>Term</span><strong>Jan 1 – Dec 31</strong></div>
+                <div class="mbr-config-row"><span>Auto-renew</span><strong style="color:var(--green)">Yes — auto-renews Dec 1</strong></div>
+                <div class="mbr-config-row"><span>Renewal reminder</span><strong>Nov 1 each year</strong></div>
+                <div class="mbr-config-row"><span>Pro-rate mid-year join</span><strong>Yes — monthly proration</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Pricing tiers</div>
+                <div class="mbr-price-row"><span>Individual — Resident</span><strong>$150/yr</strong></div>
+                <div class="mbr-price-row"><span>Individual — Non-resident</span><strong>$225/yr</strong></div>
+                <div class="mbr-price-row"><span>Family (up to 4) — Resident</span><strong>$250/yr</strong></div>
+                <div class="mbr-price-row"><span>Family (up to 6) — Resident</span><strong>$300/yr</strong></div>
+                <div class="mbr-price-row"><span>Fee assistance rate</span><strong>$50–$125/yr</strong></div>
+              </div>
+              <div class="mbr-config-section">
+                <div class="mbr-config-label">Access &amp; benefits</div>
+                <div style="margin-bottom:8px">
+                  <span class="mbr-access-chip" style="background:var(--blue-light);color:var(--blue-dark)"><i class="ti ti-check" style="font-size:10px"></i>All facilities</span>
+                  <span class="mbr-access-chip" style="background:var(--blue-light);color:var(--blue-dark)"><i class="ti ti-check" style="font-size:10px"></i>Pool &amp; Beach</span>
+                </div>
+                <div class="mbr-config-row"><span>Program discount</span><strong>20% on all programs</strong></div>
+                <div class="mbr-config-row"><span>Guest passes/year</span><strong>6 included</strong></div>
+                <div class="mbr-config-row"><span>Priority registration</span><strong>Yes — 1 week early</strong></div>
               </div>
             </div>
           </div>
@@ -9067,6 +9586,18 @@
     });
     var target = document.getElementById(pane);
     if (target) target.style.display = 'block';
+  }
+
+
+  /* ── PROGRAM MANAGEMENT ── */
+  function toggleProgSessions(id) {
+    var panel = document.getElementById(id);
+    if (!panel) return;
+    var isOpen = panel.style.display !== 'none';
+    var chevronId = 'chevron-' + id.replace('sessions-', '');
+    var chevron = document.getElementById(chevronId);
+    panel.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
   }
 
   /* ── REPORTING CONSOLE ── */
