@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070726 Added session and season capability to admin side --->
+  <!--- PR 070926 added admin user management --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,94 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── ROLE-BASED ACCESS CONTROL ── */
+  .rbac-user-row {
+    display:flex; align-items:center; gap:14px; padding:14px 20px;
+    border-bottom:1px solid var(--border); transition:background 0.1s;
+  }
+  .rbac-user-row:hover { background:var(--bg-secondary); }
+  .rbac-user-row:last-child { border-bottom:none; }
+  .rbac-av {
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; flex-shrink:0;
+  }
+  .rbac-user-info { flex:1; }
+  .rbac-user-name { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+  .rbac-user-meta { font-size:11px; color:var(--text-secondary); display:flex; gap:12px; flex-wrap:wrap; }
+  .rbac-role-pill {
+    font-size:11px; font-weight:600; padding:3px 10px;
+    border-radius:var(--radius-pill); flex-shrink:0;
+  }
+  .role-global    { background:#FEF3C7; color:#92400E; }
+  .role-coord     { background:var(--blue-light); color:var(--blue-dark); }
+  .role-finance   { background:var(--green-bg); color:#065F46; }
+  .role-facility  { background:var(--purple-bg); color:var(--purple); }
+  .role-readonly  { background:var(--bg-tertiary); color:var(--text-secondary); }
+  .rbac-areas { display:flex; gap:4px; flex-wrap:wrap; flex-shrink:0; max-width:240px; }
+  .rbac-area-chip {
+    font-size:10px; font-weight:500; padding:2px 7px;
+    border-radius:var(--radius-pill); background:var(--bg-secondary);
+    border:1px solid var(--border); color:var(--text-secondary);
+  }
+  .rbac-area-chip.all { background:var(--blue-light); color:var(--blue-dark); border-color:var(--blue-border); }
+  .rbac-actions { display:flex; gap:6px; flex-shrink:0; }
+  .rbac-last-login { font-size:11px; color:var(--text-tertiary); min-width:100px; text-align:right; flex-shrink:0; }
+
+  /* Permission matrix */
+  .perm-matrix { width:100%; border-collapse:collapse; font-size:12px; }
+  .perm-matrix th {
+    padding:10px 12px; text-align:center; background:var(--bg-secondary);
+    border-bottom:2px solid var(--border); border-right:1px solid var(--border);
+    font-size:11px; font-weight:600; color:var(--text-secondary);
+    text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap;
+  }
+  .perm-matrix th:first-child { text-align:left; min-width:180px; }
+  .perm-matrix td {
+    padding:9px 12px; border-bottom:1px solid var(--border);
+    border-right:1px solid var(--border); text-align:center;
+    vertical-align:middle;
+  }
+  .perm-matrix td:first-child { text-align:left; font-weight:500; color:var(--text-primary); background:var(--bg-secondary); }
+  .perm-matrix tr:last-child td { border-bottom:none; }
+  .perm-matrix .section-row td {
+    background:var(--bg-tertiary); font-size:10px; font-weight:700;
+    color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.5px;
+    padding:6px 12px; text-align:left;
+  }
+  .perm-cell-full  { color:var(--green); font-size:16px; }
+  .perm-cell-view  { color:var(--blue); font-size:16px; }
+  .perm-cell-edit  { color:var(--amber); font-size:16px; }
+  .perm-cell-none  { color:var(--border-med); font-size:16px; }
+
+  /* Content area cards */
+  .content-area-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .content-area-card {
+    background:var(--bg-primary); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:14px 16px;
+  }
+  .cac-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .cac-name { font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:8px; }
+  .cac-desc { font-size:11px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px; }
+  .cac-users { display:flex; gap:-6px; }
+  .cac-av { width:24px; height:24px; border-radius:50%; border:2px solid var(--bg-primary); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; margin-right:-6px; }
+
+  /* Invite modal */
+  .invite-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:800; align-items:center; justify-content:center; padding:16px; }
+  .invite-modal-overlay.open { display:flex; }
+  .invite-modal { background:var(--bg-primary); border-radius:18px; width:100%; max-width:520px; box-shadow:0 24px 60px rgba(0,0,0,0.2); overflow:hidden; }
+  .invite-modal-header { background:var(--blue-dark); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+  .invite-modal-header h3 { font-size:15px; font-weight:600; }
+  .invite-modal-body { padding:20px; }
+  .invite-field { margin-bottom:14px; }
+  .invite-field label { font-size:12px; font-weight:500; color:var(--text-secondary); display:block; margin-bottom:5px; }
+  .invite-field input, .invite-field select { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:9px 12px; font-size:13px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; }
+  .invite-field input:focus, .invite-field select:focus { border-color:var(--blue); }
+  .area-checkbox-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .area-checkbox-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); cursor:pointer; font-size:12px; color:var(--text-primary); transition:all 0.1s; }
+  .area-checkbox-item.checked { border-color:var(--blue); background:var(--blue-light); color:var(--blue-dark); }
+  .area-checkbox-item i { font-size:15px; }
 
   /* ── CATALOG PERIODS & PROGRAM MANAGEMENT ── */
   .period-card { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:12px; transition:box-shadow 0.15s; }
@@ -6403,6 +6491,7 @@
       <button class="sidebar-item" onclick="adminNav(this,'glcodes')"><i class="ti ti-list-numbers"></i>GL Codes</button>
       <button class="sidebar-item" onclick="adminNav(this,'reports')"><i class="ti ti-chart-bar"></i>Reports</button>
       <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="adminNav(this,'users')"><i class="ti ti-users-group"></i>Users &amp; roles</button>
         <button class="sidebar-item" onclick="adminNav(this,'settings')"><i class="ti ti-settings"></i>Settings</button>
       </div>
     </div>
@@ -7989,6 +8078,325 @@
                   <tr><td>Jun 14</td><td>Chen, Brian</td><td>Soccer Skills Camp</td><td>Refund</td><td style="color:var(--red)">-$120.00</td><td><span class="gl-code-pill">4099-000</span></td><td>Revenue Refund Offset</td><td>Finance</td></tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS & ROLES -->
+      <div id="admin-users" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Users &amp; roles</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary" onclick="adminNav(document.querySelector('[onclick*=users]'),'users')"><i class="ti ti-shield"></i>Manage roles</button>
+            <button class="btn-primary" onclick="openInviteModal()"><i class="ti ti-user-plus"></i>Invite user</button>
+          </div>
+        </div>
+        <div class="admin-body">
+
+          <!-- Role summary cards -->
+          <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+            <div class="kpi-card" style="border-left:3px solid #F59E0B">
+              <div class="kpi-label">Global administrators</div>
+              <div class="kpi-value" style="font-size:28px">2</div>
+              <div class="kpi-delta" style="color:var(--text-secondary)">Full system access</div>
+            </div>
+            <div class="kpi-card" style="border-left:3px solid var(--blue)">
+              <div class="kpi-label">Program coordinators</div>
+              <div class="kpi-value" style="font-size:28px">4</div>
+              <div class="kpi-delta" style="color:var(--text-secondary)">Scoped to content areas</div>
+            </div>
+            <div class="kpi-card" style="border-left:3px solid var(--green)">
+              <div class="kpi-label">Finance / reporting</div>
+              <div class="kpi-value" style="font-size:28px">2</div>
+              <div class="kpi-delta" style="color:var(--text-secondary)">Reports &amp; GL codes only</div>
+            </div>
+            <div class="kpi-card" style="border-left:3px solid var(--purple)">
+              <div class="kpi-label">Facility staff</div>
+              <div class="kpi-value" style="font-size:28px">3</div>
+              <div class="kpi-delta" style="color:var(--text-secondary)">Facility view only</div>
+            </div>
+          </div>
+
+          <!-- User list -->
+          <div class="card" style="margin-bottom:24px">
+            <div class="card-header">
+              <h3>Admin users (11)</h3>
+              <div style="display:flex;gap:8px">
+                <input type="text" placeholder="Search users..." style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 12px;font-size:12px;font-family:var(--font);outline:none;width:200px">
+                <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none">
+                  <option>All roles</option><option>Global Admin</option><option>Program Coordinator</option><option>Finance</option><option>Facility Staff</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Global Admins -->
+            <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Global administrators</div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:#FEF3C7;color:#92400E">RF</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Robert Feeney <span style="font-size:10px;background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:4px;font-weight:600;margin-left:4px">YOU</span></div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>r.feeney@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Parks &amp; Recreation Director</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-global">Global Administrator</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip all">All areas</span></div>
+              <div class="rbac-last-login">Today · 9:04am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" disabled>Edit</button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:#FEF3C7;color:#92400E">MS</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Maria Santos</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>m.santos@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Deputy Director</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-global">Global Administrator</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip all">All areas</span></div>
+              <div class="rbac-last-login">Jun 21 · 2:18pm</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+
+            <!-- Program Coordinators -->
+            <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);border-top:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Program coordinators</div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--blue-light);color:var(--blue-dark)">DW</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">David Williams</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>d.williams@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Sports &amp; Recreation Coordinator</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-coord">Program Coordinator</span></div>
+              <div class="rbac-areas">
+                <span class="rbac-area-chip" style="background:var(--green-bg);color:var(--green);border-color:#A3D9B4">Youth Sports</span>
+                <span class="rbac-area-chip" style="background:var(--green-bg);color:var(--green);border-color:#A3D9B4">Adult Sports</span>
+              </div>
+              <div class="rbac-last-login">Today · 8:30am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--blue-light);color:var(--blue-dark)">JP</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Jennifer Park</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>j.park@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Aquatics Director</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-coord">Program Coordinator</span></div>
+              <div class="rbac-areas">
+                <span class="rbac-area-chip" style="background:var(--blue-light);color:var(--blue-dark);border-color:var(--blue-border)">Aquatics</span>
+              </div>
+              <div class="rbac-last-login">Jun 22 · 7:55am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--blue-light);color:var(--blue-dark)">AL</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Angela Liu</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>a.liu@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Community Center Manager</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-coord">Program Coordinator</span></div>
+              <div class="rbac-areas">
+                <span class="rbac-area-chip" style="background:var(--amber-bg);color:var(--amber);border-color:#F0C97A">Arts</span>
+                <span class="rbac-area-chip" style="background:var(--purple-bg);color:var(--purple);border-color:#C4B5FD">Fitness</span>
+                <span class="rbac-area-chip" style="background:#CCFBF1;color:#065F46;border-color:#99F6E4">Seniors</span>
+              </div>
+              <div class="rbac-last-login">Jun 22 · 10:02am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--blue-light);color:var(--blue-dark)">TC</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Thomas Chen</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>t.chen@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Senior Programs Coordinator</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-coord">Program Coordinator</span></div>
+              <div class="rbac-areas">
+                <span class="rbac-area-chip" style="background:#CCFBF1;color:#065F46;border-color:#99F6E4">Seniors</span>
+              </div>
+              <div class="rbac-last-login">Jun 20 · 3:45pm</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+
+            <!-- Finance -->
+            <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);border-top:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Finance &amp; reporting</div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--green-bg);color:var(--green)">KR</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Karen Rodriguez</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>k.rodriguez@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Municipal Finance Dept.</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-finance">Finance / Reporting</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip">Finance reports</span><span class="rbac-area-chip">GL codes</span></div>
+              <div class="rbac-last-login">Jun 21 · 9:15am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--green-bg);color:var(--green)">BT</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Brian Torres</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>b.torres@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>City Comptroller&apos;s Office</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-finance">Finance / Reporting</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip">Finance reports</span><span class="rbac-area-chip">GL codes</span></div>
+              <div class="rbac-last-login">Jun 18 · 11:30am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+
+            <!-- Facility Staff -->
+            <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);border-top:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Facility staff</div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--purple-bg);color:var(--purple)">SM</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Steve Martinez</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>s.martinez@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Facilities Maintenance</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-facility">Facility Staff</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip">Facility schedule</span><span class="rbac-area-chip">Check-in log</span></div>
+              <div class="rbac-last-login">Today · 7:12am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--purple-bg);color:var(--purple)">LN</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Lisa Nguyen</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>l.nguyen@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Community Center Staff</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-facility">Facility Staff</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip">Pass scanner</span><span class="rbac-area-chip">Check-in log</span></div>
+              <div class="rbac-last-login">Today · 8:45am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+            <div class="rbac-user-row">
+              <div class="rbac-av" style="background:var(--purple-bg);color:var(--purple)">OB</div>
+              <div class="rbac-user-info">
+                <div class="rbac-user-name">Omar Brown</div>
+                <div class="rbac-user-meta"><span><i class="ti ti-mail" style="font-size:11px"></i>o.brown@springfield.gov</span><span><i class="ti ti-building" style="font-size:11px"></i>Pool &amp; Beach Staff</span></div>
+              </div>
+              <div><span class="rbac-role-pill role-facility">Facility Staff</span></div>
+              <div class="rbac-areas"><span class="rbac-area-chip">Pass scanner</span><span class="rbac-area-chip">Aquatics only</span></div>
+              <div class="rbac-last-login">Jun 22 · 9:00am</div>
+              <div class="rbac-actions"><button class="btn-secondary" style="font-size:11px;padding:4px 10px"><i class="ti ti-edit"></i>Edit</button><button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)"><i class="ti ti-user-x"></i></button></div>
+            </div>
+          </div>
+
+          <!-- Permission matrix -->
+          <div class="card" style="margin-bottom:24px">
+            <div class="card-header"><h3>Role permission matrix</h3><span style="font-size:12px;color:var(--text-secondary)">What each role can access</span></div>
+            <div style="padding:10px 18px;background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;gap:20px;font-size:12px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:5px"><span class="perm-cell-full">●</span>Full access</span>
+              <span style="display:flex;align-items:center;gap:5px"><span class="perm-cell-view">●</span>View only</span>
+              <span style="display:flex;align-items:center;gap:5px"><span class="perm-cell-edit">●</span>Limited / scoped</span>
+              <span style="display:flex;align-items:center;gap:5px"><span class="perm-cell-none">●</span>No access</span>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="perm-matrix">
+                <thead>
+                  <tr>
+                    <th>Section / Action</th>
+                    <th>Global Admin</th>
+                    <th>Program Coord.</th>
+                    <th>Finance / Reporting</th>
+                    <th>Facility Staff</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="section-row"><td colspan="5">Dashboard</td></tr>
+                  <tr><td>View dashboard KPIs</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Own areas</div></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-view">●</span><div style="font-size:9px;color:var(--text-tertiary)">Facility only</div></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Programs &amp; catalog</td></tr>
+                  <tr><td>View programs</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned areas only</div></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Create / edit programs</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned areas only</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Manage sessions &amp; pricing</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned areas only</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Manage catalog periods</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Manage forms &amp; waivers</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned areas only</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>View enrollment rosters</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned areas only</div></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Memberships</td></tr>
+                  <tr><td>View membership types</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Edit membership config</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>View member records</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Basic info only</div></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Facilities</td></tr>
+                  <tr><td>View facility schedule</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned facilities</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-view">●</span></td></tr>
+                  <tr><td>Edit / reserve facilities</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned facilities</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>View reservation details</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-view">●</span><div style="font-size:9px;color:var(--text-tertiary)">Name, time, paid status</div></td></tr>
+                  <tr><td>Scan passes / check-in</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Finance</td></tr>
+                  <tr><td>View payment transactions</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Issue refunds</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-view">●</span><div style="font-size:9px;color:var(--text-tertiary)">View only</div></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Manage GL codes</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Reports</td></tr>
+                  <tr><td>Run financial reports</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Run enrollment reports</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Own areas only</div></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Run facility reports</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Assigned facilities</div></td><td><span class="perm-cell-view">●</span></td><td><span class="perm-cell-view">●</span><div style="font-size:9px;color:var(--text-tertiary)">Facility reports only</div></td></tr>
+                  <tr><td>Schedule report delivery</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Build custom reports</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+
+                  <tr class="section-row"><td colspan="5">Administration</td></tr>
+                  <tr><td>Manage admin users &amp; roles</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>System settings</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                  <tr><td>Notification settings</td><td><span class="perm-cell-full">●</span></td><td><span class="perm-cell-edit">●</span><div style="font-size:9px;color:var(--text-tertiary)">Own programs only</div></td><td><span class="perm-cell-none">●</span></td><td><span class="perm-cell-none">●</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Content area assignments -->
+          <div class="card">
+            <div class="card-header"><h3>Content area assignments</h3><span style="font-size:12px;color:var(--text-secondary)">Which program coordinators manage which areas</span></div>
+            <div style="padding:16px 20px">
+              <div class="content-area-grid">
+                <div class="content-area-card">
+                  <div class="cac-header">
+                    <div class="cac-name"><span style="width:10px;height:10px;border-radius:50%;background:#3B6D11;display:inline-block"></span>Youth Sports</div>
+                    <span class="badge badge-open">2 programs</span>
+                  </div>
+                  <div class="cac-desc">Soccer, basketball, little league, flag football, tennis. Includes team rosters and game schedules.</div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Coordinator: <strong style="color:var(--text-primary)">David Williams</strong></div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Manage assignment</button>
+                </div>
+                <div class="content-area-card">
+                  <div class="cac-header">
+                    <div class="cac-name"><span style="width:10px;height:10px;border-radius:50%;background:#185FA5;display:inline-block"></span>Aquatics</div>
+                    <span class="badge badge-open">3 programs</span>
+                  </div>
+                  <div class="cac-desc">Swim lessons, water polo, open swim, lifeguard certification. Pool and beach facility access.</div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Coordinator: <strong style="color:var(--text-primary)">Jennifer Park</strong></div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Manage assignment</button>
+                </div>
+                <div class="content-area-card">
+                  <div class="cac-header">
+                    <div class="cac-name"><span style="width:10px;height:10px;border-radius:50%;background:#854F0B;display:inline-block"></span>Arts</div>
+                    <span class="badge badge-open">2 programs</span>
+                  </div>
+                  <div class="cac-desc">Art studio, painting, pottery, music, theater. Community Center Room B and arts wing.</div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Coordinator: <strong style="color:var(--text-primary)">Angela Liu</strong></div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Manage assignment</button>
+                </div>
+                <div class="content-area-card">
+                  <div class="cac-header">
+                    <div class="cac-name"><span style="width:10px;height:10px;border-radius:50%;background:#534AB7;display:inline-block"></span>Fitness</div>
+                    <span class="badge badge-open">4 programs</span>
+                  </div>
+                  <div class="cac-desc">Yoga, bootcamp, pilates, personal training. Maple Street Gym and Community Center fitness room.</div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Coordinator: <strong style="color:var(--text-primary)">Angela Liu</strong></div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Manage assignment</button>
+                </div>
+                <div class="content-area-card">
+                  <div class="cac-header">
+                    <div class="cac-name"><span style="width:10px;height:10px;border-radius:50%;background:#0F6E56;display:inline-block"></span>Seniors</div>
+                    <span class="badge badge-open">3 programs</span>
+                  </div>
+                  <div class="cac-desc">Senior fitness, dance, social programs. Senior Activity Center and Community Center.</div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Coordinators: <strong style="color:var(--text-primary)">Angela Liu, Thomas Chen</strong></div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Manage assignment</button>
+                </div>
+                <div class="content-area-card" style="border:1px dashed var(--border-med);background:var(--bg-secondary)">
+                  <div class="cac-header">
+                    <div class="cac-name" style="color:var(--text-tertiary)"><i class="ti ti-plus" style="font-size:16px"></i>Add content area</div>
+                  </div>
+                  <div class="cac-desc">Create a new content area to further segment program management responsibilities.</div>
+                  <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Create area</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -9600,6 +10008,38 @@
     if (chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
   }
 
+  /* ── USERS & ROLES ── */
+  function openInviteModal() {
+    var m = document.getElementById('invite-modal');
+    if (m) m.classList.add('open');
+  }
+
+  function closeInviteModal() {
+    var m = document.getElementById('invite-modal');
+    if (m) m.classList.remove('open');
+  }
+
+  function updateInviteAreas(sel) {
+    var section = document.getElementById('invite-area-section');
+    if (!section) return;
+    // Only show area checkboxes for Program Coordinator role
+    section.style.display = (sel.value === 'coord') ? 'block' : 'none';
+  }
+
+  function toggleAreaCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  function sendInvite() {
+    closeInviteModal();
+    var toast = document.getElementById('wallet-toast');
+    if (toast) {
+      toast.textContent = '✓ Invitation sent — user will receive an email with setup instructions';
+      toast.style.display = 'block';
+      setTimeout(function(){ toast.style.display = 'none'; }, 3500);
+    }
+  }
+
   /* ── REPORTING CONSOLE ── */
 
   function reportTab(btn, pane) {
@@ -9913,6 +10353,75 @@
     if (target) target.style.display = 'block';
   }
 </script>
+
+<!-- INVITE USER MODAL -->
+<div id="invite-modal" class="invite-modal-overlay" onclick="if(event.target===this)closeInviteModal()">
+  <div class="invite-modal">
+    <div class="invite-modal-header">
+      <h3><i class="ti ti-user-plus" style="font-size:16px;vertical-align:-2px;margin-right:7px"></i>Invite admin user</h3>
+      <button onclick="closeInviteModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="invite-modal-body">
+      <div class="invite-field">
+        <label>Email address <span style="color:var(--red)">*</span></label>
+        <input type="email" placeholder="name@springfield.gov">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="invite-field" style="margin-bottom:0">
+          <label>First name</label>
+          <input type="text" placeholder="First name">
+        </div>
+        <div class="invite-field" style="margin-bottom:0">
+          <label>Last name</label>
+          <input type="text" placeholder="Last name">
+        </div>
+      </div>
+      <div class="invite-field">
+        <label>Department / title</label>
+        <input type="text" placeholder="e.g. Parks & Recreation, Finance Dept.">
+      </div>
+      <div class="invite-field">
+        <label>Role <span style="color:var(--red)">*</span></label>
+        <select onchange="updateInviteAreas(this)">
+          <option value="">Select a role...</option>
+          <option value="global">Global Administrator — full system access</option>
+          <option value="coord" selected>Program Coordinator — manage assigned content areas</option>
+          <option value="finance">Finance / Reporting — financial reports and GL codes only</option>
+          <option value="facility">Facility Staff — facility schedule and pass scanning only</option>
+        </select>
+      </div>
+      <div id="invite-area-section">
+        <div class="invite-field" style="margin-bottom:8px">
+          <label>Content area access <span style="font-size:11px;color:var(--text-tertiary);font-weight:400">— which program areas can this coordinator manage?</span></label>
+        </div>
+        <div class="area-checkbox-grid">
+          <div class="area-checkbox-item checked" onclick="toggleAreaCheck(this)"><i class="ti ti-swimming" style="color:var(--blue)"></i>Aquatics</div>
+          <div class="area-checkbox-item" onclick="toggleAreaCheck(this)"><i class="ti ti-ball-football" style="color:var(--green)"></i>Youth Sports</div>
+          <div class="area-checkbox-item" onclick="toggleAreaCheck(this)"><i class="ti ti-palette" style="color:var(--amber)"></i>Arts</div>
+          <div class="area-checkbox-item" onclick="toggleAreaCheck(this)"><i class="ti ti-barbell" style="color:var(--purple)"></i>Fitness</div>
+          <div class="area-checkbox-item" onclick="toggleAreaCheck(this)"><i class="ti ti-heart-rate-monitor" style="color:#0F6E56"></i>Seniors</div>
+          <div class="area-checkbox-item" onclick="toggleAreaCheck(this)"><i class="ti ti-building"></i>All facilities</div>
+        </div>
+      </div>
+      <div class="invite-field" style="margin-top:14px">
+        <label>Invitation expiry</label>
+        <select>
+          <option>7 days</option>
+          <option selected>14 days</option>
+          <option>30 days</option>
+        </select>
+      </div>
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text-secondary)">
+        <i class="ti ti-info-circle" style="color:var(--blue);font-size:14px;vertical-align:-2px;margin-right:5px"></i>
+        The user will receive an email with a secure link to set their password. They will only see sections permitted by their assigned role and content areas.
+      </div>
+      <div style="display:flex;gap:10px">
+        <button style="flex:1;padding:11px;border-radius:var(--radius-md);border:1px solid var(--border-med);background:var(--bg-primary);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer" onclick="closeInviteModal()">Cancel</button>
+        <button style="flex:2;padding:11px;border-radius:var(--radius-md);border:none;background:var(--blue);color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer" onclick="sendInvite()"><i class="ti ti-send" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Send invitation</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- SCHEDULE DELIVERY MODAL -->
 <div id="sched-modal" class="sched-modal-overlay" onclick="if(event.target===this)closeSchedModal()">
