@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070926 added admin user management --->
+  <!--- PR 070926 added residency settings and pricing --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,103 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── RESIDENCY MANAGEMENT ── */
+  .res-method-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+  .res-method-card {
+    border:2px solid var(--border); border-radius:var(--radius-lg); padding:14px;
+    cursor:pointer; transition:all 0.15s; background:var(--bg-primary);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .res-method-card:hover { border-color:var(--blue); background:var(--blue-light); }
+  .res-method-card.selected { border-color:var(--blue); background:var(--blue-light); }
+  .res-method-card.secondary-selected { border-color:var(--green); background:var(--green-bg); }
+  .rmc-icon { font-size:24px; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .rmc-name { font-size:13px; font-weight:600; color:var(--text-primary); }
+  .rmc-desc { font-size:11px; color:var(--text-secondary); line-height:1.5; }
+  .rmc-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:var(--radius-pill); align-self:flex-start; }
+  .rmc-primary { background:var(--blue-light); color:var(--blue-dark); }
+  .rmc-secondary { background:var(--green-bg); color:var(--green); }
+  .rmc-accuracy { display:flex; align-items:center; gap:3px; margin-top:2px; }
+  .rmc-dot { width:7px; height:7px; border-radius:50%; background:var(--border-med); }
+  .rmc-dot.filled { background:var(--blue); }
+  .rmc-dot.filled.green { background:var(--green); }
+
+  /* ZIP manager */
+  .zip-tag-wrap { display:flex; flex-wrap:wrap; gap:6px; padding:12px; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border); min-height:60px; margin-bottom:8px; }
+  .zip-tag { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:4px 10px; border-radius:var(--radius-pill); font-family:monospace; }
+  .zip-tag.resident { background:var(--blue-light); color:var(--blue-dark); border:1px solid var(--blue-border); }
+  .zip-tag.split { background:var(--amber-bg); color:var(--amber); border:1px solid #F0C97A; }
+  .zip-tag i { font-size:11px; cursor:pointer; opacity:0.6; }
+  .zip-tag i:hover { opacity:1; }
+
+  /* Residency status badge (public side) */
+  .res-status-banner {
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    border-radius:var(--radius-md); margin-bottom:14px; font-size:13px;
+  }
+  .res-status-banner.resident { background:var(--green-bg); border:1px solid #A3D9B4; }
+  .res-status-banner.nonresident { background:var(--amber-bg); border:1px solid #F0C97A; }
+  .res-status-banner.unverified { background:var(--bg-secondary); border:1px solid var(--border); }
+  .res-status-banner i { font-size:18px; flex-shrink:0; }
+  .res-status-banner.resident i { color:var(--green); }
+  .res-status-banner.nonresident i { color:var(--amber); }
+  .res-status-banner.unverified i { color:var(--text-tertiary); }
+  .res-status-text { flex:1; font-weight:500; }
+  .res-status-sub { font-size:11px; font-weight:400; color:var(--text-secondary); display:block; margin-top:1px; }
+  .res-verify-btn { font-size:12px; font-weight:600; color:var(--blue); background:none; border:1px solid var(--blue); border-radius:var(--radius-md); padding:5px 12px; cursor:pointer; font-family:var(--font); white-space:nowrap; }
+
+  /* Pricing comparison */
+  .res-price-compare { display:flex; gap:10px; margin-bottom:12px; }
+  .rpc-card { flex:1; border-radius:var(--radius-md); padding:12px 14px; }
+  .rpc-card.resident { background:var(--green-bg); border:1px solid #A3D9B4; }
+  .rpc-card.nonresident { background:var(--amber-bg); border:1px solid #F0C97A; }
+  .rpc-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px; }
+  .rpc-card.resident .rpc-label { color:var(--green); }
+  .rpc-card.nonresident .rpc-label { color:var(--amber); }
+  .rpc-price { font-size:22px; font-weight:700; }
+  .rpc-card.resident .rpc-price { color:#065F46; }
+  .rpc-card.nonresident .rpc-price { color:#92400E; }
+  .rpc-opens { font-size:11px; margin-top:3px; }
+  .rpc-card.resident .rpc-opens { color:var(--green); }
+  .rpc-card.nonresident .rpc-opens { color:var(--amber); }
+  .rpc-policy { font-size:10px; margin-top:4px; color:var(--text-secondary); }
+
+  /* Program residency config (admin) */
+  .prog-res-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .prog-res-section { background:var(--bg-secondary); border-radius:var(--radius-md); padding:14px; }
+  .prog-res-label { font-size:11px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+  .prog-res-field { margin-bottom:10px; }
+  .prog-res-field label { font-size:11px; font-weight:500; color:var(--text-secondary); display:block; margin-bottom:4px; }
+  .prog-res-field input, .prog-res-field select { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:7px 10px; font-size:12px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; }
+  .prog-res-field input:focus, .prog-res-field select:focus { border-color:var(--blue); }
+  .nonres-policy-opts { display:flex; flex-direction:column; gap:6px; }
+  .npo-item { display:flex; align-items:flex-start; gap:9px; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); cursor:pointer; transition:all 0.12s; }
+  .npo-item.selected { border-color:var(--blue); background:var(--blue-light); }
+  .npo-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--border-med); flex-shrink:0; margin-top:1px; transition:all 0.12s; }
+  .npo-item.selected .npo-dot { border-color:var(--blue); background:var(--blue); }
+  .npo-label { font-size:12px; font-weight:500; color:var(--text-primary); }
+  .npo-sub { font-size:11px; color:var(--text-secondary); margin-top:1px; }
+
+  /* Verification modal */
+  .verify-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:800; align-items:center; justify-content:center; padding:16px; }
+  .verify-modal-overlay.open { display:flex; }
+  .verify-modal { background:var(--bg-primary); border-radius:18px; width:100%; max-width:480px; box-shadow:0 24px 60px rgba(0,0,0,0.2); overflow:hidden; }
+  .verify-modal-header { background:var(--blue-dark); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+  .verify-modal-header h3 { font-size:15px; font-weight:600; }
+  .verify-step { padding:20px; }
+  .verify-step-label { font-size:12px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:14px; }
+  .verify-method-row { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:8px; cursor:pointer; transition:all 0.12s; }
+  .verify-method-row:hover { border-color:var(--blue); background:var(--blue-light); }
+  .verify-method-row.active { border-color:var(--blue); background:var(--blue-light); }
+  .vmr-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .vmr-info { flex:1; }
+  .vmr-name { font-size:13px; font-weight:500; color:var(--text-primary); }
+  .vmr-sub { font-size:11px; color:var(--text-secondary); margin-top:1px; }
+  .verify-result { text-align:center; padding:24px 20px; }
+  .verify-result-icon { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 14px; }
+  .verify-result-icon.success { background:var(--green-bg); color:var(--green); }
+  .verify-result-icon.pending { background:var(--amber-bg); color:var(--amber); }
 
   /* ── ROLE-BASED ACCESS CONTROL ── */
   .rbac-user-row {
@@ -4855,7 +4952,14 @@
         <button class="web-search-btn" onclick="openWebSearch(document.getElementById('web-home-search').value)"><i class="ti ti-search"></i>Search</button>
       </div>
 
-      <div class="web-section-header">
+      <!-- Residency status banner -->
+      <div class="res-status-banner resident" style="margin:16px 0 8px">
+        <i class="ti ti-home-check"></i>
+        <div class="res-status-text">Springfield resident — verified
+          <span class="res-status-sub">Your account address (42 Maple Street, Springfield 01105) is confirmed as a Springfield resident. Resident pricing applies automatically.</span>
+        </div>
+        <button class="res-verify-btn" onclick="openVerifyModal()">View details</button>
+      </div>
         <h2>Featured programs</h2>
         <a onclick="webNav(document.querySelectorAll('.web-nav-link')[1],'wprograms')">View all programs →</a>
       </div>
@@ -4866,7 +4970,7 @@
             <div class="web-prog-name">Youth Swim Lessons</div>
             <div class="web-prog-meta">Mon/Wed/Fri · 9–10am · Ages 6–12<br>Community Center Pool</div>
             <div class="web-prog-footer">
-              <div class="web-prog-price">$85</div>
+              <div><div class="web-prog-price">$85 <span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:4px;vertical-align:middle">Resident</span></div><div style="font-size:10px;color:var(--text-tertiary);margin-top:1px">Non-resident: $110</div></div>
               <span class="badge badge-few">4 spots left</span>
             </div>
           </div>
@@ -5380,6 +5484,13 @@
 
             <!-- STEP 1 -->
             <div id="reg-step1">
+              <!-- Residency status banner -->
+              <div class="res-status-banner resident" style="margin-bottom:16px">
+                <i class="ti ti-home-check"></i>
+                <div class="res-status-text">Springfield resident — verified
+                  <span class="res-status-sub">Your account is verified via ZIP code match (01105). Resident pricing applies to all eligible programs.</span>
+                </div>
+              </div>
               <div class="reg-prog-banner">
                 <div class="reg-prog-icon bg-blue-img" id="reg-prog-icon-wrap"><i class="ti ti-swimming" id="reg-prog-icon-i"></i></div>
                 <div>
@@ -5677,7 +5788,8 @@
                     <div class="payment-method-card" onclick="selectPayMethod(this)"><i class="ti ti-brand-google"></i><span>Google Pay</span></div>
                   </div>
                   <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Order total</div>
-                  <div class="review-row"><span class="review-row-label">Program fee</span><span class="review-row-val" id="rv-fee">$85.00</span></div>
+                  <div class="review-row"><span class="review-row-label">Program fee <span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:4px;margin-left:4px">Resident rate</span></span><span class="review-row-val" id="rv-fee">$85.00</span></div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding:4px 0 8px;margin-top:-4px">Non-resident price would be $110.00 · You save $25.00 as a verified resident</div>
                   <div class="review-row"><span class="review-row-label">Processing fee</span><span class="review-row-val">$1.50</span></div>
                   <div class="review-row" style="font-size:15px;font-weight:700;padding-top:10px;border-top:2px solid var(--text-primary)"><span>Total</span><span id="rv-total">$86.50</span></div>
                   <div style="margin-top:14px;font-size:12px;color:var(--blue);cursor:pointer;display:flex;align-items:center;gap:5px"><i class="ti ti-gift" style="font-size:14px"></i>Apply for fee assistance</div>
@@ -6491,6 +6603,7 @@
       <button class="sidebar-item" onclick="adminNav(this,'glcodes')"><i class="ti ti-list-numbers"></i>GL Codes</button>
       <button class="sidebar-item" onclick="adminNav(this,'reports')"><i class="ti ti-chart-bar"></i>Reports</button>
       <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="adminNav(this,'residency')"><i class="ti ti-map-pin"></i>Residency</button>
         <button class="sidebar-item" onclick="adminNav(this,'users')"><i class="ti ti-users-group"></i>Users &amp; roles</button>
         <button class="sidebar-item" onclick="adminNav(this,'settings')"><i class="ti ti-settings"></i>Settings</button>
       </div>
@@ -7331,10 +7444,96 @@
               </div>
             </div>
           </div>
+          <!-- Residency pricing & access config (shown for Summer Art Studio as demo) -->
+          <div style="margin-top:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden">
+            <div style="padding:14px 20px;background:linear-gradient(135deg,#EDE9FE,#DDD6FE);border-bottom:1px solid #C4B5FD;display:flex;align-items:center;gap:10px">
+              <i class="ti ti-map-pin" style="font-size:18px;color:#5B21B6"></i>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#3B0764">Residency pricing &amp; access — Summer Art Studio</div><div style="font-size:12px;color:#5B21B6;margin-top:1px">Set separate pricing, registration windows, and eligibility rules for residents vs. non-residents</div></div>
+              <button class="btn-secondary" style="font-size:12px"><i class="ti ti-device-floppy"></i>Save</button>
+            </div>
+            <div style="padding:16px 20px">
+              <div class="prog-res-grid" style="margin-bottom:16px">
+
+                <!-- Resident side -->
+                <div class="prog-res-section" style="border-left:3px solid var(--green)">
+                  <div class="prog-res-label" style="color:var(--green)"><i class="ti ti-home" style="font-size:14px"></i>Resident pricing &amp; window</div>
+                  <div class="prog-res-field">
+                    <label>Resident price</label>
+                    <input type="text" value="$150.00">
+                  </div>
+                  <div class="prog-res-field">
+                    <label>Registration opens</label>
+                    <input type="datetime-local" value="2026-07-01T09:00">
+                  </div>
+                  <div class="prog-res-field">
+                    <label>Registration closes</label>
+                    <input type="datetime-local" value="2026-07-05T23:59">
+                  </div>
+                  <div class="prog-res-field">
+                    <label>Resident registration cap</label>
+                    <input type="text" value="20 spots (full capacity)">
+                  </div>
+                </div>
+
+                <!-- Non-resident side -->
+                <div class="prog-res-section" style="border-left:3px solid var(--amber)">
+                  <div class="prog-res-label" style="color:var(--amber)"><i class="ti ti-map-pin" style="font-size:14px"></i>Non-resident pricing &amp; access</div>
+                  <div class="prog-res-field">
+                    <label>Non-resident price</label>
+                    <input type="text" value="$200.00">
+                  </div>
+                  <div class="prog-res-field">
+                    <label>Non-resident policy</label>
+                    <div class="nonres-policy-opts">
+                      <div class="npo-item" onclick="selectNonResPol(this)">
+                        <div class="npo-dot"></div>
+                        <div><div class="npo-label">Full access — same window as residents</div><div class="npo-sub">Non-residents register at the same time, paying the higher price</div></div>
+                      </div>
+                      <div class="npo-item selected" onclick="selectNonResPol(this)">
+                        <div class="npo-dot"></div>
+                        <div><div class="npo-label">Delayed window — opens after residents</div><div class="npo-sub">Non-residents can only register after the resident window closes or after a set delay</div></div>
+                      </div>
+                      <div class="npo-item" onclick="selectNonResPol(this)">
+                        <div class="npo-dot"></div>
+                        <div><div class="npo-label">Waitlist only — residents fill first</div><div class="npo-sub">Non-residents are automatically placed on a waitlist; enrolled only if spots remain after resident period</div></div>
+                      </div>
+                      <div class="npo-item" onclick="selectNonResPol(this)">
+                        <div class="npo-dot"></div>
+                        <div><div class="npo-label">Residents only — non-residents blocked</div><div class="npo-sub">Non-residents cannot register or view pricing. Program is hidden from non-resident accounts.</div></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="prog-res-field" style="margin-top:10px">
+                    <label>Non-resident registration opens (delayed window)</label>
+                    <input type="datetime-local" value="2026-07-08T09:00">
+                  </div>
+                  <div class="prog-res-field">
+                    <label>Non-resident spots (if not using full cap)</label>
+                    <input type="text" placeholder="e.g. 5 (leave blank for remaining spots only)">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live preview of what each account type sees -->
+              <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Public-facing preview — what residents vs. non-residents see on this program</div>
+              <div class="res-price-compare">
+                <div class="rpc-card resident">
+                  <div class="rpc-label">Resident</div>
+                  <div class="rpc-price">$150</div>
+                  <div class="rpc-opens"><i class="ti ti-check" style="font-size:11px"></i> Registration opens Jul 1 · 9:00 AM</div>
+                  <div class="rpc-policy">Full access · All 20 spots available</div>
+                </div>
+                <div class="rpc-card nonresident">
+                  <div class="rpc-label">Non-resident</div>
+                  <div class="rpc-price">$200</div>
+                  <div class="rpc-opens"><i class="ti ti-clock" style="font-size:11px"></i> Registration opens Jul 8 · 9:00 AM</div>
+                  <div class="rpc-policy">Delayed window · Remaining spots after Jul 5</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- MEMBERSHIPS -->
       <div id="admin-memberships" class="admin-section">
         <div class="admin-topbar">
           <div class="topbar-title">Memberships</div>
@@ -8395,6 +8594,197 @@
                   </div>
                   <div class="cac-desc">Create a new content area to further segment program management responsibilities.</div>
                   <button class="btn-secondary" style="font-size:11px;width:100%;justify-content:center">Create area</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESIDENCY MANAGEMENT -->
+      <div id="admin-residency" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Residency configuration</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary"><i class="ti ti-download"></i>Export member residency status</button>
+            <button class="btn-primary"><i class="ti ti-device-floppy"></i>Save changes</button>
+          </div>
+        </div>
+        <div class="admin-body">
+
+          <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:24px;font-size:13px;color:var(--blue-dark);display:flex;gap:12px;align-items:flex-start">
+            <i class="ti ti-info-circle" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>
+            <div>Residency determines pricing tiers, registration windows, and eligibility for every program. Select a primary verification method and optionally a secondary fallback. All public accounts are checked against these rules automatically. Admins can always override an individual account's status manually.</div>
+          </div>
+
+          <!-- KPIs -->
+          <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+            <div class="kpi-card" style="border-left:3px solid var(--green)"><div class="kpi-label">Verified residents</div><div class="kpi-value">1,284</div><div class="kpi-delta up"><i class="ti ti-check" style="font-size:13px"></i>ZIP match + address list</div></div>
+            <div class="kpi-card" style="border-left:3px solid var(--amber)"><div class="kpi-label">Non-residents</div><div class="kpi-value">318</div><div class="kpi-delta" style="color:var(--amber)"><i class="ti ti-map-pin" style="font-size:13px"></i>Pay surcharge</div></div>
+            <div class="kpi-card" style="border-left:3px solid var(--purple)"><div class="kpi-label">Pending verification</div><div class="kpi-value">47</div><div class="kpi-delta" style="color:var(--purple)"><i class="ti ti-clock" style="font-size:13px"></i>Awaiting document review</div></div>
+            <div class="kpi-card" style="border-left:3px solid var(--red)"><div class="kpi-label">Manual overrides</div><div class="kpi-value">12</div><div class="kpi-delta" style="color:var(--text-secondary)"><i class="ti ti-user-check" style="font-size:13px"></i>Staff-verified exceptions</div></div>
+          </div>
+
+          <!-- Verification method selector -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Verification method</h3><span style="font-size:12px;color:var(--text-secondary)">Primary + optional secondary fallback</span></div>
+            <div style="padding:16px 20px">
+              <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px">Primary method <span style="font-size:10px;background:var(--blue-light);color:var(--blue-dark);padding:2px 8px;border-radius:var(--radius-pill);font-weight:700;margin-left:4px">Required</span></div>
+              <div class="res-method-grid">
+
+                <div class="res-method-card selected" onclick="selectResMethod(this,'primary')">
+                  <span class="rmc-badge rmc-primary">Primary ✓</span>
+                  <div class="rmc-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-map-pin"></i></div>
+                  <div class="rmc-name">ZIP code matching</div>
+                  <div class="rmc-desc">Account ZIP compared against your list of resident ZIPs. Instant, no API required.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Moderate</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'primary')">
+                  <div class="rmc-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-table"></i></div>
+                  <div class="rmc-name">Address list upload</div>
+                  <div class="rmc-desc">Upload your assessor file, voter rolls, or utility billing list. Fuzzy-matched against account addresses.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: High</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'primary')">
+                  <div class="rmc-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-api"></i></div>
+                  <div class="rmc-name">Address validation API</div>
+                  <div class="rmc-desc">Real-time lookup via Smarty Streets or Google Maps. Returns municipality for any address entered.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Highest</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'primary')">
+                  <div class="rmc-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-building-bank"></i></div>
+                  <div class="rmc-name">Tax record integration</div>
+                  <div class="rmc-desc">Connect to the municipal assessor or property tax database. Authoritative but requires IT setup.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><div class="rmc-dot filled green"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Highest</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'primary')">
+                  <div class="rmc-icon" style="background:var(--bg-tertiary);color:var(--text-secondary)"><i class="ti ti-bolt"></i></div>
+                  <div class="rmc-name">Utility account verification</div>
+                  <div class="rmc-desc">Resident enters their water/electric account number, cross-referenced with municipal billing system.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: High</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'primary')">
+                  <div class="rmc-icon" style="background:var(--bg-tertiary);color:var(--text-secondary)"><i class="ti ti-school"></i></div>
+                  <div class="rmc-name">School district enrollment</div>
+                  <div class="rmc-desc">For youth programs — verifies child is enrolled in a district school. School ID or district database.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Moderate (youth only)</span></div>
+                </div>
+              </div>
+
+              <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin:20px 0 12px">Secondary / fallback method <span style="font-size:10px;background:var(--bg-tertiary);color:var(--text-tertiary);padding:2px 8px;border-radius:var(--radius-pill);font-weight:600;margin-left:4px">Optional</span></div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">Used when the primary method cannot confirm status, or as an additional layer for edge cases.</div>
+              <div class="res-method-grid">
+
+                <div class="res-method-card secondary-selected" onclick="selectResMethod(this,'secondary')">
+                  <span class="rmc-badge rmc-secondary">Secondary ✓</span>
+                  <div class="rmc-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-hand-stop"></i></div>
+                  <div class="rmc-name">Honor system / self-declaration</div>
+                  <div class="rmc-desc">Public user checks "I am a Springfield resident/taxpayer" during account creation. No verification.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot"></div><div class="rmc-dot"></div><div class="rmc-dot"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Low (audit trail only)</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'secondary')">
+                  <div class="rmc-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-id"></i></div>
+                  <div class="rmc-name">ID / document upload</div>
+                  <div class="rmc-desc">Resident uploads driver's license, lease, mortgage statement, or utility bill. Staff reviews manually.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: High (manual review)</span></div>
+                </div>
+
+                <div class="res-method-card" onclick="selectResMethod(this,'secondary')">
+                  <div class="rmc-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-user-check"></i></div>
+                  <div class="rmc-name">Staff manual override</div>
+                  <div class="rmc-desc">Admin can manually mark any account as Resident or Non-resident with a reason and audit log entry.</div>
+                  <div class="rmc-accuracy"><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><div class="rmc-dot filled"></div><span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">Accuracy: Definitive</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ZIP code manager -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Resident ZIP codes</h3><div style="display:flex;gap:8px"><button class="btn-secondary" style="font-size:12px"><i class="ti ti-upload"></i>Bulk upload CSV</button><button class="btn-primary" style="font-size:12px"><i class="ti ti-plus"></i>Add ZIP</button></div></div>
+            <div style="padding:16px 20px">
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">ZIPs marked <span style="background:var(--amber-bg);color:var(--amber);padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600">Split</span> cross municipal boundaries — accounts with those ZIPs are sent to manual review.</div>
+              <div class="zip-tag-wrap">
+                <span class="zip-tag resident">01101 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01103 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01104 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01105 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01107 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01108 <i class="ti ti-x"></i></span>
+                <span class="zip-tag resident">01109 <i class="ti ti-x"></i></span>
+                <span class="zip-tag split">01119 ⚠ Split <i class="ti ti-x"></i></span>
+                <span class="zip-tag split">01128 ⚠ Split <i class="ti ti-x"></i></span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="text" placeholder="Enter ZIP code..." style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:7px 12px;font-size:13px;font-family:var(--font);outline:none;width:160px">
+                <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:7px 10px;font-size:12px;font-family:var(--font);outline:none"><option>Resident</option><option>Split — manual review</option></select>
+                <button class="btn-primary" style="font-size:12px"><i class="ti ti-plus"></i>Add</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address list upload -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Address list (assessor file)</h3><button class="btn-secondary" style="font-size:12px"><i class="ti ti-download"></i>Download template</button></div>
+            <div style="padding:16px 20px">
+              <div style="background:var(--bg-secondary);border:2px dashed var(--border-med);border-radius:var(--radius-lg);padding:20px;text-align:center;margin-bottom:14px">
+                <i class="ti ti-file-upload" style="font-size:32px;color:var(--text-tertiary);display:block;margin-bottom:8px"></i>
+                <div style="font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Drop your address file here or click to browse</div>
+                <div style="font-size:12px;color:var(--text-secondary)">Accepts CSV or Excel · Columns: street address, city, state, ZIP</div>
+                <button class="btn-secondary" style="margin-top:12px;font-size:12px"><i class="ti ti-upload"></i>Choose file</button>
+              </div>
+              <div style="background:var(--green-bg);border:1px solid #A3D9B4;border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px;font-size:13px">
+                <i class="ti ti-check" style="color:var(--green);font-size:18px;flex-shrink:0"></i>
+                <div><div style="font-weight:500;color:var(--green)">Address list loaded — Springfield Assessor 2026.csv</div><div style="font-size:11px;color:var(--text-secondary)">24,381 addresses · Last updated Jun 1, 2026 · Fuzzy match threshold: 85%</div></div>
+                <button class="btn-secondary" style="font-size:12px;margin-left:auto;flex-shrink:0"><i class="ti ti-refresh"></i>Refresh</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Honor system settings -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><h3>Honor system &amp; self-declaration</h3></div>
+            <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+              <div class="toggle-row" style="padding:0;border:none">
+                <div><div class="toggle-label">Allow self-declaration during account creation</div><div class="toggle-desc">Public users can declare residency by checking "I am a Springfield resident or taxpayer" when creating their account</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="toggle-row" style="padding:0;border:none">
+                <div><div class="toggle-label">Require document upload to confirm self-declared residency</div><div class="toggle-desc">Self-declared accounts are marked "Pending verification" until staff reviews an uploaded document (lease, utility bill, or ID)</div></div>
+                <div class="toggle on" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div class="toggle-row" style="padding:0;border:none">
+                <div><div class="toggle-label">Apply resident pricing before verification completes</div><div class="toggle-desc">Self-declared accounts receive resident pricing while their document is under review. If denied, the surcharge is applied retroactively.</div></div>
+                <div class="toggle" style="flex-shrink:0"><div class="toggle-thumb"></div></div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:6px">Self-declaration checkbox text shown to public users:</div>
+                <input type="text" value="I am a resident of Springfield and pay property or income taxes to the City of Springfield." style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Global non-resident policy -->
+          <div class="card">
+            <div class="card-header"><h3>Global non-resident defaults</h3><span style="font-size:12px;color:var(--text-secondary)">Can be overridden per program</span></div>
+            <div style="padding:16px 20px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Default surcharge</div>
+                  <div class="prog-res-field"><label>Non-resident surcharge — flat fee</label><input type="text" value="$15.00"></div>
+                  <div class="prog-res-field"><label>Non-resident surcharge — percentage</label><input type="text" value="25%"></div>
+                  <div style="font-size:11px;color:var(--text-secondary)">Applies whichever is higher, unless overridden on specific programs.</div>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Default registration window delay</div>
+                  <div class="prog-res-field"><label>Non-resident registration opens</label><select><option>Same time as residents</option><option selected>1 week after residents</option><option>2 weeks after residents</option><option>When resident period closes</option></select></div>
+                  <div class="prog-res-field"><label>Default non-resident policy</label><select><option>Full access (pay surcharge)</option><option selected>Waitlist until resident period ends</option><option>Blocked — residents only</option></select></div>
                 </div>
               </div>
             </div>
@@ -9997,6 +10387,42 @@
   }
 
 
+  /* ── RESIDENCY ── */
+  function selectResMethod(el, type) {
+    var primaryClass = 'selected';
+    var secondaryClass = 'secondary-selected';
+    var removeClass = (type === 'primary') ? primaryClass : secondaryClass;
+    var addBadge = (type === 'primary') ? '<span class="rmc-badge rmc-primary">Primary ✓</span>' : '<span class="rmc-badge rmc-secondary">Secondary ✓</span>';
+    // Remove existing selection of same type
+    document.querySelectorAll('.res-method-card').forEach(function(c) {
+      if (c.classList.contains(removeClass)) {
+        c.classList.remove(removeClass);
+        var b = c.querySelector('.rmc-badge');
+        if (b) b.remove();
+      }
+    });
+    el.classList.add(removeClass);
+    // Add badge if not already present
+    if (!el.querySelector('.rmc-badge')) {
+      el.insertAdjacentHTML('afterbegin', addBadge);
+    }
+  }
+
+  function selectNonResPol(el) {
+    document.querySelectorAll('.npo-item').forEach(function(i){ i.classList.remove('selected'); });
+    el.classList.add('selected');
+  }
+
+  function openVerifyModal() {
+    var m = document.getElementById('verify-modal');
+    if (m) m.classList.add('open');
+  }
+
+  function closeVerifyModal() {
+    var m = document.getElementById('verify-modal');
+    if (m) m.classList.remove('open');
+  }
+
   /* ── PROGRAM MANAGEMENT ── */
   function toggleProgSessions(id) {
     var panel = document.getElementById(id);
@@ -10353,6 +10779,31 @@
     if (target) target.style.display = 'block';
   }
 </script>
+
+<!-- VERIFY RESIDENCY MODAL (public) -->
+<div id="verify-modal" class="verify-modal-overlay" onclick="if(event.target===this)closeVerifyModal()">
+  <div class="verify-modal">
+    <div class="verify-modal-header">
+      <h3><i class="ti ti-home-check" style="font-size:16px;vertical-align:-2px;margin-right:7px"></i>Residency verification</h3>
+      <button onclick="closeVerifyModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="verify-step-status" class="verify-step">
+      <div class="verify-result">
+        <div class="verify-result-icon success"><i class="ti ti-home-check"></i></div>
+        <div style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px">Verified Springfield Resident</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.6">Your account address was automatically matched against the Springfield resident ZIP code list. Resident pricing applies to all programs and memberships.</div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-lg);padding:14px;text-align:left;margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Account address</span><strong>42 Maple Street, Springfield MA 01105</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Verification method</span><strong>ZIP code match</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Verified on</span><strong>Mar 5, 2026</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--text-secondary)">Status</span><strong style="color:var(--green)">✓ Active</strong></div>
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">If your address has changed, update your account profile and your residency status will be re-verified automatically.</div>
+        <button onclick="closeVerifyModal()" style="background:var(--blue);color:#fff;border:none;padding:11px 24px;border-radius:var(--radius-md);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;width:100%">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- INVITE USER MODAL -->
 <div id="invite-modal" class="invite-modal-overlay" onclick="if(event.target===this)closeInviteModal()">
