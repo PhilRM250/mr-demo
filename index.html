@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070926 added residency settings and pricing --->
+  <!--- PR 071026 added form conditional logic --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1016,6 +1016,95 @@
   .fb-setting-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
   .fb-attached-prog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 12px; color: var(--text-primary); margin-bottom: 6px; }
   .fb-attached-prog i { font-size: 15px; color: var(--blue); }
+
+  /* ── CONDITIONAL LOGIC ── */
+  .fb-condition-bar {
+    display:flex; align-items:center; gap:8px; margin-top:10px;
+    padding:8px 10px; background:var(--purple-bg); border:1px solid #C4B5FD;
+    border-radius:var(--radius-md); font-size:11px; flex-wrap:wrap;
+  }
+  .fb-condition-bar i { color:var(--purple); font-size:14px; flex-shrink:0; }
+  .fb-condition-label { color:var(--purple); font-weight:600; flex-shrink:0; }
+  .fb-condition-rule { color:#4C1D95; background:#DDD6FE; padding:2px 8px; border-radius:4px; font-weight:500; }
+  .fb-condition-toggle {
+    margin-left:auto; font-size:11px; font-weight:600; color:var(--purple);
+    background:none; border:1px solid #C4B5FD; border-radius:4px;
+    padding:2px 8px; cursor:pointer; font-family:var(--font); flex-shrink:0;
+  }
+  .fb-tag-cond { background:#EDE9FE; color:#5B21B6; }
+
+  /* Condition builder panel (inside a question when expanded) */
+  .fb-cond-panel {
+    margin-top:10px; padding:12px 14px;
+    background:#F5F3FF; border:1px solid #C4B5FD; border-radius:var(--radius-md);
+  }
+  .fb-cond-panel-title { font-size:11px; font-weight:700; color:#5B21B6; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .fb-cond-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .fb-cond-row select, .fb-cond-row input {
+    border:1px solid #C4B5FD; border-radius:6px; padding:5px 9px;
+    font-size:12px; font-family:var(--font); background:#fff;
+    color:var(--text-primary); outline:none;
+  }
+  .fb-cond-row select:focus, .fb-cond-row input:focus { border-color:var(--purple); }
+  .fb-cond-connector { font-size:11px; font-weight:600; color:#5B21B6; padding:2px 6px; background:#DDD6FE; border-radius:4px; }
+  .fb-cond-add { font-size:11px; color:var(--purple); background:none; border:1px dashed #C4B5FD; border-radius:6px; padding:4px 10px; cursor:pointer; font-family:var(--font); font-weight:500; }
+  .fb-cond-remove { font-size:14px; color:var(--text-tertiary); background:none; border:none; cursor:pointer; flex-shrink:0; }
+  .fb-cond-remove:hover { color:var(--red); }
+  .fb-cond-note { font-size:11px; color:#5B21B6; margin-top:6px; display:flex; align-items:center; gap:5px; }
+
+  /* Question highlighted as a conditional child */
+  .fb-question.is-child {
+    border-color:#C4B5FD; background:linear-gradient(to right, #F5F3FF 4px, var(--bg-primary) 4px);
+  }
+  .fb-question.is-child .fb-q-body .fb-q-label::before {
+    content:'↳ '; color:var(--purple); font-weight:700;
+  }
+
+  /* Public form — conditional question animation */
+  .reg-form-q { margin-bottom:18px; }
+  .reg-form-q label { font-size:13px; font-weight:500; color:var(--text-primary); display:block; margin-bottom:6px; }
+  .reg-form-q label .req-star { color:var(--red); margin-left:2px; }
+  .reg-form-q label .cond-tag { font-size:10px; font-weight:600; background:#EDE9FE; color:#5B21B6; padding:1px 6px; border-radius:4px; margin-left:6px; vertical-align:middle; }
+  .reg-form-input { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:9px 12px; font-size:13px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; box-sizing:border-box; }
+  .reg-form-input:focus { border-color:var(--blue); }
+  .reg-form-textarea { width:100%; border:1px solid var(--border-med); border-radius:var(--radius-md); padding:9px 12px; font-size:13px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; box-sizing:border-box; resize:vertical; min-height:80px; }
+  .reg-form-textarea:focus { border-color:var(--blue); }
+  .reg-yn-group { display:flex; gap:8px; }
+  .reg-yn-btn {
+    flex:1; padding:10px; border:2px solid var(--border-med); border-radius:var(--radius-md);
+    background:var(--bg-primary); font-family:var(--font); font-size:13px; font-weight:500;
+    color:var(--text-secondary); cursor:pointer; transition:all 0.12s;
+  }
+  .reg-yn-btn:hover { border-color:var(--blue); color:var(--blue); }
+  .reg-yn-btn.selected-yes { border-color:var(--blue); background:var(--blue); color:#fff; }
+  .reg-yn-btn.selected-no  { border-color:var(--border-med); background:var(--bg-secondary); color:var(--text-secondary); }
+  .reg-mc-group { display:flex; flex-direction:column; gap:6px; }
+  .reg-mc-item {
+    display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border:1.5px solid var(--border-med); border-radius:var(--radius-md); cursor:pointer;
+    font-size:13px; color:var(--text-primary); transition:all 0.1s;
+  }
+  .reg-mc-item:hover { border-color:var(--blue); }
+  .reg-mc-item.selected { border-color:var(--blue); background:var(--blue-light); color:var(--blue-dark); font-weight:500; }
+  .reg-mc-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--border-med); flex-shrink:0; transition:all 0.1s; }
+  .reg-mc-item.selected .reg-mc-dot { border-color:var(--blue); background:var(--blue); }
+  /* Conditional child question — hidden by default, animated in */
+  .cond-question {
+    overflow:hidden; max-height:0; opacity:0;
+    transition:max-height 0.35s ease, opacity 0.25s ease, margin 0.25s ease;
+    margin-bottom:0;
+  }
+  .cond-question.visible {
+    max-height:300px; opacity:1; margin-bottom:18px;
+  }
+  .cond-question-inner {
+    padding:14px 16px; background:#F5F3FF; border:1.5px solid #C4B5FD;
+    border-radius:var(--radius-md); border-left:4px solid var(--purple);
+  }
+  .cond-question-inner label { color:#3B0764; }
+  .cond-question-inner .reg-form-textarea { border-color:#C4B5FD; }
+  .cond-question-inner .reg-form-textarea:focus { border-color:var(--purple); }
+  .cond-triggered-by { font-size:10px; color:#7C3AED; font-weight:600; display:flex; align-items:center; gap:4px; margin-bottom:8px; }
 
   /* ── RESIDENCY MANAGEMENT ── */
   .res-method-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
@@ -5594,25 +5683,46 @@
                     </div>
                     <div class="form-field">
                       <div class="form-label">Has your child completed swim lessons before?</div>
-                      <div class="form-radio-group" style="flex-direction:row;gap:10px">
-                        <div class="form-radio-item" onclick="selectRadio(this)" style="flex:1"><div class="form-radio-dot"></div><span class="form-item-label">Yes</span></div>
-                        <div class="form-radio-item selected" onclick="selectRadio(this)" style="flex:1"><div class="form-radio-dot"></div><span class="form-item-label">No</span></div>
+                      <div class="reg-yn-group">
+                        <button class="reg-yn-btn" id="prior-yes" onclick="setPriorLessons('yes')">Yes</button>
+                        <button class="reg-yn-btn selected-no" id="prior-no" onclick="setPriorLessons('no')">No</button>
                       </div>
                     </div>
+
+                    <!-- Conditional Q5a — shown only when prior lessons = Yes -->
+                    <div class="cond-question" id="cond-prior-where">
+                      <div class="cond-question-inner">
+                        <div class="cond-triggered-by"><i class="ti ti-git-branch" style="font-size:12px"></i>Shown because: "Prior swim lessons?" = Yes</div>
+                        <label>Where did they take lessons? <span style="font-size:10px;font-weight:600;background:#EDE9FE;color:#5B21B6;padding:1px 6px;border-radius:4px;margin-left:4px">Conditional</span></label>
+                        <input class="reg-form-input" type="text" placeholder="e.g. Springfield YMCA, private instructor...">
+                      </div>
+                    </div>
+
                     <div class="form-section-label" style="margin-top:4px">Health &amp; emergency information</div>
                     <div class="form-field">
                       <div class="form-label">Known allergies or medical conditions <span class="form-required">*</span><span class="form-prefill-badge"><i class="ti ti-sparkles"></i>Pre-filled</span></div>
                       <input class="form-input prefilled" type="text" value="No known allergies">
                       <div class="form-hint">Including food, medication, or environmental allergies</div>
                     </div>
+
+                    <!-- Physical limitations Yes/No with conditional follow-up -->
                     <div class="form-field">
-                      <div class="form-label">Can your child communicate their needs to adults?</div>
-                      <div class="form-radio-group" style="flex-direction:row;gap:10px">
-                        <div class="form-radio-item selected" onclick="selectRadio(this)" style="flex:1"><div class="form-radio-dot"></div><span class="form-item-label">Yes</span></div>
-                        <div class="form-radio-item" onclick="selectRadio(this)" style="flex:1"><div class="form-radio-dot"></div><span class="form-item-label">No</span></div>
-                        <div class="form-radio-item" onclick="selectRadio(this)" style="flex:1"><div class="form-radio-dot"></div><span class="form-item-label">Sometimes</span></div>
+                      <div class="form-label">Does your child have any physical limitations that would affect their ability to participate? <span class="form-required">*</span></div>
+                      <div class="reg-yn-group">
+                        <button class="reg-yn-btn" id="limit-yes" onclick="setLimitations('yes')">Yes</button>
+                        <button class="reg-yn-btn selected-no" id="limit-no" onclick="setLimitations('no')">No</button>
                       </div>
                     </div>
+
+                    <!-- Conditional Q6a — shown only when limitations = Yes, REQUIRED -->
+                    <div class="cond-question" id="cond-limit-desc">
+                      <div class="cond-question-inner">
+                        <div class="cond-triggered-by"><i class="ti ti-git-branch" style="font-size:12px"></i>Shown because: "Physical limitations?" = Yes · <strong>Required</strong></div>
+                        <label>Please describe the limitation <span class="req-star">*</span> <span class="cond-tag">Conditional · Required when shown</span></label>
+                        <textarea class="reg-form-textarea" id="limit-desc-text" placeholder="Please describe any physical limitations, accommodations needed, or information the instructor should know..."></textarea>
+                      </div>
+                    </div>
+
                     <div class="form-two-col">
                       <div class="form-field">
                         <div class="form-label">Emergency contact name <span class="form-required">*</span><span class="form-prefill-badge"><i class="ti ti-sparkles"></i>Pre-filled</span></div>
@@ -6825,7 +6935,7 @@
               <div class="fb-canvas">
                 <div class="fb-canvas-header">
                   <h3><i class="ti ti-forms" style="color:var(--blue);font-size:15px;vertical-align:-2px;margin-right:6px"></i>Form questions</h3>
-                  <span style="font-size:12px;color:var(--text-secondary)">Drag to reorder · click to edit</span>
+                  <span style="font-size:12px;color:var(--text-secondary)">Drag to reorder · click to edit · <span style="color:var(--purple);font-weight:500"><i class="ti ti-git-branch" style="font-size:12px;vertical-align:-1px"></i> 2 conditional rules active</span></span>
                 </div>
 
                 <!-- Q1 -->
@@ -6895,13 +7005,70 @@
                   </div>
                 </div>
 
-                <!-- Q5 -->
-                <div class="fb-question">
+                <!-- Q5 — Yes/No with conditional child -->
+                <div class="fb-question" style="border-color:var(--blue)">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
                     <div class="fb-q-label">Prior swim lessons? <span class="fb-q-type">Yes / No</span></div>
                     <div class="fb-q-preview">Single choice: Yes · No</div>
-                    <div class="fb-q-tags"><span class="fb-tag fb-tag-opt">Optional</span></div>
+                    <div class="fb-q-tags">
+                      <span class="fb-tag fb-tag-opt">Optional</span>
+                      <span class="fb-tag fb-tag-cond"><i class="ti ti-git-branch" style="font-size:10px"></i> 1 conditional rule</span>
+                    </div>
+                    <div class="fb-q-actions">
+                      <button class="fb-q-btn"><i class="ti ti-edit" style="font-size:11px"></i> Edit</button>
+                      <button class="fb-q-btn danger"><i class="ti ti-trash" style="font-size:11px"></i> Delete</button>
+                    </div>
+                    <!-- Condition builder — expanded to show how it's configured -->
+                    <div class="fb-cond-panel">
+                      <div class="fb-cond-panel-title"><i class="ti ti-git-branch" style="font-size:13px"></i>Conditional logic — questions triggered by this answer</div>
+                      <div class="fb-cond-row">
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">If this question =</span>
+                        <select><option selected>Yes</option><option>No</option></select>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">then show</span>
+                        <select><option selected>Q5a · Where did they take lessons?</option></select>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">and make it</span>
+                        <select><option selected>Optional</option><option>Required</option></select>
+                        <button class="fb-cond-remove"><i class="ti ti-x"></i></button>
+                      </div>
+                      <button class="fb-cond-add"><i class="ti ti-plus" style="font-size:12px"></i> Add another condition</button>
+                      <div class="fb-cond-note"><i class="ti ti-info-circle" style="font-size:12px"></i>If the answer changes to No, Q5a is hidden and its answer is cleared.</div>
+                    </div>
+                  </div>
+                  <div class="fb-q-controls">
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle off"><div class="fb-mini-thumb"></div></div>Required</div>
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle off"><div class="fb-mini-thumb"></div></div>Pre-fill</div>
+                  </div>
+                </div>
+
+                <!-- Q5a — conditional child of Q5 -->
+                <div class="fb-question is-child">
+                  <i class="ti ti-grip-vertical fb-drag-handle"></i>
+                  <div class="fb-q-body">
+                    <div class="fb-q-label">Where did they take lessons? <span class="fb-q-type">Text — short</span></div>
+                    <div class="fb-q-preview">Single line text · shown only when Q5 = Yes</div>
+                    <div class="fb-q-tags">
+                      <span class="fb-tag fb-tag-opt">Optional</span>
+                      <span class="fb-tag fb-tag-cond"><i class="ti ti-git-branch" style="font-size:10px"></i> Shows when Q5 = Yes</span>
+                    </div>
+                    <div class="fb-condition-bar">
+                      <i class="ti ti-git-branch"></i>
+                      <span class="fb-condition-label">Condition:</span>
+                      <span class="fb-condition-rule">Q5 "Prior swim lessons?" = Yes</span>
+                      <span style="color:var(--text-tertiary);font-size:11px">· Hidden by default</span>
+                      <button class="fb-condition-toggle" onclick="toggleCondPanel('cond-5a')">Edit rule</button>
+                    </div>
+                    <div id="cond-5a" class="fb-cond-panel" style="display:none">
+                      <div class="fb-cond-panel-title"><i class="ti ti-git-branch" style="font-size:13px"></i>Display condition for this question</div>
+                      <div class="fb-cond-row">
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">Show when</span>
+                        <select><option selected>Q5 · Prior swim lessons?</option><option>Q6 · Physical limitations?</option></select>
+                        <select><option selected>equals</option><option>does not equal</option></select>
+                        <select><option selected>Yes</option><option>No</option></select>
+                        <button class="fb-cond-remove"><i class="ti ti-x"></i></button>
+                      </div>
+                      <div class="fb-cond-note"><i class="ti ti-info-circle" style="font-size:12px"></i>This question is hidden until the condition is met.</div>
+                    </div>
                     <div class="fb-q-actions"><button class="fb-q-btn"><i class="ti ti-edit" style="font-size:11px"></i> Edit</button><button class="fb-q-btn danger"><i class="ti ti-trash" style="font-size:11px"></i> Delete</button></div>
                   </div>
                   <div class="fb-q-controls">
@@ -6910,7 +7077,82 @@
                   </div>
                 </div>
 
-                <!-- Q6 -->
+                <!-- Q6 — Physical limitations Yes/No with conditional child -->
+                <div class="fb-question" style="border-color:var(--blue)">
+                  <i class="ti ti-grip-vertical fb-drag-handle"></i>
+                  <div class="fb-q-body">
+                    <div class="fb-q-label">Does your child have any physical limitations that would affect their ability to participate? <span class="fb-q-type">Yes / No</span></div>
+                    <div class="fb-q-preview">Single choice: Yes · No</div>
+                    <div class="fb-q-tags">
+                      <span class="fb-tag fb-tag-req">Required</span>
+                      <span class="fb-tag fb-tag-cond"><i class="ti ti-git-branch" style="font-size:10px"></i> 1 conditional rule</span>
+                    </div>
+                    <div class="fb-q-actions">
+                      <button class="fb-q-btn"><i class="ti ti-edit" style="font-size:11px"></i> Edit</button>
+                      <button class="fb-q-btn danger"><i class="ti ti-trash" style="font-size:11px"></i> Delete</button>
+                    </div>
+                    <div class="fb-cond-panel">
+                      <div class="fb-cond-panel-title"><i class="ti ti-git-branch" style="font-size:13px"></i>Conditional logic — questions triggered by this answer</div>
+                      <div class="fb-cond-row">
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">If this question =</span>
+                        <select><option selected>Yes</option><option>No</option></select>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">then show</span>
+                        <select><option selected>Q6a · Please describe the limitation</option></select>
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">and make it</span>
+                        <select><option>Optional</option><option selected>Required</option></select>
+                        <button class="fb-cond-remove"><i class="ti ti-x"></i></button>
+                      </div>
+                      <button class="fb-cond-add"><i class="ti ti-plus" style="font-size:12px"></i> Add another condition</button>
+                      <div class="fb-cond-note"><i class="ti ti-info-circle" style="font-size:12px"></i>If the answer changes to No, Q6a is hidden, its answer is cleared, and the Required flag is lifted.</div>
+                    </div>
+                  </div>
+                  <div class="fb-q-controls">
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle on"><div class="fb-mini-thumb"></div></div>Required</div>
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle off"><div class="fb-mini-thumb"></div></div>Pre-fill</div>
+                  </div>
+                </div>
+
+                <!-- Q6a — conditional child of Q6, REQUIRED when shown -->
+                <div class="fb-question is-child">
+                  <i class="ti ti-grip-vertical fb-drag-handle"></i>
+                  <div class="fb-q-body">
+                    <div class="fb-q-label">Please describe the limitation <span class="fb-q-type">Text — long</span></div>
+                    <div class="fb-q-preview">Multi-line textarea · Required when shown · shown only when Q6 = Yes</div>
+                    <div class="fb-q-tags">
+                      <span class="fb-tag fb-tag-req">Required when shown</span>
+                      <span class="fb-tag fb-tag-cond"><i class="ti ti-git-branch" style="font-size:10px"></i> Shows when Q6 = Yes</span>
+                    </div>
+                    <div class="fb-condition-bar">
+                      <i class="ti ti-git-branch"></i>
+                      <span class="fb-condition-label">Condition:</span>
+                      <span class="fb-condition-rule">Q6 "Physical limitations?" = Yes</span>
+                      <span style="color:var(--text-tertiary);font-size:11px">· Required when visible · Hidden by default</span>
+                      <button class="fb-condition-toggle" onclick="toggleCondPanel('cond-6a')">Edit rule</button>
+                    </div>
+                    <div id="cond-6a" class="fb-cond-panel" style="display:none">
+                      <div class="fb-cond-panel-title"><i class="ti ti-git-branch" style="font-size:13px"></i>Display condition for this question</div>
+                      <div class="fb-cond-row">
+                        <span style="font-size:12px;color:var(--text-secondary);font-weight:500">Show when</span>
+                        <select><option>Q5 · Prior swim lessons?</option><option selected>Q6 · Physical limitations?</option></select>
+                        <select><option selected>equals</option><option>does not equal</option></select>
+                        <select><option selected>Yes</option><option>No</option></select>
+                        <button class="fb-cond-remove"><i class="ti ti-x"></i></button>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+                        <span style="font-size:12px;font-weight:500;color:var(--text-secondary)">When shown, make this question:</span>
+                        <select style="border:1px solid #C4B5FD;border-radius:6px;padding:4px 8px;font-size:12px;font-family:var(--font)"><option>Optional</option><option selected>Required</option></select>
+                      </div>
+                      <div class="fb-cond-note"><i class="ti ti-info-circle" style="font-size:12px"></i>Required flag applies only while this question is visible. Hidden = never required.</div>
+                    </div>
+                    <div class="fb-q-actions"><button class="fb-q-btn"><i class="ti ti-edit" style="font-size:11px"></i> Edit</button><button class="fb-q-btn danger"><i class="ti ti-trash" style="font-size:11px"></i> Delete</button></div>
+                  </div>
+                  <div class="fb-q-controls">
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle on"><div class="fb-mini-thumb"></div></div>Req. when shown</div>
+                    <div class="fb-toggle-row"><div class="fb-mini-toggle off"><div class="fb-mini-thumb"></div></div>Pre-fill</div>
+                  </div>
+                </div>
+
+                <!-- Q7 -->
                 <div class="fb-question">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
@@ -6925,7 +7167,7 @@
                   </div>
                 </div>
 
-                <!-- Q7 -->
+                <!-- Q8 -->
                 <div class="fb-question">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
@@ -6940,7 +7182,7 @@
                   </div>
                 </div>
 
-                <!-- Q8 -->
+                <!-- Q9 -->
                 <div class="fb-question">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
@@ -6955,7 +7197,7 @@
                   </div>
                 </div>
 
-                <!-- Q9 -->
+                <!-- Q10 -->
                 <div class="fb-question">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
@@ -6970,7 +7212,7 @@
                   </div>
                 </div>
 
-                <!-- Q10 -->
+                <!-- Q11 -->
                 <div class="fb-question">
                   <i class="ti ti-grip-vertical fb-drag-handle"></i>
                   <div class="fb-q-body">
@@ -10386,6 +10628,44 @@
     if (target) target.style.display = 'block';
   }
 
+
+  /* ── CONDITIONAL FORM LOGIC ── */
+  function setPriorLessons(val) {
+    document.getElementById('prior-yes').className = 'reg-yn-btn' + (val==='yes' ? ' selected-yes' : '');
+    document.getElementById('prior-no').className  = 'reg-yn-btn' + (val==='no'  ? ' selected-no'  : '');
+    var cond = document.getElementById('cond-prior-where');
+    if (cond) {
+      if (val === 'yes') {
+        cond.classList.add('visible');
+      } else {
+        cond.classList.remove('visible');
+        var inp = cond.querySelector('input');
+        if (inp) inp.value = '';
+      }
+    }
+  }
+
+  function setLimitations(val) {
+    document.getElementById('limit-yes').className = 'reg-yn-btn' + (val==='yes' ? ' selected-yes' : '');
+    document.getElementById('limit-no').className  = 'reg-yn-btn' + (val==='no'  ? ' selected-no'  : '');
+    var cond = document.getElementById('cond-limit-desc');
+    if (cond) {
+      if (val === 'yes') {
+        cond.classList.add('visible');
+      } else {
+        cond.classList.remove('visible');
+        var ta = document.getElementById('limit-desc-text');
+        if (ta) ta.value = '';
+      }
+    }
+  }
+
+  /* Form builder — toggle condition panel */
+  function toggleCondPanel(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
 
   /* ── RESIDENCY ── */
   function selectResMethod(el, type) {
