@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--- Add global admin console (global-admin.html) --->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecPlatform — Global Admin Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #185FA5; --blue-mid: #378ADD; --blue-light: #E6F1FB;
+  --blue-border: #B5D4F4; --blue-dark: #0C3C6E; --blue-darkest: #071E38;
+  --green: #1A6B3C; --green-bg: #E3F5EC; --green-mid: #28A162;
+  --amber: #854F0B; --amber-bg: #FAEEDA; --amber-mid: #D97706;
+  --red: #A32D2D; --red-bg: #FCEBEB; --red-mid: #DC2626;
+  --purple: #4C1D95; --purple-bg: #EDE9FE; --purple-mid: #7C3AED;
+  --teal: #0F6E56; --teal-bg: #E1F5EE;
+  --indigo: #312E81; --indigo-bg: #E0E7FF;
+  --text-primary: #111827; --text-secondary: #6B7280; --text-tertiary: #9CA3AF;
+  --bg-primary: #FFFFFF; --bg-secondary: #F9FAFB; --bg-tertiary: #F3F4F6;
+  --border: rgba(0,0,0,0.09); --border-med: rgba(0,0,0,0.14);
+  --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px;
+  --radius-xl: 16px; --radius-pill: 999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08); --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --font: 'Inter', system-ui, sans-serif;
+  --sidebar-w: 240px;
+}
+
+body { font-family: var(--font); background: #0A1628; min-height: 100vh; color: var(--text-primary); }
+
+/* ── LOGIN GATE ── */
+#login-gate {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0A1628;
+  display: flex; align-items: center; justify-content: center;
+}
+#login-gate.hidden { display: none; }
+.gate-card {
+  background: #0F2237; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px; padding: 40px 36px; width: 100%; max-width: 380px;
+  text-align: center; box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+}
+.gate-logo {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: linear-gradient(135deg, #185FA5, #378ADD);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; font-size: 28px; color: #fff;
+}
+.gate-wordmark { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.gate-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+.gate-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; color: #F59E0B;
+  background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
+  padding: 3px 10px; border-radius: var(--radius-pill); margin-bottom: 28px;
+}
+.gate-input {
+  width: 100%; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 11px 14px; font-size: 14px;
+  font-family: inherit; color: #fff; outline: none; margin-bottom: 12px;
+  background: rgba(255,255,255,0.06); letter-spacing: 0.05em;
+}
+.gate-input:focus { border-color: var(--blue-mid); background: rgba(255,255,255,0.09); }
+.gate-input::placeholder { color: rgba(255,255,255,0.3); }
+.gate-btn {
+  width: 100%; background: linear-gradient(135deg,#185FA5,#378ADD); color: #fff;
+  border: none; border-radius: 8px; padding: 12px;
+  font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.gate-btn:hover { filter: brightness(1.1); }
+.gate-error { font-size: 12px; color: #FCA5A5; margin-top: 10px; display: none; }
+.gate-error.visible { display: block; }
+
+/* ── SHELL ── */
+#shell { display: none; height: 100vh; flex-direction: column; }
+#shell.visible { display: flex; }
+
+/* Top bar */
+.g-topbar {
+  height: 52px; background: var(--blue-darkest);
+  display: flex; align-items: center; padding: 0 20px; gap: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; z-index: 100;
+}
+.g-topbar-logo { display: flex; align-items: center; gap: 10px; }
+.g-topbar-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg,#185FA5,#378ADD);
+  display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff;
+}
+.g-topbar-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
+.g-topbar-name span { color: var(--blue-mid); }
+.g-topbar-badge {
+  font-size: 10px; font-weight: 700; color: #F59E0B;
+  background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+  padding: 2px 8px; border-radius: var(--radius-pill);
+}
+.g-topbar-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); }
+.g-topbar-center { flex: 1; display: flex; align-items: center; gap: 8px; }
+.g-search {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 6px 12px; font-size: 13px; font-family: var(--font);
+  color: #fff; outline: none; width: 280px; display: flex; align-items: center; gap: 8px;
+}
+.g-search input { background: none; border: none; outline: none; color: #fff; font-family: var(--font); font-size: 13px; width: 100%; }
+.g-search input::placeholder { color: rgba(255,255,255,0.35); }
+.g-topbar-actions { display: flex; align-items: center; gap: 8px; }
+.g-icon-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: none;
+  background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.7);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px;
+  position: relative;
+}
+.g-icon-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
+.g-icon-btn .notif-dot {
+  position: absolute; top: 4px; right: 4px; width: 7px; height: 7px;
+  border-radius: 50%; background: #F59E0B; border: 1.5px solid var(--blue-darkest);
+}
+.g-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg,#185FA5,#378ADD);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; cursor: pointer;
+}
+.g-env-chip {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: var(--radius-pill);
+  background: rgba(220,38,38,0.2); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.3);
+}
+
+/* Body layout */
+.g-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar */
+.g-sidebar {
+  width: var(--sidebar-w); background: #0F2237;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+}
+.g-sidebar-section { padding: 16px 12px 6px; font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.7px; }
+.g-nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px;
+  border-radius: 8px; margin: 1px 8px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55);
+  border: none; background: none; font-family: var(--font); width: calc(100% - 16px);
+  transition: all 0.12s; text-align: left;
+}
+.g-nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+.g-nav-item.active { background: rgba(24,95,165,0.25); color: #fff; }
+.g-nav-item.active i { color: var(--blue-mid); }
+.g-nav-item i { font-size: 17px; flex-shrink: 0; }
+.g-nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700; padding: 1px 6px;
+  border-radius: var(--radius-pill); background: rgba(245,158,11,0.2); color: #F59E0B;
+}
+.g-nav-badge.red { background: rgba(220,38,38,0.2); color: #FCA5A5; }
+.g-nav-badge.green { background: rgba(26,107,60,0.3); color: #6EE7B7; }
+.g-sidebar-footer {
+  margin-top: auto; padding: 12px 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.g-sidebar-user {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-radius: 8px;
+}
+.g-sidebar-user-info { flex: 1; }
+.g-sidebar-user-name { font-size: 13px; font-weight: 600; color: #fff; }
+.g-sidebar-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+/* Main content */
+.g-main { flex: 1; overflow-y: auto; background: #EEF2F7; }
+.g-section { display: none; }
+.g-section.active { display: block; }
+
+/* Page header */
+.g-page-header {
+  background: var(--bg-primary); border-bottom: 1px solid var(--border);
+  padding: 16px 28px; display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; z-index: 50;
+}
+.g-page-title { font-size: 18px; font-weight: 700; color: var(--text-primary); flex: 1; }
+.g-page-subtitle { font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-top: 1px; }
+.g-page-actions { display: flex; gap: 8px; }
+
+/* Cards / layout */
+.g-body-inner { padding: 24px 28px; }
+.g-kpi-grid { display: grid; gap: 16px; margin-bottom: 24px; }
+.g-kpi-grid.cols4 { grid-template-columns: repeat(4,1fr); }
+.g-kpi-grid.cols3 { grid-template-columns: repeat(3,1fr); }
+.g-kpi-card {
+  background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 18px 20px;
+}
+.g-kpi-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.g-kpi-value { font-size: 30px; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 6px; }
+.g-kpi-delta { font-size: 12px; display: flex; align-items: center; gap: 5px; }
+.g-kpi-delta.up { color: var(--green-mid); }
+.g-kpi-delta.warn { color: var(--amber-mid); }
+.g-kpi-delta.neutral { color: var(--text-tertiary); }
+.g-card {
+  background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 20px;
+}
+.g-card-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.g-card-header h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); flex: 1; }
+.g-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.g-three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+/* Buttons */
+.btn-g-primary {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+  background: var(--blue); color: #fff; border: none; border-radius: var(--radius-md);
+  font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.btn-g-primary:hover { background: var(--blue-dark); }
+.btn-g-secondary {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+  background: var(--bg-primary); color: var(--text-primary);
+  border: 1px solid var(--border-med); border-radius: var(--radius-md);
+  font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer;
+}
+.btn-g-secondary:hover { background: var(--bg-secondary); }
+.btn-g-danger {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+  background: var(--red-bg); color: var(--red); border: 1px solid rgba(163,45,45,0.2);
+  border-radius: var(--radius-md); font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.btn-g-warning {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+  background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(133,79,11,0.2);
+  border-radius: var(--radius-md); font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+
+/* Table */
+.g-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.g-table th {
+  padding: 10px 16px; text-align: left; background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600;
+  color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap;
+}
+.g-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.g-table tr:last-child td { border-bottom: none; }
+.g-table tr:hover td { background: var(--bg-secondary); }
+
+/* Badges */
+.g-badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: var(--radius-pill); }
+.badge-active   { background: var(--green-bg); color: var(--green); }
+.badge-trial    { background: var(--blue-light); color: var(--blue-dark); }
+.badge-paused   { background: var(--amber-bg); color: var(--amber); }
+.badge-churned  { background: var(--red-bg); color: var(--red); }
+.badge-internal { background: var(--indigo-bg); color: var(--indigo); }
+.badge-warn     { background: var(--amber-bg); color: var(--amber); }
+.badge-ok       { background: var(--green-bg); color: var(--green); }
+.badge-crit     { background: var(--red-bg); color: var(--red); }
+
+/* Tier pills */
+.tier-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.tier-starter   { background: #F3F4F6; color: #374151; }
+.tier-pro       { background: #DBEAFE; color: #1E40AF; }
+.tier-enterprise{ background: #DDD6FE; color: #4C1D95; }
+.tier-gov       { background: #FEF3C7; color: #92400E; }
+
+/* Module toggle */
+.mod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 16px 20px; }
+.mod-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-md); transition: all 0.1s;
+}
+.mod-item.enabled { border-color: var(--blue-border); background: var(--blue-light); }
+.mod-icon { font-size: 18px; flex-shrink: 0; }
+.mod-info { flex: 1; }
+.mod-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.mod-desc { font-size: 10px; color: var(--text-secondary); }
+.mod-toggle {
+  width: 34px; height: 18px; border-radius: 9px; background: var(--border-med);
+  position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+}
+.mod-toggle.on { background: var(--blue); }
+.mod-toggle-thumb {
+  width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  position: absolute; top: 2px; left: 2px; transition: left 0.2s;
+}
+.mod-toggle.on .mod-toggle-thumb { left: 18px; }
+
+/* Broadcast message card */
+.msg-card {
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden; margin-bottom: 12px;
+}
+.msg-card-header {
+  padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+}
+.msg-type-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.msg-info { flex: 1; }
+.msg-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.msg-meta { font-size: 11px; color: var(--text-secondary); display: flex; gap: 12px; flex-wrap: wrap; }
+.msg-preview { padding: 10px 16px; background: var(--bg-secondary); border-top: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); font-style: italic; }
+
+/* Traffic chart bars */
+.mini-bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 60px; padding: 0 16px 14px; }
+.mini-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--blue); opacity: 0.7; min-width: 10px; transition: opacity 0.15s; }
+.mini-bar:hover { opacity: 1; }
+.mini-bar-labels { display: flex; justify-content: space-between; padding: 0 16px; font-size:10px; color: var(--text-tertiary); margin-bottom: 12px; }
+
+/* Sparkline */
+.sparkline { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
+.spark-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--blue); min-width: 4px; }
+.spark-bar.green { background: var(--green-mid); }
+.spark-bar.red { background: var(--red-mid); }
+
+/* Status indicators */
+.status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.status-dot.green { background: var(--green-mid); }
+.status-dot.amber { background: var(--amber-mid); }
+.status-dot.red { background: var(--red-mid); }
+.status-dot.grey { background: var(--text-tertiary); }
+
+/* Toggle rows */
+.g-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.g-toggle-row:last-child { border-bottom: none; }
+.g-toggle-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.g-toggle-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.g-toggle { width: 40px; height: 22px; border-radius: 11px; background: var(--border-med); position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+.g-toggle.on { background: var(--blue); }
+.g-toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.g-toggle.on .g-toggle-thumb { left: 20px; }
+
+/* Log rows */
+.log-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.log-row:last-child { border-bottom: none; }
+.log-row:hover { background: var(--bg-secondary); }
+.log-time { color: var(--text-tertiary); min-width: 130px; font-family: monospace; font-size: 11px; }
+.log-actor { font-weight: 600; color: var(--text-primary); min-width: 130px; }
+.log-action { color: var(--text-secondary); flex: 1; }
+.log-target { color: var(--blue); font-weight: 500; }
+.log-chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 6px; }
+.log-chip.impersonate { background: #FEF3C7; color: #92400E; }
+.log-chip.create { background: var(--green-bg); color: var(--green); }
+.log-chip.modify { background: var(--blue-light); color: var(--blue-dark); }
+.log-chip.delete { background: var(--red-bg); color: var(--red); }
+.log-chip.login { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+/* Toast */
+#g-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1A2F4A; color: #fff; padding: 11px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; z-index: 999; display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3); white-space: nowrap;
+}
+
+/* Org detail overlay */
+.org-detail-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 700; align-items: flex-start; justify-content: flex-end;
+  padding: 0;
+}
+.org-detail-overlay.open { display: flex; }
+.org-detail-panel {
+  width: 640px; height: 100vh; background: var(--bg-primary);
+  overflow-y: auto; box-shadow: -8px 0 32px rgba(0,0,0,0.2);
+}
+.odp-header {
+  background: var(--blue-dark); padding: 20px 24px; color: #fff;
+  display: flex; align-items: flex-start; gap: 16px; position: sticky; top: 0; z-index: 10;
+}
+.odp-icon { width: 44px; height: 44px; border-radius: 11px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.odp-title { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+.odp-meta { font-size: 12px; color: rgba(255,255,255,0.6); display: flex; gap: 12px; flex-wrap: wrap; }
+.odp-close { margin-left: auto; background: rgba(255,255,255,0.12); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.odp-body { padding: 20px 24px; }
+.odp-section { margin-bottom: 22px; }
+.odp-section-title { font-size: 12px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.odp-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.odp-stat { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px; }
+.odp-stat-num { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+.odp-stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.odp-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.odp-row:last-child { border-bottom: none; }
+.odp-row span:first-child { color: var(--text-secondary); }
+.odp-row strong { color: var(--text-primary); }
+
+/* New message modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 800; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--bg-primary); border-radius: 18px; width: 100%; max-width: 560px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow: hidden; }
+.modal-header { background: var(--blue-dark); padding: 16px 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 15px; font-weight: 600; }
+.modal-close { background: rgba(255,255,255,0.12); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.modal-body { padding: 20px; }
+.mf { margin-bottom: 14px; }
+.mf label { font-size: 12px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+.mf input, .mf select, .mf textarea { width: 100%; border: 1px solid var(--border-med); border-radius: var(--radius-md); padding: 9px 12px; font-size: 13px; font-family: var(--font); color: var(--text-primary); outline: none; }
+.mf textarea { resize: vertical; min-height: 80px; }
+.mf input:focus, .mf select:focus, .mf textarea:focus { border-color: var(--blue); }
+.mf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-footer { display: flex; gap: 10px; padding: 0 20px 20px; }
+.modal-footer button { flex: 1; padding: 11px; border-radius: var(--radius-md); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; }
+
+/* Impersonate confirm */
+.imp-modal-box { background: var(--bg-primary); border-radius: 18px; width: 100%; max-width: 420px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow: hidden; }
+.imp-banner { background: linear-gradient(135deg,#92400E,#D97706); padding: 20px; color: #fff; text-align: center; }
+.imp-banner i { font-size: 36px; display: block; margin-bottom: 8px; }
+.imp-banner h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.imp-banner p { font-size: 12px; opacity: 0.8; }
+.imp-body { padding: 20px; }
+.imp-body p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; }
+.imp-body strong { color: var(--text-primary); }
+.imp-footer { display: flex; gap: 10px; }
+.imp-footer button { flex: 1; padding: 11px; border-radius: var(--radius-md); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
+
+/* Health indicators */
+.health-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; padding: 16px 20px; }
+.health-item { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; }
+.health-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.health-val { font-size: 20px; font-weight: 700; }
+.health-val.green { color: var(--green); }
+.health-val.amber { color: var(--amber-mid); }
+.health-val.red { color: var(--red-mid); }
+.health-sub { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+
+/* User role chips */
+.urole { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); }
+.urole-super     { background: #FEF3C7; color: #92400E; }
+.urole-am        { background: var(--blue-light); color: var(--blue-dark); }
+.urole-support   { background: var(--green-bg); color: var(--green); }
+.urole-impl      { background: var(--purple-bg); color: var(--purple); }
+.urole-readonly  { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN GATE ── -->
+<div id="login-gate">
+  <div class="gate-card">
+    <div class="gate-logo"><i class="ti ti-building-community"></i></div>
+    <div class="gate-wordmark">Rec<span style="color:var(--blue-mid)">Platform</span></div>
+    <div class="gate-sub">Global Administration Console</div>
+    <div class="gate-badge"><i class="ti ti-shield-lock" style="font-size:11px"></i>Internal use only — Company staff</div>
+    <input class="gate-input" type="text" placeholder="Email address" id="g-email" value="admin@recplatform.com">
+    <input class="gate-input" type="password" placeholder="Password" id="g-pass" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="gate-btn" onclick="doLogin()">Sign in to Global Console</button>
+    <div class="gate-error" id="gate-err">Invalid credentials</div>
+    <div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.25)">Demo password: <span style="color:rgba(255,255,255,0.4);font-family:monospace">global_admin_2026</span></div>
+  </div>
+</div>
+
+<!-- ── SHELL ── -->
+<div id="shell">
+
+  <!-- Top bar -->
+  <div class="g-topbar">
+    <div class="g-topbar-logo">
+      <div class="g-topbar-icon"><i class="ti ti-building-community"></i></div>
+      <div class="g-topbar-name">Rec<span>Platform</span></div>
+      <div class="g-topbar-badge"><i class="ti ti-shield" style="font-size:10px"></i> GLOBAL ADMIN</div>
+    </div>
+    <div class="g-topbar-divider"></div>
+    <div class="g-env-chip"><i class="ti ti-bolt" style="font-size:11px"></i> PRODUCTION</div>
+    <div class="g-topbar-center">
+      <div class="g-search"><i class="ti ti-search" style="font-size:15px;color:rgba(255,255,255,0.4)"></i><input type="text" placeholder="Search orgs, users, tickets..."></div>
+    </div>
+    <div class="g-topbar-actions">
+      <button class="g-icon-btn" onclick="gNav('messages')"><i class="ti ti-speakerphone"></i><div class="notif-dot"></div></button>
+      <button class="g-icon-btn"><i class="ti ti-bell"></i></button>
+      <button class="g-icon-btn"><i class="ti ti-help-circle"></i></button>
+      <div class="g-topbar-divider"></div>
+      <div class="g-avatar" title="Chris Admin">CA</div>
+    </div>
+  </div>
+
+  <div class="g-body">
+
+    <!-- Sidebar -->
+    <div class="g-sidebar">
+      <div class="g-sidebar-section">Platform</div>
+      <button class="g-nav-item active" id="nav-overview" onclick="gNav('overview')"><i class="ti ti-layout-dashboard"></i>Overview</button>
+      <button class="g-nav-item" id="nav-traffic" onclick="gNav('traffic')"><i class="ti ti-chart-line"></i>Traffic &amp; analytics</button>
+      <button class="g-nav-item" id="nav-health" onclick="gNav('health')"><i class="ti ti-heartbeat"></i>System health</button>
+
+      <div class="g-sidebar-section">Tenants</div>
+      <button class="g-nav-item" id="nav-orgs" onclick="gNav('orgs')"><i class="ti ti-building"></i>Organizations<span class="g-nav-badge green">47</span></button>
+      <button class="g-nav-item" id="nav-licenses" onclick="gNav('licenses')"><i class="ti ti-license"></i>Licenses &amp; modules</button>
+      <button class="g-nav-item" id="nav-billing" onclick="gNav('billing')"><i class="ti ti-credit-card"></i>Billing &amp; plans</button>
+
+      <div class="g-sidebar-section">Communications</div>
+      <button class="g-nav-item" id="nav-messages" onclick="gNav('messages')"><i class="ti ti-speakerphone"></i>Global messages<span class="g-nav-badge">3</span></button>
+      <button class="g-nav-item" id="nav-notifications" onclick="gNav('notifications')"><i class="ti ti-bell"></i>Notification config</button>
+
+      <div class="g-sidebar-section">Staff</div>
+      <button class="g-nav-item" id="nav-users" onclick="gNav('users')"><i class="ti ti-users"></i>Global users</button>
+      <button class="g-nav-item" id="nav-audit" onclick="gNav('audit')"><i class="ti ti-file-search"></i>Audit log<span class="g-nav-badge red">2</span></button>
+
+      <div class="g-sidebar-section">System</div>
+      <button class="g-nav-item" id="nav-settings" onclick="gNav('settings')"><i class="ti ti-settings"></i>System settings</button>
+      <button class="g-nav-item" id="nav-releases" onclick="gNav('releases')"><i class="ti ti-package"></i>Releases &amp; flags</button>
+
+      <div class="g-sidebar-footer">
+        <div class="g-sidebar-user">
+          <div class="g-avatar">CA</div>
+          <div class="g-sidebar-user-info">
+            <div class="g-sidebar-user-name">Chris Admin</div>
+            <div class="g-sidebar-user-role">Super Administrator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="g-main">
+
+      <!-- ══════════════════════════════════════
+           OVERVIEW
+      ══════════════════════════════════════ -->
+      <div id="sec-overview" class="g-section active">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Platform overview</div>
+            <div class="g-page-subtitle">Live metrics across all tenant organizations · Updated 2 min ago</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-secondary"><i class="ti ti-download"></i>Export report</button>
+            <button class="btn-g-primary" onclick="gNav('messages')"><i class="ti ti-speakerphone"></i>Broadcast message</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+
+          <!-- System status banner -->
+          <div style="background:var(--green-bg);border:1px solid #A3D9B4;border-radius:var(--radius-lg);padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;font-size:13px">
+            <div class="status-dot green"></div>
+            <div style="flex:1;font-weight:500;color:var(--green)">All systems operational</div>
+            <div style="font-size:12px;color:var(--text-secondary)">Last incident: Jun 14, 2026 — API latency spike (resolved)</div>
+            <button class="btn-g-secondary" style="font-size:12px;padding:5px 12px" onclick="gNav('health')">View system health</button>
+          </div>
+
+          <div class="g-kpi-grid cols4">
+            <div class="g-kpi-card" style="border-left:3px solid var(--blue)">
+              <div class="g-kpi-label">Active organizations</div>
+              <div class="g-kpi-value">47</div>
+              <div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+3 this month</div>
+            </div>
+            <div class="g-kpi-card" style="border-left:3px solid var(--green-mid)">
+              <div class="g-kpi-label">Monthly recurring revenue</div>
+              <div class="g-kpi-value">$84,200</div>
+              <div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+8.4% vs last month</div>
+            </div>
+            <div class="g-kpi-card" style="border-left:3px solid var(--purple-mid)">
+              <div class="g-kpi-label">Total registrations (MTD)</div>
+              <div class="g-kpi-value">24,891</div>
+              <div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+12% vs last month</div>
+            </div>
+            <div class="g-kpi-card" style="border-left:3px solid var(--amber-mid)">
+              <div class="g-kpi-label">Active sessions right now</div>
+              <div class="g-kpi-value">312</div>
+              <div class="g-kpi-delta neutral"><i class="ti ti-users" style="font-size:13px"></i>Across 34 orgs</div>
+            </div>
+          </div>
+
+          <div class="g-two-col">
+            <!-- Registrations chart -->
+            <div class="g-card">
+              <div class="g-card-header"><h3>Registrations — last 30 days (all orgs)</h3></div>
+              <div class="mini-bar-chart" style="height:80px;padding:0 20px 4px">
+                <div class="mini-bar" style="height:40%"></div><div class="mini-bar" style="height:55%"></div>
+                <div class="mini-bar" style="height:48%"></div><div class="mini-bar" style="height:62%"></div>
+                <div class="mini-bar" style="height:58%"></div><div class="mini-bar" style="height:70%"></div>
+                <div class="mini-bar" style="height:65%"></div><div class="mini-bar" style="height:80%"></div>
+                <div class="mini-bar" style="height:72%"></div><div class="mini-bar" style="height:85%"></div>
+                <div class="mini-bar" style="height:78%"></div><div class="mini-bar" style="height:92%"></div>
+                <div class="mini-bar" style="height:88%"></div><div class="mini-bar" style="height:100%"></div>
+                <div class="mini-bar" style="height:95%"></div>
+              </div>
+              <div class="mini-bar-labels"><span>Jun 1</span><span>Jun 8</span><span>Jun 15</span><span>Jun 22</span><span>Jun 29</span></div>
+            </div>
+
+            <!-- Top orgs by activity -->
+            <div class="g-card">
+              <div class="g-card-header"><h3>Top orgs by registrations (MTD)</h3></div>
+              <table class="g-table">
+                <thead><tr><th>Organization</th><th>Tier</th><th>Regs</th><th>MRR</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td style="font-weight:500">Springfield Rec</td><td><span class="tier-pill tier-gov">Gov</span></td><td>3,241</td><td>$2,400</td><td><div style="display:flex;align-items:center;gap:5px"><div class="status-dot green"></div>Active</div></td></tr>
+                  <tr><td style="font-weight:500">Riverside Parks</td><td><span class="tier-pill tier-enterprise">Enterprise</span></td><td>2,887</td><td>$3,200</td><td><div style="display:flex;align-items:center;gap:5px"><div class="status-dot green"></div>Active</div></td></tr>
+                  <tr><td style="font-weight:500">Maplewood Rec</td><td><span class="tier-pill tier-pro">Pro</span></td><td>2,104</td><td>$1,800</td><td><div style="display:flex;align-items:center;gap:5px"><div class="status-dot green"></div>Active</div></td></tr>
+                  <tr><td style="font-weight:500">Cedar Valley Dept</td><td><span class="tier-pill tier-pro">Pro</span></td><td>1,982</td><td>$1,800</td><td><div style="display:flex;align-items:center;gap:5px"><div class="status-dot green"></div>Active</div></td></tr>
+                  <tr><td style="font-weight:500">Northfield Rec</td><td><span class="tier-pill tier-starter">Starter</span></td><td>891</td><td>$600</td><td><div style="display:flex;align-items:center;gap:5px"><div class="status-dot amber"></div>Trial</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent platform activity -->
+          <div class="g-card">
+            <div class="g-card-header"><h3>Recent platform activity</h3><button class="btn-g-secondary" style="font-size:12px" onclick="gNav('audit')"><i class="ti ti-file-search"></i>Full audit log</button></div>
+            <div class="log-row"><div class="log-time">Today · 10:14am</div><div class="log-actor">Chris Admin</div><div class="log-action">Activated module <span class="log-target">Conditional Logic</span> for <span class="log-target">Maplewood Rec</span><span class="log-chip modify">MODIFY</span></div></div>
+            <div class="log-row"><div class="log-time">Today · 9:52am</div><div class="log-actor">Sarah Ops</div><div class="log-action">Created new organization <span class="log-target">Hillcrest Parks &amp; Rec</span><span class="log-chip create">CREATE</span></div></div>
+            <div class="log-row"><div class="log-time">Today · 9:08am</div><div class="log-actor">Dev Deploy</div><div class="log-action">Deployed v2.14.1 — conditional form logic + GL code export fixes<span class="log-chip modify">DEPLOY</span></div></div>
+            <div class="log-row"><div class="log-time">Yesterday · 4:31pm</div><div class="log-actor">Chris Admin</div><div class="log-action">Accessed <span class="log-target">Springfield Rec</span> as admin (impersonation session)<span class="log-chip impersonate">IMPERSONATE</span></div></div>
+            <div class="log-row"><div class="log-time">Yesterday · 2:15pm</div><div class="log-actor">Tom Support</div><div class="log-action">Broadcast maintenance message to all organizations<span class="log-chip modify">BROADCAST</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           ORGANIZATIONS
+      ══════════════════════════════════════ -->
+      <div id="sec-orgs" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Organizations</div>
+            <div class="g-page-subtitle">47 active tenant organizations · 3 in trial · 2 on pause</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-secondary"><i class="ti ti-download"></i>Export</button>
+            <button class="btn-g-primary" onclick="showToast('New organization wizard coming soon')"><i class="ti ti-plus"></i>Add organization</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div style="display:flex;gap:10px;margin-bottom:18px">
+            <input type="text" placeholder="Search organizations..." style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none;width:280px">
+            <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option>All plans</option><option>Starter</option><option>Pro</option><option>Enterprise</option><option>Government</option></select>
+            <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option>All statuses</option><option>Active</option><option>Trial</option><option>Paused</option><option>Churned</option></select>
+          </div>
+          <div class="g-card">
+            <table class="g-table">
+              <thead>
+                <tr>
+                  <th>Organization</th><th>Plan</th><th>Status</th><th>Members</th><th>Admins</th><th>MRR</th><th>Contract ends</th><th>Last activity</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Springfield Parks &amp; Rec</div><div style="font-size:11px;color:var(--text-tertiary)">Springfield, MA · ID: ORG-0001</div></td>
+                  <td><span class="tier-pill tier-gov">Government</span></td>
+                  <td><span class="g-badge badge-active">Active</span></td>
+                  <td>1,649</td><td>11</td><td style="font-weight:600">$2,400</td>
+                  <td>Dec 31, 2026</td><td>Today · 10:22am</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Springfield Parks &amp; Rec')"><i class="ti ti-eye"></i>View</button><button class="btn-g-warning" style="font-size:11px;padding:5px 10px" onclick="openImpersonate('Springfield Parks &amp; Rec')"><i class="ti ti-user-bolt"></i>Access</button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Riverside Parks Department</div><div style="font-size:11px;color:var(--text-tertiary)">Riverside, CA · ID: ORG-0002</div></td>
+                  <td><span class="tier-pill tier-enterprise">Enterprise</span></td>
+                  <td><span class="g-badge badge-active">Active</span></td>
+                  <td>4,210</td><td>18</td><td style="font-weight:600">$3,200</td>
+                  <td>Jun 30, 2027</td><td>Today · 9:44am</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Riverside Parks Department')"><i class="ti ti-eye"></i>View</button><button class="btn-g-warning" style="font-size:11px;padding:5px 10px" onclick="openImpersonate('Riverside Parks Department')"><i class="ti ti-user-bolt"></i>Access</button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Maplewood Rec Department</div><div style="font-size:11px;color:var(--text-tertiary)">Maplewood, NJ · ID: ORG-0003</div></td>
+                  <td><span class="tier-pill tier-pro">Pro</span></td>
+                  <td><span class="g-badge badge-active">Active</span></td>
+                  <td>1,124</td><td>6</td><td style="font-weight:600">$1,800</td>
+                  <td>Mar 31, 2027</td><td>Yesterday</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Maplewood Rec Department')"><i class="ti ti-eye"></i>View</button><button class="btn-g-warning" style="font-size:11px;padding:5px 10px" onclick="openImpersonate('Maplewood Rec Department')"><i class="ti ti-user-bolt"></i>Access</button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Northfield Recreation</div><div style="font-size:11px;color:var(--text-tertiary)">Northfield, MN · ID: ORG-0044</div></td>
+                  <td><span class="tier-pill tier-starter">Starter</span></td>
+                  <td><span class="g-badge badge-trial">Trial</span></td>
+                  <td>89</td><td>2</td><td style="font-weight:600;color:var(--amber)">$0 (trial)</td>
+                  <td>Jul 22, 2026 <span style="font-size:10px;color:var(--amber)">⚠ 12 days</span></td>
+                  <td>Jun 20</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Northfield Recreation')"><i class="ti ti-eye"></i>View</button><button class="btn-g-primary" style="font-size:11px;padding:5px 10px" onclick="showToast('Trial extension sent to Northfield Recreation')"><i class="ti ti-clock"></i>Extend</button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Cedar Valley Parks</div><div style="font-size:11px;color:var(--text-tertiary)">Cedar Valley, IA · ID: ORG-0021</div></td>
+                  <td><span class="tier-pill tier-pro">Pro</span></td>
+                  <td><span class="g-badge badge-paused">Paused</span></td>
+                  <td>642</td><td>4</td><td style="font-weight:600;color:var(--text-tertiary)">$1,800 (paused)</td>
+                  <td>Sep 30, 2026</td><td>Jun 12</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Cedar Valley Parks')"><i class="ti ti-eye"></i>View</button><button class="btn-g-primary" style="font-size:11px;padding:5px 10px" onclick="showToast('Cedar Valley Parks reactivated')"><i class="ti ti-player-play"></i>Reactivate</button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;color:var(--text-primary)">Hillcrest Parks &amp; Rec</div><div style="font-size:11px;color:var(--text-tertiary)">Hillcrest, TX · ID: ORG-0048 <span style="background:#FEF3C7;color:#92400E;font-size:10px;padding:1px 5px;border-radius:3px;font-weight:600;margin-left:4px">NEW</span></div></td>
+                  <td><span class="tier-pill tier-starter">Starter</span></td>
+                  <td><span class="g-badge badge-trial">Trial</span></td>
+                  <td>0</td><td>1</td><td style="font-weight:600;color:var(--amber)">$0 (trial)</td>
+                  <td>Jul 10, 2026</td><td>Today · 9:52am</td>
+                  <td><div style="display:flex;gap:6px"><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px" onclick="openOrgDetail('Hillcrest Parks &amp; Rec')"><i class="ti ti-eye"></i>View</button><button class="btn-g-warning" style="font-size:11px;padding:5px 10px" onclick="openImpersonate('Hillcrest Parks &amp; Rec')"><i class="ti ti-user-bolt"></i>Access</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="padding:12px 20px;background:var(--bg-secondary);border-top:1px solid var(--border);font-size:12px;color:var(--text-secondary);display:flex;justify-content:space-between;align-items:center">
+              <span>Showing 6 of 47 organizations</span>
+              <div style="display:flex;gap:8px"><button class="btn-g-secondary" style="font-size:12px;padding:5px 12px">← Prev</button><button class="btn-g-secondary" style="font-size:12px;padding:5px 12px">Next →</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           LICENSES & MODULES
+      ══════════════════════════════════════ -->
+      <div id="sec-licenses" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Licenses &amp; modules</div>
+            <div class="g-page-subtitle">Enable or disable platform features per organization</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-secondary"><i class="ti ti-download"></i>Export module matrix</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div style="background:var(--amber-bg);border:1px solid rgba(133,79,11,0.2);border-radius:var(--radius-lg);padding:12px 18px;margin-bottom:20px;font-size:13px;color:var(--amber);display:flex;gap:10px;align-items:center">
+            <i class="ti ti-alert-triangle" style="font-size:18px;flex-shrink:0"></i>
+            <span>Module changes take effect immediately. Disabling an active module may disrupt residents mid-session. Schedule changes during low-traffic windows when possible.</span>
+          </div>
+
+          <!-- Org selector -->
+          <div class="g-card" style="margin-bottom:20px">
+            <div class="g-card-header">
+              <h3>Select organization</h3>
+              <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:7px 12px;font-size:13px;font-family:var(--font);outline:none;min-width:260px">
+                <option selected>Springfield Parks &amp; Rec (ORG-0001)</option>
+                <option>Riverside Parks Department (ORG-0002)</option>
+                <option>Maplewood Rec Department (ORG-0003)</option>
+                <option>Northfield Recreation (ORG-0044)</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-secondary);margin-left:8px">Plan: <strong>Government · Annual</strong> · Contract: Dec 31, 2026</div>
+            </div>
+          </div>
+
+          <div class="g-card" style="margin-bottom:20px">
+            <div class="g-card-header"><h3>Core modules</h3><span style="font-size:12px;color:var(--text-secondary)">Included in all plans</span></div>
+            <div class="mod-grid">
+              <div class="mod-item enabled"><i class="ti ti-run mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Program management</div><div class="mod-desc">Programs, sessions, catalog periods</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-users mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Member management</div><div class="mod-desc">Accounts, households, check-in</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-cash mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Payments &amp; transactions</div><div class="mod-desc">Registration fees, refunds, GL codes</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-calendar mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Public portal</div><div class="mod-desc">Resident-facing web + mobile app</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-chart-bar mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Basic reporting</div><div class="mod-desc">Enrollment, attendance, revenue</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-id-badge mod-icon" style="color:var(--blue)"></i><div class="mod-info"><div class="mod-name">Digital ID cards</div><div class="mod-desc">QR passes, Apple/Google Wallet</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+            </div>
+          </div>
+
+          <div class="g-card" style="margin-bottom:20px">
+            <div class="g-card-header"><h3>Pro modules</h3><span style="font-size:12px;color:var(--text-secondary)">Pro plan and above</span></div>
+            <div class="mod-grid">
+              <div class="mod-item enabled"><i class="ti ti-forms mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Form builder</div><div class="mod-desc">Custom registration forms</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-git-branch mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Conditional logic</div><div class="mod-desc">Branching form questions</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-ticket mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Passes &amp; tickets</div><div class="mod-desc">Day passes, punch cards</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-id-badge-2 mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Memberships</div><div class="mod-desc">Seasonal, monthly, annual</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-map-pin mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Residency management</div><div class="mod-desc">Verification, tiered pricing</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-users-group mod-icon" style="color:var(--purple-mid)"></i><div class="mod-info"><div class="mod-name">Role-based access</div><div class="mod-desc">RBAC, content area assignments</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+            </div>
+          </div>
+
+          <div class="g-card">
+            <div class="g-card-header"><h3>Enterprise &amp; Government modules</h3><span style="font-size:12px;color:var(--text-secondary)">Enterprise / Government plans only</span></div>
+            <div class="mod-grid">
+              <div class="mod-item enabled"><i class="ti ti-chart-dots mod-icon" style="color:var(--amber-mid)"></i><div class="mod-info"><div class="mod-name">Reporting console</div><div class="mod-desc">Full template + builder + custom</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-list-numbers mod-icon" style="color:var(--amber-mid)"></i><div class="mod-info"><div class="mod-name">GL code management</div><div class="mod-desc">Account mapping, ledger export</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item enabled"><i class="ti ti-api mod-icon" style="color:var(--amber-mid)"></i><div class="mod-info"><div class="mod-name">API access</div><div class="mod-desc">REST API + webhooks</div></div><div class="mod-toggle on" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item"><i class="ti ti-brand-windows mod-icon" style="color:var(--text-tertiary)"></i><div class="mod-info"><div class="mod-name">White label</div><div class="mod-desc">Custom domain, branded emails</div></div><div class="mod-toggle" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item"><i class="ti ti-code mod-icon" style="color:var(--text-tertiary)"></i><div class="mod-info"><div class="mod-name">Custom reports</div><div class="mod-desc">Developer-installed report packages</div></div><div class="mod-toggle" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+              <div class="mod-item"><i class="ti ti-plug mod-icon" style="color:var(--text-tertiary)"></i><div class="mod-info"><div class="mod-name">Third-party integrations</div><div class="mod-desc">Munis, Tyler, Active Network sync</div></div><div class="mod-toggle" onclick="toggleMod(this)"><div class="mod-toggle-thumb"></div></div></div>
+            </div>
+            <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
+              <button class="btn-g-secondary">Reset to plan defaults</button>
+              <button class="btn-g-primary" onclick="showToast('Module configuration saved for Springfield Parks &amp; Rec')"><i class="ti ti-device-floppy"></i>Save module config</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           GLOBAL MESSAGES
+      ══════════════════════════════════════ -->
+      <div id="sec-messages" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Global messages</div>
+            <div class="g-page-subtitle">Broadcast banners to public portals and/or admin dashboards across all or selected orgs</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-primary" onclick="openMsgModal()"><i class="ti ti-plus"></i>New message</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+
+          <div class="g-kpi-grid cols3" style="margin-bottom:20px">
+            <div class="g-kpi-card" style="border-left:3px solid var(--red-mid)"><div class="g-kpi-label">Active — system alert</div><div class="g-kpi-value" style="font-size:24px">1</div><div class="g-kpi-delta warn">Showing to: All orgs · Admin only</div></div>
+            <div class="g-kpi-card" style="border-left:3px solid var(--amber-mid)"><div class="g-kpi-label">Scheduled — maintenance</div><div class="g-kpi-value" style="font-size:24px">1</div><div class="g-kpi-delta neutral">Starts Jul 15, 2026 · 2am EST</div></div>
+            <div class="g-kpi-card" style="border-left:3px solid var(--blue)"><div class="g-kpi-label">Active — marketing</div><div class="g-kpi-value" style="font-size:24px">1</div><div class="g-kpi-delta up">Showing to: All orgs · Public only</div></div>
+          </div>
+
+          <!-- Active messages -->
+          <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Active messages (2)</div>
+
+          <div class="msg-card">
+            <div class="msg-card-header" style="background:#FFFBEB;border-bottom:1px solid #FDE68A">
+              <div class="msg-type-icon" style="background:#FEF3C7;color:#92400E"><i class="ti ti-alert-triangle"></i></div>
+              <div class="msg-info">
+                <div class="msg-name">Database maintenance — read-only mode for 30 minutes</div>
+                <div class="msg-meta">
+                  <span><i class="ti ti-clock" style="font-size:11px"></i>Live since: Jul 1, 2026 · 11:00pm EST</span>
+                  <span><i class="ti ti-target" style="font-size:11px"></i>Audience: All organizations · Admin dashboard only</span>
+                  <span><i class="ti ti-calendar-off" style="font-size:11px"></i>Expires: Jul 2, 2026 · 12:00am EST</span>
+                </div>
+              </div>
+              <span class="g-badge badge-warn">Active</span>
+              <button class="btn-g-secondary" style="font-size:12px" onclick="showToast('Message deactivated')"><i class="ti ti-x"></i>Deactivate</button>
+            </div>
+            <div class="msg-preview">"Our database is undergoing scheduled maintenance. The system is in read-only mode. New registrations and payments are temporarily unavailable. We'll be back by midnight EST. Thank you for your patience."</div>
+          </div>
+
+          <div class="msg-card">
+            <div class="msg-card-header" style="background:var(--blue-light)">
+              <div class="msg-type-icon" style="background:#DBEAFE;color:#1E40AF"><i class="ti ti-speakerphone"></i></div>
+              <div class="msg-info">
+                <div class="msg-name">New feature: Conditional form logic now available!</div>
+                <div class="msg-meta">
+                  <span><i class="ti ti-clock" style="font-size:11px"></i>Live since: Jul 1, 2026</span>
+                  <span><i class="ti ti-target" style="font-size:11px"></i>Audience: All organizations · Admin dashboard only</span>
+                  <span><i class="ti ti-calendar-off" style="font-size:11px"></i>Expires: Jul 31, 2026</span>
+                </div>
+              </div>
+              <span class="g-badge badge-active">Active</span>
+              <button class="btn-g-secondary" style="font-size:12px" onclick="showToast('Message deactivated')"><i class="ti ti-x"></i>Deactivate</button>
+            </div>
+            <div class="msg-preview">"🎉 New in RecPlatform: Conditional logic is now available in the Form Builder. Add branching questions that only appear when triggered by a previous answer. Available on Pro plans and above. Visit the Form Builder to try it."</div>
+          </div>
+
+          <!-- Scheduled -->
+          <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:20px 0 10px">Scheduled (1)</div>
+
+          <div class="msg-card">
+            <div class="msg-card-header">
+              <div class="msg-type-icon" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-tools"></i></div>
+              <div class="msg-info">
+                <div class="msg-name">Planned maintenance window — full system offline 2–4am EST</div>
+                <div class="msg-meta">
+                  <span><i class="ti ti-clock" style="font-size:11px"></i>Starts: Jul 15, 2026 · 2:00am EST</span>
+                  <span><i class="ti ti-target" style="font-size:11px"></i>Audience: All organizations · Public + Admin</span>
+                  <span><i class="ti ti-calendar-off" style="font-size:11px"></i>Expires: Jul 15, 2026 · 4:00am EST</span>
+                </div>
+              </div>
+              <span class="g-badge badge-trial">Scheduled</span>
+              <div style="display:flex;gap:6px">
+                <button class="btn-g-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+                <button class="btn-g-danger" style="font-size:12px" onclick="showToast('Scheduled message cancelled')"><i class="ti ti-trash"></i>Cancel</button>
+              </div>
+            </div>
+            <div class="msg-preview">"RecPlatform will be offline for planned maintenance on July 15 from 2:00–4:00am Eastern. Registrations and payments will be unavailable during this window. We apologize for any inconvenience."</div>
+          </div>
+
+          <!-- Message type guide -->
+          <div class="g-card">
+            <div class="g-card-header"><h3>Message type guide</h3></div>
+            <table class="g-table">
+              <thead><tr><th>Type</th><th>When to use</th><th>Default audience</th><th>Display location</th></tr></thead>
+              <tbody>
+                <tr><td><span style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:var(--red-mid);flex-shrink:0"></div><strong>System alert</strong></span></td><td>Outage, incident, or degraded performance affecting all users</td><td>All orgs · Public + Admin</td><td>Red banner — top of every page</td></tr>
+                <tr><td><span style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:var(--amber-mid);flex-shrink:0"></div><strong>Maintenance</strong></span></td><td>Planned maintenance window — schedule in advance</td><td>All orgs · Public + Admin</td><td>Amber banner — can be dismissed</td></tr>
+                <tr><td><span style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0"></div><strong>Feature announcement</strong></span></td><td>New module, new feature, plan upgrade prompt</td><td>All orgs · Admin only</td><td>Blue info banner — dismissable</td></tr>
+                <tr><td><span style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:var(--green-mid);flex-shrink:0"></div><strong>Marketing / promo</strong></span></td><td>Seasonal promotions visible to residents</td><td>Selected orgs · Public only</td><td>Green banner — public portal only</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           GLOBAL USERS
+      ══════════════════════════════════════ -->
+      <div id="sec-users" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Global users</div>
+            <div class="g-page-subtitle">RecPlatform internal staff with access to this console</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-primary" onclick="showToast('Invite sent — user will receive setup email')"><i class="ti ti-user-plus"></i>Invite staff member</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div class="g-kpi-grid cols4" style="margin-bottom:20px">
+            <div class="g-kpi-card"><div class="g-kpi-label">Super admins</div><div class="g-kpi-value" style="font-size:24px">2</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">Account managers</div><div class="g-kpi-value" style="font-size:24px">5</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">Support reps</div><div class="g-kpi-value" style="font-size:24px">4</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">Implementation</div><div class="g-kpi-value" style="font-size:24px">3</div></div>
+          </div>
+          <div class="g-card">
+            <table class="g-table">
+              <thead><tr><th>Name</th><th>Role</th><th>Assigned orgs</th><th>Permissions</th><th>Last login</th><th>MFA</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td><div style="font-weight:600">Chris Admin</div><div style="font-size:11px;color:var(--text-tertiary)">c.admin@recplatform.com</div></td><td><span class="urole urole-super">Super Admin</span></td><td>All orgs</td><td>Full access</td><td>Today · 9:12am</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">Sarah Ops</div><div style="font-size:11px;color:var(--text-tertiary)">s.ops@recplatform.com</div></td><td><span class="urole urole-super">Super Admin</span></td><td>All orgs</td><td>Full access</td><td>Today · 8:44am</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">James Rivera</div><div style="font-size:11px;color:var(--text-tertiary)">j.rivera@recplatform.com</div></td><td><span class="urole urole-am">Account Manager</span></td><td>12 orgs (NE region)</td><td>View + impersonate</td><td>Yesterday</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">Linda Park</div><div style="font-size:11px;color:var(--text-tertiary)">l.park@recplatform.com</div></td><td><span class="urole urole-am">Account Manager</span></td><td>9 orgs (SE region)</td><td>View + impersonate</td><td>Jun 21</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">Tom Support</div><div style="font-size:11px;color:var(--text-tertiary)">t.support@recplatform.com</div></td><td><span class="urole urole-support">Support</span></td><td>All orgs (view only)</td><td>View + impersonate (read-only)</td><td>Today · 10:01am</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">Amy Chen</div><div style="font-size:11px;color:var(--text-tertiary)">a.chen@recplatform.com</div></td><td><span class="urole urole-impl">Implementation</span></td><td>Assigned during onboarding</td><td>Full access — onboarding orgs</td><td>Today · 7:30am</td><td><span class="g-badge badge-active" style="font-size:10px">✓ Enabled</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+                <tr><td><div style="font-weight:600">Read-only Auditor</div><div style="font-size:11px;color:var(--text-tertiary)">auditor@springfield.gov</div></td><td><span class="urole urole-readonly">Read-only</span></td><td>Springfield Rec only</td><td>View only — no impersonation</td><td>Jun 15</td><td><span class="g-badge badge-warn" style="font-size:10px">⚠ Pending</span></td><td><button class="btn-g-secondary" style="font-size:11px;padding:5px 10px"><i class="ti ti-edit"></i>Edit</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Role definitions -->
+          <div class="g-card">
+            <div class="g-card-header"><h3>Internal role definitions</h3></div>
+            <table class="g-table">
+              <thead><tr><th>Role</th><th>Can impersonate</th><th>Can modify orgs</th><th>Can manage modules</th><th>Can broadcast</th><th>Can manage staff</th></tr></thead>
+              <tbody>
+                <tr><td><span class="urole urole-super">Super Admin</span></td><td>✓ All orgs</td><td>✓ Full</td><td>✓ Full</td><td>✓ Full</td><td>✓ Full</td></tr>
+                <tr><td><span class="urole urole-am">Account Manager</span></td><td>✓ Assigned orgs</td><td>Billing &amp; plan only</td><td>✓ Assigned orgs</td><td>✗ No</td><td>✗ No</td></tr>
+                <tr><td><span class="urole urole-support">Support</span></td><td>✓ Read-only mode</td><td>✗ No</td><td>✗ No</td><td>✗ No</td><td>✗ No</td></tr>
+                <tr><td><span class="urole urole-impl">Implementation</span></td><td>✓ Onboarding orgs</td><td>Setup only</td><td>✓ Onboarding orgs</td><td>✗ No</td><td>✗ No</td></tr>
+                <tr><td><span class="urole urole-readonly">Read-only</span></td><td>✗ No</td><td>✗ No</td><td>✗ No</td><td>✗ No</td><td>✗ No</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           TRAFFIC & ANALYTICS
+      ══════════════════════════════════════ -->
+      <div id="sec-traffic" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Traffic &amp; analytics</div>
+            <div class="g-page-subtitle">Platform-wide usage statistics across all tenant organizations</div>
+          </div>
+          <div class="g-page-actions">
+            <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:7px 12px;font-size:13px;font-family:var(--font);outline:none"><option>Last 30 days</option><option>Last 7 days</option><option>This quarter</option><option>This year</option></select>
+            <button class="btn-g-secondary"><i class="ti ti-download"></i>Export</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div class="g-kpi-grid cols4">
+            <div class="g-kpi-card"><div class="g-kpi-label">Total registrations (30d)</div><div class="g-kpi-value">24,891</div><div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+12% vs prior period</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">Unique resident logins (30d)</div><div class="g-kpi-value">18,304</div><div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+9% vs prior period</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">API calls (30d)</div><div class="g-kpi-value">1.4M</div><div class="g-kpi-delta neutral"><i class="ti ti-code" style="font-size:13px"></i>Avg 47K/day</div></div>
+            <div class="g-kpi-card"><div class="g-kpi-label">Revenue processed (30d)</div><div class="g-kpi-value">$2.1M</div><div class="g-kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+14% vs prior period</div></div>
+          </div>
+
+          <div class="g-two-col">
+            <div class="g-card">
+              <div class="g-card-header"><h3>Daily active sessions — all orgs</h3></div>
+              <div class="mini-bar-chart" style="height:100px;padding:8px 20px 4px;align-items:flex-end">
+                <div class="mini-bar" style="height:35%"></div><div class="mini-bar" style="height:42%"></div>
+                <div class="mini-bar" style="height:55%"></div><div class="mini-bar" style="height:50%"></div>
+                <div class="mini-bar" style="height:68%"></div><div class="mini-bar" style="height:72%"></div>
+                <div class="mini-bar" style="height:80%"></div><div class="mini-bar" style="height:75%"></div>
+                <div class="mini-bar" style="height:88%"></div><div class="mini-bar" style="height:92%"></div>
+                <div class="mini-bar" style="height:85%"></div><div class="mini-bar" style="height:100%"></div>
+                <div class="mini-bar" style="height:94%"></div><div class="mini-bar" style="height:90%"></div>
+              </div>
+              <div class="mini-bar-labels"><span>Jun 1</span><span>Jun 8</span><span>Jun 15</span><span>Jun 22</span><span>Jun 29</span></div>
+            </div>
+            <div class="g-card">
+              <div class="g-card-header"><h3>Traffic by device type</h3></div>
+              <div style="padding:16px 20px">
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Mobile (PWA)</span><strong>54%</strong></div>
+                  <div style="background:var(--bg-tertiary);border-radius:4px;height:8px;overflow:hidden"><div style="width:54%;height:100%;background:var(--blue);border-radius:4px"></div></div>
+                </div>
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Desktop browser</span><strong>34%</strong></div>
+                  <div style="background:var(--bg-tertiary);border-radius:4px;height:8px;overflow:hidden"><div style="width:34%;height:100%;background:var(--purple-mid);border-radius:4px"></div></div>
+                </div>
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Tablet</span><strong>9%</strong></div>
+                  <div style="background:var(--bg-tertiary);border-radius:4px;height:8px;overflow:hidden"><div style="width:9%;height:100%;background:var(--green-mid);border-radius:4px"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>API / programmatic</span><strong>3%</strong></div>
+                  <div style="background:var(--bg-tertiary);border-radius:4px;height:8px;overflow:hidden"><div style="width:3%;height:100%;background:var(--amber-mid);border-radius:4px"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="g-card">
+            <div class="g-card-header"><h3>Usage breakdown by organization</h3></div>
+            <table class="g-table">
+              <thead><tr><th>Organization</th><th>Logins (30d)</th><th>Registrations</th><th>Revenue processed</th><th>API calls</th><th>Avg response</th><th>Trend</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500">Springfield Parks &amp; Rec</td><td>2,841</td><td>3,241</td><td>$284,100</td><td>84,200</td><td>142ms</td><td><div class="sparkline"><div class="spark-bar green" style="height:40%"></div><div class="spark-bar green" style="height:60%"></div><div class="spark-bar green" style="height:55%"></div><div class="spark-bar green" style="height:80%"></div><div class="spark-bar green" style="height:100%"></div></div></td></tr>
+                <tr><td style="font-weight:500">Riverside Parks Dept</td><td>4,102</td><td>2,887</td><td>$421,000</td><td>112,400</td><td>138ms</td><td><div class="sparkline"><div class="spark-bar green" style="height:70%"></div><div class="spark-bar green" style="height:65%"></div><div class="spark-bar green" style="height:80%"></div><div class="spark-bar green" style="height:90%"></div><div class="spark-bar green" style="height:100%"></div></div></td></tr>
+                <tr><td style="font-weight:500">Maplewood Rec</td><td>1,204</td><td>2,104</td><td>$188,200</td><td>52,100</td><td>155ms</td><td><div class="sparkline"><div class="spark-bar green" style="height:50%"></div><div class="spark-bar green" style="height:70%"></div><div class="spark-bar green" style="height:65%"></div><div class="spark-bar green" style="height:75%"></div><div class="spark-bar green" style="height:100%"></div></div></td></tr>
+                <tr><td style="font-weight:500">Northfield Recreation</td><td>89</td><td>891</td><td>$42,100</td><td>8,400</td><td>161ms</td><td><div class="sparkline"><div class="spark-bar green" style="height:30%"></div><div class="spark-bar green" style="height:40%"></div><div class="spark-bar green" style="height:60%"></div><div class="spark-bar green" style="height:80%"></div><div class="spark-bar green" style="height:100%"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           SYSTEM HEALTH
+      ══════════════════════════════════════ -->
+      <div id="sec-health" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">System health</div>
+            <div class="g-page-subtitle">Live platform infrastructure status · Auto-refreshes every 60s</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-secondary"><i class="ti ti-refresh"></i>Refresh now</button>
+            <button class="btn-g-primary" onclick="gNav('messages')"><i class="ti ti-speakerphone"></i>Post status update</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div style="background:var(--green-bg);border:1px solid #A3D9B4;border-radius:var(--radius-lg);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
+            <div class="status-dot green" style="width:12px;height:12px"></div>
+            <div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--green)">All systems operational</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px">Last checked: Jul 10, 2026 · 10:24am EST · Uptime this month: 99.97%</div></div>
+          </div>
+
+          <div class="g-card" style="margin-bottom:20px">
+            <div class="g-card-header"><h3>Service status</h3></div>
+            <div class="health-grid">
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>API gateway</div><div class="health-val green">99.99%</div><div class="health-sub">Uptime · 30d avg: 142ms</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Web application</div><div class="health-val green">99.98%</div><div class="health-sub">Uptime · TTFB: 210ms</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Database (primary)</div><div class="health-val green">99.97%</div><div class="health-sub">Query avg: 8ms</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Database (replica)</div><div class="health-val green">99.97%</div><div class="health-sub">Replication lag: &lt;1s</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Payment processor</div><div class="health-val green">100%</div><div class="health-sub">Stripe · All regions up</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Email delivery</div><div class="health-val green">99.8%</div><div class="health-sub">SendGrid · Delivery rate</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>File storage</div><div class="health-val green">100%</div><div class="health-sub">S3 · All buckets healthy</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>SMS / push</div><div class="health-val green">99.9%</div><div class="health-sub">Twilio · All regions up</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot amber"></div>Search index</div><div class="health-val amber">97.2%</div><div class="health-sub">Minor lag — rebuilding</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>Background jobs</div><div class="health-val green">0 failed</div><div class="health-sub">Queue depth: 14 jobs</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>CDN / edge cache</div><div class="health-val green">100%</div><div class="health-sub">Cloudflare · All PoPs</div></div>
+              <div class="health-item"><div class="health-name"><div class="status-dot green"></div>SSL certificates</div><div class="health-val green">All valid</div><div class="health-sub">Next expiry: Oct 14, 2026</div></div>
+            </div>
+          </div>
+
+          <div class="g-two-col">
+            <div class="g-card">
+              <div class="g-card-header"><h3>Error rate — last 24 hours</h3></div>
+              <div class="mini-bar-chart" style="height:80px;padding:8px 20px 4px">
+                <div class="mini-bar" style="height:5%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:3%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:4%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:2%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:6%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:3%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:2%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:4%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:1%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:3%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:5%;background:var(--red-mid)"></div>
+                <div class="mini-bar" style="height:2%;background:var(--red-mid)"></div>
+              </div>
+              <div class="mini-bar-labels"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>Now</span></div>
+              <div style="padding:8px 20px 14px;font-size:12px;color:var(--text-secondary)">Error rate: <strong style="color:var(--green)">0.04%</strong> — well within SLA threshold of 0.5%</div>
+            </div>
+            <div class="g-card">
+              <div class="g-card-header"><h3>Recent incidents</h3></div>
+              <div class="log-row"><div class="log-time">Jun 14, 2026</div><div class="log-action" style="flex:1"><strong style="color:var(--text-primary)">API latency spike</strong> — P99 latency hit 2.4s for 18 minutes. Root cause: unindexed query from new report feature. Resolved with hotfix.</div><span class="g-badge badge-active" style="font-size:10px">Resolved</span></div>
+              <div class="log-row"><div class="log-time">May 29, 2026</div><div class="log-action" style="flex:1"><strong style="color:var(--text-primary)">Email delivery degraded</strong> — SendGrid outage caused 4-hour delay in confirmation emails. No data loss.</div><span class="g-badge badge-active" style="font-size:10px">Resolved</span></div>
+              <div style="padding:12px 20px;font-size:12px;color:var(--text-secondary);text-align:center">No incidents in the past 30 days · <span style="color:var(--blue);cursor:pointer">View full incident history</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           AUDIT LOG
+      ══════════════════════════════════════ -->
+      <div id="sec-audit" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Audit log</div>
+            <div class="g-page-subtitle">All global admin actions — including impersonation sessions and org modifications</div>
+          </div>
+          <div class="g-page-actions">
+            <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:7px 12px;font-size:13px;font-family:var(--font);outline:none"><option>All action types</option><option>Impersonation</option><option>Create</option><option>Modify</option><option>Delete</option><option>Login</option></select>
+            <button class="btn-g-secondary"><i class="ti ti-download"></i>Export log</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div style="background:var(--amber-bg);border:1px solid rgba(133,79,11,0.2);border-radius:var(--radius-lg);padding:12px 18px;margin-bottom:20px;font-size:13px;color:var(--amber);display:flex;gap:10px;align-items:center">
+            <i class="ti ti-alert-triangle" style="font-size:18px;flex-shrink:0"></i>
+            <span>2 impersonation sessions in the last 24 hours. All sessions are logged and visible to all Super Admins. Impersonation cannot be used to modify billing or delete accounts.</span>
+          </div>
+          <div class="g-card">
+            <div class="log-row" style="background:var(--amber-bg);border-bottom:1px solid rgba(133,79,11,0.1)"><div class="log-time">Today · 10:14am</div><div class="log-actor">Chris Admin</div><div class="log-action">Enabled module <span class="log-target">Conditional Logic</span> for <span class="log-target">Maplewood Rec</span><span class="log-chip modify">MODIFY</span></div></div>
+            <div class="log-row"><div class="log-time">Today · 9:52am</div><div class="log-actor">Sarah Ops</div><div class="log-action">Created organization <span class="log-target">Hillcrest Parks &amp; Rec</span> — Starter plan, 30-day trial<span class="log-chip create">CREATE</span></div></div>
+            <div class="log-row"><div class="log-time">Today · 9:08am</div><div class="log-actor">System</div><div class="log-action">Deployed v2.14.1 to production — all regions<span class="log-chip modify">DEPLOY</span></div></div>
+            <div class="log-row" style="background:#FFFBEB"><div class="log-time">Yesterday · 4:31pm</div><div class="log-actor">Chris Admin</div><div class="log-action">Opened impersonation session for <span class="log-target">Springfield Parks &amp; Rec</span> — session lasted 14 min · read + write<span class="log-chip impersonate">IMPERSONATE</span></div></div>
+            <div class="log-row"><div class="log-time">Yesterday · 2:15pm</div><div class="log-actor">Tom Support</div><div class="log-action">Broadcast message sent: "Maintenance window July 15 2–4am" to All orgs<span class="log-chip modify">BROADCAST</span></div></div>
+            <div class="log-row" style="background:#FFFBEB"><div class="log-time">Yesterday · 11:04am</div><div class="log-actor">James Rivera</div><div class="log-action">Opened impersonation session for <span class="log-target">Northfield Recreation</span> — session lasted 28 min · read-only<span class="log-chip impersonate">IMPERSONATE</span></div></div>
+            <div class="log-row"><div class="log-time">Jun 21 · 3:44pm</div><div class="log-actor">Amy Chen</div><div class="log-action">Updated GL code mapping for <span class="log-target">Springfield Parks &amp; Rec</span> — 3 codes modified<span class="log-chip modify">MODIFY</span></div></div>
+            <div class="log-row"><div class="log-time">Jun 21 · 9:12am</div><div class="log-actor">Sarah Ops</div><div class="log-action">Upgraded <span class="log-target">Riverside Parks Dept</span> from Pro to Enterprise plan<span class="log-chip modify">MODIFY</span></div></div>
+            <div class="log-row"><div class="log-time">Jun 20 · 11:55pm</div><div class="log-actor">System</div><div class="log-action">Auto-renewed contract for <span class="log-target">Cedar Valley Parks</span> — annual plan $21,600<span class="log-chip modify">BILLING</span></div></div>
+            <div class="log-row"><div class="log-time">Jun 20 · 4:02pm</div><div class="log-actor">Chris Admin</div><div class="log-action">Deactivated user <span class="log-target">j.former@recplatform.com</span> — offboarding<span class="log-chip delete">DELETE</span></div></div>
+            <div style="padding:12px 20px;background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-secondary)">
+              <span>Showing 10 of 4,821 log entries · Retained for 2 years</span>
+              <div style="display:flex;gap:8px"><button class="btn-g-secondary" style="font-size:12px;padding:5px 12px">← Prev</button><button class="btn-g-secondary" style="font-size:12px;padding:5px 12px">Next →</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           SYSTEM SETTINGS
+      ══════════════════════════════════════ -->
+      <div id="sec-settings" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">System settings</div>
+            <div class="g-page-subtitle">Platform-wide configuration — affects all tenant organizations</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-primary" onclick="showToast('System settings saved')"><i class="ti ti-device-floppy"></i>Save changes</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div class="g-two-col">
+            <div>
+              <div class="g-card" style="margin-bottom:20px">
+                <div class="g-card-header"><h3><i class="ti ti-tools" style="color:var(--red);font-size:16px;vertical-align:-2px;margin-right:6px"></i>Maintenance mode</h3></div>
+                <div style="padding:16px 20px">
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Global maintenance mode</div><div class="g-toggle-desc">Takes the entire platform offline for all tenants. Shows the maintenance page to all visitors. Use with extreme caution.</div></div>
+                    <div class="g-toggle" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb"></div></div>
+                  </div>
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">New organization signup</div><div class="g-toggle-desc">Allow new organizations to sign up for trials from the marketing site</div></div>
+                    <div class="g-toggle on" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb" style="left:20px"></div></div>
+                  </div>
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Read-only mode (emergency)</div><div class="g-toggle-desc">Disable writes across all orgs — no new registrations or payments. Use during DB maintenance.</div></div>
+                    <div class="g-toggle" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="g-card" style="margin-bottom:20px">
+                <div class="g-card-header"><h3>Payment processor config</h3></div>
+                <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Primary processor</div><select style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option selected>Stripe</option><option>Braintree</option><option>Square</option></select></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Platform processing fee (passed to tenant)</div><input type="text" value="1.5% + $0.25 per transaction" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Stripe webhook endpoint</div><input type="text" value="https://api.recplatform.com/webhooks/stripe" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:monospace;outline:none;font-size:12px"></div>
+                </div>
+              </div>
+
+              <div class="g-card">
+                <div class="g-card-header"><h3>Email &amp; SMS providers</h3></div>
+                <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Transactional email</div><select style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option selected>SendGrid</option><option>Postmark</option><option>Mailgun</option></select></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">SMS provider</div><select style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option selected>Twilio</option><option>Bandwidth</option></select></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">From email domain</div><input type="text" value="notify@recplatform.com" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="g-card" style="margin-bottom:20px">
+                <div class="g-card-header"><h3>API &amp; rate limiting</h3></div>
+                <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Default API rate limit (per org/hour)</div><input type="text" value="10,000 requests" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Enterprise API rate limit</div><input type="text" value="100,000 requests" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"></div>
+                  <div><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Webhook timeout</div><input type="text" value="30 seconds" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"></div>
+                  <div class="g-toggle-row" style="padding-top:8px">
+                    <div><div class="g-toggle-label">Enable API access globally</div><div class="g-toggle-desc">When off, all API calls return 503 regardless of org settings</div></div>
+                    <div class="g-toggle on" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb" style="left:20px"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="g-card" style="margin-bottom:20px">
+                <div class="g-card-header"><h3>Security settings</h3></div>
+                <div style="padding:16px 20px">
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Enforce MFA for all global users</div><div class="g-toggle-desc">All staff accessing this console must have MFA enabled</div></div>
+                    <div class="g-toggle on" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb" style="left:20px"></div></div>
+                  </div>
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Log all impersonation sessions</div><div class="g-toggle-desc">Record who accessed which tenant and for how long</div></div>
+                    <div class="g-toggle on" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb" style="left:20px"></div></div>
+                  </div>
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Impersonation requires reason</div><div class="g-toggle-desc">Staff must enter a support ticket # or reason before accessing a tenant</div></div>
+                    <div class="g-toggle on" onclick="this.classList.toggle('on');this.querySelector('.g-toggle-thumb').style.left=this.classList.contains('on')?'20px':'2px'"><div class="g-toggle-thumb" style="left:20px"></div></div>
+                  </div>
+                  <div class="g-toggle-row">
+                    <div><div class="g-toggle-label">Session timeout — global console</div><div class="g-toggle-desc">Auto-logout after inactivity</div></div>
+                    <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none;flex-shrink:0"><option>15 minutes</option><option selected>30 minutes</option><option>60 minutes</option></select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="g-card">
+                <div class="g-card-header"><h3>Data retention</h3></div>
+                <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px">
+                  <div class="g-toggle-row" style="padding:6px 0"><div style="font-size:13px;color:var(--text-secondary)">Audit log retention</div><select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option>1 year</option><option selected>2 years</option><option>7 years</option></select></div>
+                  <div class="g-toggle-row" style="padding:6px 0"><div style="font-size:13px;color:var(--text-secondary)">Transaction record retention</div><select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option>5 years</option><option selected>7 years</option><option>10 years</option></select></div>
+                  <div class="g-toggle-row" style="padding:6px 0"><div style="font-size:13px;color:var(--text-secondary)">Churned org data retention</div><select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option selected>90 days</option><option>180 days</option><option>1 year</option></select></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           RELEASES & FEATURE FLAGS
+      ══════════════════════════════════════ -->
+      <div id="sec-releases" class="g-section">
+        <div class="g-page-header">
+          <div>
+            <div class="g-page-title">Releases &amp; feature flags</div>
+            <div class="g-page-subtitle">Control feature rollout per organization or globally</div>
+          </div>
+          <div class="g-page-actions">
+            <button class="btn-g-secondary"><i class="ti ti-tag"></i>View changelog</button>
+          </div>
+        </div>
+        <div class="g-body-inner">
+          <div class="g-card" style="margin-bottom:20px">
+            <div class="g-card-header"><h3>Current release — v2.14.1</h3><span style="font-size:12px;color:var(--green);font-weight:600">Deployed Jul 10, 2026 · 9:08am</span></div>
+            <div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-check" style="color:var(--green)"></i>Conditional logic in form builder (live for Pro+ orgs)</div>
+              <div style="font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-check" style="color:var(--green)"></i>GL code export CSV fix — trailing comma removed</div>
+              <div style="font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-check" style="color:var(--green)"></i>Residency verification modal — public portal</div>
+              <div style="font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-check" style="color:var(--green)"></i>Performance: report preview query optimization (−40% load time)</div>
+              <div style="font-size:13px;display:flex;align-items:center;gap:8px"><i class="ti ti-check" style="color:var(--green)"></i>Bug fix: wishlist badge count not resetting after checkout</div>
+            </div>
+          </div>
+
+          <div class="g-card">
+            <div class="g-card-header"><h3>Feature flags</h3><span style="font-size:12px;color:var(--text-secondary)">Enable features for specific orgs before full rollout</span></div>
+            <table class="g-table">
+              <thead><tr><th>Flag</th><th>Description</th><th>Status</th><th>Enabled for</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--blue)">cond_logic_v1</td>
+                  <td style="font-size:12px">Conditional form builder logic — branching questions</td>
+                  <td><span class="g-badge badge-active">Live — Pro+</span></td>
+                  <td style="font-size:12px">All Pro, Enterprise, Gov orgs (31 of 47)</td>
+                  <td><button class="btn-g-secondary" style="font-size:11px;padding:4px 10px">Manage</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--blue)">res_verify_api</td>
+                  <td style="font-size:12px">Address validation API for residency verification</td>
+                  <td><span class="g-badge badge-trial">Beta</span></td>
+                  <td style="font-size:12px">3 orgs (early access)</td>
+                  <td><button class="btn-g-secondary" style="font-size:11px;padding:4px 10px">Manage</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--purple)">white_label_v2</td>
+                  <td style="font-size:12px">Custom domain + branded transactional emails</td>
+                  <td><span class="g-badge badge-trial">Beta</span></td>
+                  <td style="font-size:12px">1 org (Riverside Parks — pilot)</td>
+                  <td><button class="btn-g-secondary" style="font-size:11px;padding:4px 10px">Manage</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--text-tertiary)">munis_integration</td>
+                  <td style="font-size:12px">Tyler Munis ERP sync — GL posting and fund accounting</td>
+                  <td><span class="g-badge" style="background:var(--bg-tertiary);color:var(--text-secondary)">Dev</span></td>
+                  <td style="font-size:12px">Internal only</td>
+                  <td><button class="btn-g-secondary" style="font-size:11px;padding:4px 10px">Manage</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--text-tertiary)">ai_program_suggest</td>
+                  <td style="font-size:12px">AI-powered program recommendations for public portal</td>
+                  <td><span class="g-badge" style="background:var(--bg-tertiary);color:var(--text-secondary)">Planned</span></td>
+                  <td style="font-size:12px">Not yet available</td>
+                  <td><button class="btn-g-secondary" style="font-size:11px;padding:4px 10px" disabled>Manage</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder for remaining sections -->
+      <div id="sec-billing" class="g-section">
+        <div class="g-page-header"><div><div class="g-page-title">Billing &amp; plans</div><div class="g-page-subtitle">Subscription management, invoicing, and MRR tracking</div></div></div>
+        <div class="g-body-inner"><div class="g-card" style="padding:40px;text-align:center;color:var(--text-secondary)"><i class="ti ti-credit-card" style="font-size:48px;display:block;margin-bottom:12px;color:var(--text-tertiary)"></i>Billing console — coming soon in this demo</div></div>
+      </div>
+      <div id="sec-notifications" class="g-section">
+        <div class="g-page-header"><div><div class="g-page-title">Notification config</div><div class="g-page-subtitle">Global email and SMS template management</div></div></div>
+        <div class="g-body-inner"><div class="g-card" style="padding:40px;text-align:center;color:var(--text-secondary)"><i class="ti ti-bell" style="font-size:48px;display:block;margin-bottom:12px;color:var(--text-tertiary)"></i>Notification template manager — coming soon in this demo</div></div>
+      </div>
+
+    </div><!-- /g-main -->
+  </div><!-- /g-body -->
+</div><!-- /shell -->
+
+<!-- ── ORG DETAIL PANEL ── -->
+<div id="org-detail" class="org-detail-overlay" onclick="if(event.target===this)closeOrgDetail()">
+  <div class="org-detail-panel">
+    <div class="odp-header">
+      <div class="odp-icon"><i class="ti ti-building"></i></div>
+      <div style="flex:1">
+        <div class="odp-title" id="odp-title">Springfield Parks &amp; Rec</div>
+        <div class="odp-meta">
+          <span>ORG-0001</span><span>Government plan</span><span>Active</span><span>Springfield, MA</span>
+        </div>
+      </div>
+      <button class="odp-close" onclick="closeOrgDetail()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="odp-body">
+      <div class="odp-section">
+        <div class="odp-section-title">Key metrics</div>
+        <div class="odp-stat-row">
+          <div class="odp-stat"><div class="odp-stat-num">1,649</div><div class="odp-stat-label">Total members</div></div>
+          <div class="odp-stat"><div class="odp-stat-num">24,891</div><div class="odp-stat-label">Registrations YTD</div></div>
+          <div class="odp-stat"><div class="odp-stat-num">$284K</div><div class="odp-stat-label">Revenue processed YTD</div></div>
+        </div>
+      </div>
+      <div class="odp-section">
+        <div class="odp-section-title">Contract &amp; billing</div>
+        <div class="odp-row"><span>Plan</span><strong>Government Annual</strong></div>
+        <div class="odp-row"><span>MRR</span><strong>$2,400/mo ($28,800/yr)</strong></div>
+        <div class="odp-row"><span>Contract start</span><strong>Jan 1, 2026</strong></div>
+        <div class="odp-row"><span>Contract end</span><strong>Dec 31, 2026</strong></div>
+        <div class="odp-row"><span>Auto-renew</span><strong style="color:var(--green)">Yes — Nov 1 renewal notice</strong></div>
+        <div class="odp-row"><span>Account manager</span><strong>James Rivera</strong></div>
+      </div>
+      <div class="odp-section">
+        <div class="odp-section-title">Technical</div>
+        <div class="odp-row"><span>Subdomain</span><strong>springfield.recplatform.com</strong></div>
+        <div class="odp-row"><span>API access</span><strong style="color:var(--green)">Enabled</strong></div>
+        <div class="odp-row"><span>Avg API response</span><strong>142ms</strong></div>
+        <div class="odp-row"><span>Last deploy</span><strong>v2.14.1 — Jul 10, 2026</strong></div>
+        <div class="odp-row"><span>Data region</span><strong>US-East-1</strong></div>
+      </div>
+      <div class="odp-section">
+        <div class="odp-section-title">Admin users (11)</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">2 Global Admins · 4 Program Coordinators · 2 Finance · 3 Facility Staff</div>
+        <div style="font-size:12px;color:var(--blue);cursor:pointer" onclick="showToast('Viewing Springfield Rec admin users')"><i class="ti ti-external-link" style="font-size:12px"></i> View all admin users in org</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn-g-warning" style="width:100%;justify-content:center;padding:11px" onclick="closeOrgDetail();openImpersonate('Springfield Parks &amp; Rec')"><i class="ti ti-user-bolt"></i>Access this organization (impersonate)</button>
+        <button class="btn-g-secondary" style="width:100%;justify-content:center;padding:11px" onclick="closeOrgDetail();gNav('licenses')"><i class="ti ti-license"></i>Manage modules &amp; licenses</button>
+        <button class="btn-g-danger" style="width:100%;justify-content:center;padding:11px" onclick="showToast('Contact legal before pausing a Government contract')"><i class="ti ti-player-pause"></i>Pause organization</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── IMPERSONATE CONFIRM MODAL ── -->
+<div id="imp-modal" class="modal-overlay" onclick="if(event.target===this)closeImpModal()">
+  <div class="imp-modal-box">
+    <div class="imp-banner">
+      <i class="ti ti-user-bolt"></i>
+      <h3>Access organization as admin</h3>
+      <p id="imp-org-name">Springfield Parks &amp; Rec</p>
+    </div>
+    <div class="imp-body">
+      <p>You are about to open an impersonation session for <strong id="imp-org-name2">Springfield Parks &amp; Rec</strong>. You will see and interact with the admin dashboard exactly as their staff would. This session will be <strong>fully logged</strong> in the audit trail including duration and all actions taken.</p>
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px">Reason / support ticket # (required)</div>
+        <input type="text" id="imp-reason" placeholder="e.g. Support ticket #4821 — GL code export issue" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;font-family:var(--font);outline:none">
+      </div>
+      <div class="imp-footer">
+        <button style="background:var(--bg-tertiary);color:var(--text-primary)" onclick="closeImpModal()">Cancel</button>
+        <button style="background:var(--amber-mid);color:#fff" onclick="doImpersonate()"><i class="ti ti-user-bolt" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Enter impersonation session</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── NEW MESSAGE MODAL ── -->
+<div id="msg-modal" class="modal-overlay" onclick="if(event.target===this)closeMsgModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="ti ti-speakerphone" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>Broadcast new message</h3>
+      <button class="modal-close" onclick="closeMsgModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="mf">
+        <label>Message type</label>
+        <select>
+          <option>System alert — outage or incident (red banner)</option>
+          <option>Maintenance window (amber banner)</option>
+          <option selected>Feature announcement (blue banner)</option>
+          <option>Marketing / promo (green banner — public only)</option>
+        </select>
+      </div>
+      <div class="mf">
+        <label>Headline (shown in banner)</label>
+        <input type="text" placeholder="e.g. Scheduled maintenance Jul 15 — 2am to 4am EST">
+      </div>
+      <div class="mf">
+        <label>Full message body</label>
+        <textarea placeholder="Full text shown when resident or admin expands the banner..."></textarea>
+      </div>
+      <div class="mf-row">
+        <div class="mf">
+          <label>Target audience</label>
+          <select><option>All organizations</option><option>Specific organizations</option><option>Trial orgs only</option></select>
+        </div>
+        <div class="mf">
+          <label>Display on</label>
+          <select><option>Both public + admin</option><option>Admin dashboard only</option><option>Public portal only</option></select>
+        </div>
+      </div>
+      <div class="mf-row">
+        <div class="mf">
+          <label>Go live</label>
+          <input type="datetime-local">
+        </div>
+        <div class="mf">
+          <label>Expires</label>
+          <input type="datetime-local">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button style="background:var(--bg-tertiary);border:1px solid var(--border-med);color:var(--text-primary)" onclick="closeMsgModal()">Cancel</button>
+      <button style="background:var(--blue);color:#fff;border:none" onclick="sendMsg()"><i class="ti ti-send" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Broadcast message</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="g-toast"></div>
+
+<script>
+  const PASS = 'global_admin_2026';
+
+  function doLogin() {
+    var pass = document.getElementById('g-pass').value;
+    if (pass === PASS) {
+      document.getElementById('login-gate').classList.add('hidden');
+      document.getElementById('shell').classList.add('visible');
+    } else {
+      document.getElementById('gate-err').classList.add('visible');
+    }
+  }
+  document.getElementById('g-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+  function gNav(section) {
+    document.querySelectorAll('.g-nav-item').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.g-section').forEach(function(s){ s.classList.remove('active'); });
+    var btn = document.getElementById('nav-' + section);
+    if (btn) btn.classList.add('active');
+    var sec = document.getElementById('sec-' + section);
+    if (sec) sec.classList.add('active');
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('g-toast');
+    t.textContent = '✓ ' + msg;
+    t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 3000);
+  }
+
+  function toggleMod(el) {
+    el.classList.toggle('on');
+    el.querySelector('.mod-toggle-thumb').style.left = el.classList.contains('on') ? '18px' : '2px';
+    var name = el.closest('.mod-item').querySelector('.mod-name').textContent;
+    el.closest('.mod-item').classList.toggle('enabled', el.classList.contains('on'));
+    showToast((el.classList.contains('on') ? 'Enabled: ' : 'Disabled: ') + name);
+  }
+
+  // Org detail
+  function openOrgDetail(name) {
+    document.getElementById('odp-title').textContent = name;
+    document.getElementById('org-detail').classList.add('open');
+  }
+  function closeOrgDetail() {
+    document.getElementById('org-detail').classList.remove('open');
+  }
+
+  // Impersonate
+  var currentImpOrg = '';
+  function openImpersonate(name) {
+    currentImpOrg = name;
+    document.getElementById('imp-org-name').textContent = name;
+    document.getElementById('imp-org-name2').textContent = name;
+    document.getElementById('imp-reason').value = '';
+    document.getElementById('imp-modal').classList.add('open');
+  }
+  function closeImpModal() {
+    document.getElementById('imp-modal').classList.remove('open');
+  }
+  function doImpersonate() {
+    var reason = document.getElementById('imp-reason').value.trim();
+    if (!reason) {
+      document.getElementById('imp-reason').style.borderColor = 'var(--red)';
+      return;
+    }
+    closeImpModal();
+    showToast('Impersonation session started for ' + currentImpOrg + ' — logged to audit trail');
+  }
+
+  // Broadcast message modal
+  function openMsgModal() {
+    document.getElementById('msg-modal').classList.add('open');
+  }
+  function closeMsgModal() {
+    document.getElementById('msg-modal').classList.remove('open');
+  }
+  function sendMsg() {
+    closeMsgModal();
+    showToast('Message broadcast to all target organizations');
+  }
+</script>
+</body>
+</html>
