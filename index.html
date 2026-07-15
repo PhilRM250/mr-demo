@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 071026 added form conditional logic --->
+  <!--- PR 071526 Added Message Center --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1105,6 +1105,110 @@
   .cond-question-inner .reg-form-textarea { border-color:#C4B5FD; }
   .cond-question-inner .reg-form-textarea:focus { border-color:var(--purple); }
   .cond-triggered-by { font-size:10px; color:#7C3AED; font-weight:600; display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+
+  /* ── MESSAGE CENTER ── */
+  .mc-subnav {
+    display:flex; gap:2px; padding:14px 20px 0; background:var(--bg-primary);
+    border-bottom:1px solid var(--border); position:sticky; top:52px; z-index:40;
+  }
+  .mc-subnav-btn {
+    padding:9px 16px; border:none; background:none; font-family:var(--font);
+    font-size:13px; font-weight:500; color:var(--text-secondary); cursor:pointer;
+    border-bottom:2px solid transparent; transition:all 0.15s;
+    display:flex; align-items:center; gap:6px;
+  }
+  .mc-subnav-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+  .mc-subnav-btn i { font-size:16px; }
+  .mc-pane { display:none; }
+  .mc-pane.active { display:block; }
+
+  /* Compose */
+  .compose-layout { display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:start; }
+  .compose-main { display:flex; flex-direction:column; gap:16px; }
+  .compose-block { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; }
+  .compose-block-header { padding:12px 18px; border-bottom:1px solid var(--border); background:var(--bg-secondary); font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.4px; display:flex; align-items:center; gap:8px; }
+  .compose-block-body { padding:16px 18px; }
+
+  /* Message type toggle */
+  .msg-type-toggle { display:flex; gap:0; border:1px solid var(--border-med); border-radius:var(--radius-md); overflow:hidden; }
+  .mtt-btn { flex:1; padding:10px 14px; border:none; background:var(--bg-primary); font-family:var(--font); font-size:13px; font-weight:500; color:var(--text-secondary); cursor:pointer; transition:all 0.12s; display:flex; align-items:center; justify-content:center; gap:7px; }
+  .mtt-btn.active-transact { background:#064E3B; color:#6EE7B7; }
+  .mtt-btn.active-market { background:var(--blue-dark); color:#93C5FD; }
+  .mtt-divider { width:1px; background:var(--border-med); }
+
+  /* Channel chips */
+  .channel-chips { display:flex; gap:8px; }
+  .channel-chip { display:flex; align-items:center; gap:7px; padding:9px 16px; border:2px solid var(--border-med); border-radius:var(--radius-md); cursor:pointer; font-size:13px; font-weight:500; color:var(--text-secondary); transition:all 0.12s; background:var(--bg-primary); }
+  .channel-chip.selected { border-color:var(--blue); background:var(--blue-light); color:var(--blue-dark); }
+  .channel-chip i { font-size:18px; }
+
+  /* Body editor mock */
+  .msg-editor { border:1px solid var(--border-med); border-radius:var(--radius-md); overflow:hidden; }
+  .msg-editor-toolbar { padding:8px 10px; background:var(--bg-secondary); border-bottom:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap; }
+  .msg-editor-btn { padding:4px 8px; border:1px solid var(--border); border-radius:4px; background:var(--bg-primary); font-family:var(--font); font-size:12px; cursor:pointer; color:var(--text-secondary); }
+  .msg-editor-btn:hover { background:var(--bg-tertiary); color:var(--text-primary); }
+  .msg-editor-btn.sep { border:none; background:none; color:var(--border-med); cursor:default; padding:4px 2px; }
+  .msg-editor-body { min-height:160px; padding:14px; font-size:13px; color:var(--text-primary); outline:none; line-height:1.7; }
+  .msg-merge-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .merge-tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:var(--radius-pill); background:var(--blue-light); color:var(--blue-dark); border:1px solid var(--blue-border); cursor:pointer; font-family:monospace; }
+  .merge-tag:hover { background:var(--blue); color:#fff; }
+
+  /* Audience builder */
+  .ab-filter-row { display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .ab-filter-row:last-child { border-bottom:none; }
+  .ab-filter-label { font-size:12px; font-weight:600; color:var(--text-secondary); min-width:160px; display:flex; align-items:center; gap:6px; }
+  .ab-filter-label i { font-size:15px; color:var(--text-tertiary); }
+  .ab-filter-controls { display:flex; gap:8px; flex:1; flex-wrap:wrap; align-items:center; }
+  .ab-select { border:1px solid var(--border-med); border-radius:var(--radius-md); padding:7px 10px; font-size:12px; font-family:var(--font); color:var(--text-primary); background:var(--bg-primary); outline:none; }
+  .ab-select:focus { border-color:var(--blue); }
+  .ab-chip-toggle { display:flex; align-items:center; gap:5px; padding:5px 10px; border:1px solid var(--border-med); border-radius:var(--radius-pill); font-size:11px; font-weight:500; color:var(--text-secondary); cursor:pointer; background:var(--bg-primary); transition:all 0.12s; white-space:nowrap; }
+  .ab-chip-toggle.on { border-color:var(--blue); background:var(--blue-light); color:var(--blue-dark); }
+  .ab-chip-toggle i { font-size:13px; }
+
+  /* Audience summary card */
+  .audience-summary { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; position:sticky; top:120px; }
+  .as-header { padding:14px 18px; border-bottom:1px solid var(--border); background:var(--blue-dark); color:#fff; }
+  .as-header h3 { font-size:14px; font-weight:600; }
+  .as-count { font-size:36px; font-weight:700; color:#fff; line-height:1; margin:8px 0 4px; }
+  .as-count-label { font-size:12px; color:rgba(255,255,255,0.6); }
+  .as-breakdown { padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
+  .as-row { display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+  .as-row span:first-child { color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
+  .as-row strong { color:var(--text-primary); }
+  .as-opt-warning { background:var(--amber-bg); border:1px solid rgba(133,79,11,0.2); border-radius:var(--radius-md); padding:10px 12px; margin:0 14px 14px; font-size:12px; color:var(--amber); display:flex; gap:8px; align-items:flex-start; }
+  .as-transact-note { background:var(--green-bg); border:1px solid #A3D9B4; border-radius:var(--radius-md); padding:10px 12px; margin:0 14px 14px; font-size:12px; color:var(--green); display:flex; gap:8px; align-items:flex-start; }
+
+  /* Campaign list */
+  .campaign-row { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid var(--border); transition:background 0.1s; }
+  .campaign-row:hover { background:var(--bg-secondary); }
+  .campaign-row:last-child { border-bottom:none; }
+  .camp-type-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+  .camp-info { flex:1; }
+  .camp-name { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+  .camp-meta { font-size:11px; color:var(--text-secondary); display:flex; gap:12px; flex-wrap:wrap; }
+  .camp-stats { display:flex; gap:16px; flex-shrink:0; }
+  .camp-stat { text-align:center; }
+  .camp-stat-num { font-size:16px; font-weight:700; color:var(--text-primary); line-height:1; }
+  .camp-stat-label { font-size:10px; color:var(--text-tertiary); margin-top:2px; }
+  .msg-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:var(--radius-pill); }
+  .msg-transact { background:#D1FAE5; color:#065F46; }
+  .msg-marketing { background:var(--blue-light); color:var(--blue-dark); }
+  .msg-draft { background:var(--bg-tertiary); color:var(--text-secondary); }
+  .msg-scheduled { background:var(--purple-bg); color:var(--purple); }
+
+  /* Stat bars */
+  .stat-bar-wrap { margin-bottom:10px; }
+  .stat-bar-label { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .stat-bar-label span { color:var(--text-secondary); }
+  .stat-bar-label strong { color:var(--text-primary); }
+  .stat-bar { height:6px; background:var(--bg-tertiary); border-radius:3px; overflow:hidden; }
+  .stat-bar-fill { height:100%; border-radius:3px; }
+
+  /* Opt-out badge */
+  .optout-chip { font-size:10px; font-weight:600; padding:2px 7px; border-radius:var(--radius-pill); }
+  .optout-in { background:var(--green-bg); color:var(--green); }
+  .optout-out { background:var(--red-bg); color:var(--red); }
+  .optout-partial { background:var(--amber-bg); color:var(--amber); }
 
   /* ── RESIDENCY MANAGEMENT ── */
   .res-method-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
@@ -6708,6 +6812,8 @@
       <div class="sidebar-section-label">Members</div>
       <button class="sidebar-item" onclick="adminNav(this,'members')"><i class="ti ti-users"></i>Members</button>
       <button class="sidebar-item" onclick="adminNav(this,'checkin')"><i class="ti ti-scan"></i>Check-in</button>
+      <div class="sidebar-section-label">Messages</div>
+      <button class="sidebar-item" onclick="adminNav(this,'messages')"><i class="ti ti-send"></i>Message center</button>
       <div class="sidebar-section-label">Finance</div>
       <button class="sidebar-item" onclick="adminNav(this,'finance')"><i class="ti ti-cash"></i>Payments</button>
       <button class="sidebar-item" onclick="adminNav(this,'glcodes')"><i class="ti ti-list-numbers"></i>GL Codes</button>
@@ -8048,6 +8154,701 @@
           </div>
         </div>
       </div>
+
+      </div>
+
+      <!-- MESSAGE CENTER -->
+      <div id="admin-messages" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Message center</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Analytics</button>
+            <button class="btn-primary" onclick="mcNav('mc-compose')"><i class="ti ti-pencil"></i>Compose message</button>
+          </div>
+        </div>
+
+        <!-- Sub-navigation -->
+        <div class="mc-subnav">
+          <button class="mc-subnav-btn active" id="mcnav-compose" onclick="mcNav('mc-compose')"><i class="ti ti-pencil"></i>Compose</button>
+          <button class="mc-subnav-btn" id="mcnav-campaigns" onclick="mcNav('mc-campaigns')"><i class="ti ti-list"></i>Campaigns</button>
+          <button class="mc-subnav-btn" id="mcnav-audience" onclick="mcNav('mc-audience')"><i class="ti ti-users-group"></i>Audience builder</button>
+          <button class="mc-subnav-btn" id="mcnav-templates" onclick="mcNav('mc-templates')"><i class="ti ti-template"></i>Templates</button>
+          <button class="mc-subnav-btn" id="mcnav-analytics" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Analytics</button>
+          <button class="mc-subnav-btn" id="mcnav-optouts" onclick="mcNav('mc-optouts')"><i class="ti ti-bell-off"></i>Opt-out manager</button>
+        </div>
+
+        <div class="admin-body">
+
+          <!-- ══ PANE: COMPOSE ══ -->
+          <div id="mc-compose" class="mc-pane active">
+            <div class="compose-layout">
+
+              <!-- Left: composition -->
+              <div class="compose-main">
+
+                <!-- Message type -->
+                <div class="compose-block">
+                  <div class="compose-block-header"><i class="ti ti-toggle-left"></i>Message type</div>
+                  <div class="compose-block-body">
+                    <div class="msg-type-toggle" style="margin-bottom:12px">
+                      <button class="mtt-btn active-transact" id="mtt-transact" onclick="setMsgType('transact')">
+                        <i class="ti ti-shield-check" style="font-size:17px"></i>
+                        <div style="text-align:left">
+                          <div style="font-weight:700;font-size:13px">Transactional</div>
+                          <div style="font-size:10px;opacity:0.8">Bypasses opt-outs · Always delivered</div>
+                        </div>
+                      </button>
+                      <div class="mtt-divider"></div>
+                      <button class="mtt-btn" id="mtt-market" onclick="setMsgType('market')">
+                        <i class="ti ti-speakerphone" style="font-size:17px"></i>
+                        <div style="text-align:left">
+                          <div style="font-weight:700;font-size:13px">Marketing</div>
+                          <div style="font-size:10px;opacity:0.8">Respects opt-outs · CAN-SPAM compliant</div>
+                        </div>
+                      </button>
+                    </div>
+                    <div id="transact-notice" style="background:#D1FAE5;border:1px solid #6EE7B7;border-radius:var(--radius-md);padding:10px 12px;font-size:12px;color:#065F46;display:flex;gap:8px;align-items:flex-start">
+                      <i class="ti ti-shield-check" style="font-size:15px;flex-shrink:0;margin-top:1px"></i>
+                      <div><strong>Transactional message:</strong> This will reach at least one opted-in contact per account even if others have opted out. Use for registration confirmations, payment receipts, waitlist updates, waiver reminders, and balance notices. Do not use transactional for promotional content.</div>
+                    </div>
+                    <div id="market-notice" style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-md);padding:10px 12px;font-size:12px;color:var(--blue-dark);display:flex;gap:8px;align-items:flex-start;display:none">
+                      <i class="ti ti-speakerphone" style="font-size:15px;flex-shrink:0;margin-top:1px"></i>
+                      <div><strong>Marketing message:</strong> Only sent to contacts who have opted in to marketing communications. Accounts with no opted-in contact will not receive this message. An unsubscribe link is automatically appended.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Channel -->
+                <div class="compose-block">
+                  <div class="compose-block-header"><i class="ti ti-antenna"></i>Channel</div>
+                  <div class="compose-block-body">
+                    <div class="channel-chips">
+                      <div class="channel-chip selected" id="ch-email" onclick="toggleChannel('email')">
+                        <i class="ti ti-mail" style="color:var(--blue)"></i>
+                        <div><div style="font-weight:600;font-size:13px">Email</div><div style="font-size:10px;color:var(--text-secondary)">HTML + plain text</div></div>
+                      </div>
+                      <div class="channel-chip" id="ch-sms" onclick="toggleChannel('sms')">
+                        <i class="ti ti-message" style="color:var(--green)"></i>
+                        <div><div style="font-weight:600;font-size:13px">SMS / Text</div><div style="font-size:10px;color:var(--text-secondary)">160 char / segment</div></div>
+                      </div>
+                      <div class="channel-chip" id="ch-push" onclick="toggleChannel('push')">
+                        <i class="ti ti-bell" style="color:var(--purple)"></i>
+                        <div><div style="font-weight:600;font-size:13px">Push notification</div><div style="font-size:10px;color:var(--text-secondary)">Mobile app + PWA</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subject line -->
+                <div class="compose-block">
+                  <div class="compose-block-header"><i class="ti ti-text-size"></i>Subject line <span style="font-size:10px;font-weight:400;color:var(--text-tertiary);text-transform:none">(email only)</span></div>
+                  <div class="compose-block-body" style="display:flex;flex-direction:column;gap:10px">
+                    <input type="text" value="Reminder: Youth Swim Lessons start next week — action needed" style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;font-family:var(--font);outline:none">
+                    <input type="text" placeholder="Preview text (shown in inbox before opening)..." style="width:100%;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;color:var(--text-secondary)">
+                  </div>
+                </div>
+
+                <!-- Message body -->
+                <div class="compose-block">
+                  <div class="compose-block-header"><i class="ti ti-align-left"></i>Message body</div>
+                  <div class="compose-block-body">
+                    <div class="msg-editor">
+                      <div class="msg-editor-toolbar">
+                        <button class="msg-editor-btn"><strong>B</strong></button>
+                        <button class="msg-editor-btn"><em>I</em></button>
+                        <button class="msg-editor-btn" style="text-decoration:underline">U</button>
+                        <button class="msg-editor-btn sep">|</button>
+                        <button class="msg-editor-btn"><i class="ti ti-list" style="font-size:12px"></i></button>
+                        <button class="msg-editor-btn"><i class="ti ti-link" style="font-size:12px"></i></button>
+                        <button class="msg-editor-btn"><i class="ti ti-photo" style="font-size:12px"></i></button>
+                        <button class="msg-editor-btn sep">|</button>
+                        <button class="msg-editor-btn"><i class="ti ti-h-1" style="font-size:12px"></i></button>
+                        <button class="msg-editor-btn"><i class="ti ti-h-2" style="font-size:12px"></i></button>
+                        <button class="msg-editor-btn sep">|</button>
+                        <button class="msg-editor-btn" onclick="showToast('Switching to HTML editor')">HTML</button>
+                        <button class="msg-editor-btn" onclick="showToast('Plain text view')">Plain text</button>
+                      </div>
+                      <div class="msg-editor-body" contenteditable="true">
+                        <p>Hi {{first_name}},</p>
+                        <p>This is a reminder that <strong>{{program_name}}</strong> begins on <strong>{{session_start_date}}</strong>. Here are a few things to take care of before the first class:</p>
+                        <ul style="margin:10px 0 10px 20px">
+                          <li style="margin-bottom:6px">✅ <strong>Waiver signed</strong> — we have your signed waiver on file</li>
+                          <li style="margin-bottom:6px">⚠️ <strong>Balance due: {{balance_due}}</strong> — please pay before the first class</li>
+                          <li style="margin-bottom:6px">📋 Please bring a towel and arrive 10 minutes early on the first day</li>
+                        </ul>
+                        <p>Questions? Reply to this email or call us at (413) 555-0100.</p>
+                        <p>See you soon!<br><strong>Springfield Parks & Recreation</strong></p>
+                      </div>
+                    </div>
+                    <div style="margin-top:10px">
+                      <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:7px">Merge tags — click to insert</div>
+                      <div class="msg-merge-tags">
+                        <span class="merge-tag">{{first_name}}</span>
+                        <span class="merge-tag">{{last_name}}</span>
+                        <span class="merge-tag">{{program_name}}</span>
+                        <span class="merge-tag">{{session_start_date}}</span>
+                        <span class="merge-tag">{{session_time}}</span>
+                        <span class="merge-tag">{{location}}</span>
+                        <span class="merge-tag">{{balance_due}}</span>
+                        <span class="merge-tag">{{instructor_name}}</span>
+                        <span class="merge-tag">{{waitlist_position}}</span>
+                        <span class="merge-tag">{{reg_link}}</span>
+                        <span class="merge-tag">{{unsubscribe_link}}</span>
+                        <span class="merge-tag">{{org_name}}</span>
+                        <span class="merge-tag">{{org_phone}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Schedule -->
+                <div class="compose-block">
+                  <div class="compose-block-header"><i class="ti ti-clock"></i>Schedule</div>
+                  <div class="compose-block-body">
+                    <div style="display:flex;gap:10px;margin-bottom:12px">
+                      <div class="channel-chip selected" id="sched-now" onclick="setSchedule('now')" style="flex:1;justify-content:center">
+                        <i class="ti ti-bolt" style="color:var(--green)"></i>Send now
+                      </div>
+                      <div class="channel-chip" id="sched-later" onclick="setSchedule('later')" style="flex:1;justify-content:center">
+                        <i class="ti ti-calendar" style="color:var(--blue)"></i>Schedule for later
+                      </div>
+                    </div>
+                    <div id="sched-picker" style="display:none;display:flex;gap:10px">
+                      <input type="date" value="2026-07-15" style="flex:1;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none">
+                      <input type="time" value="09:00" style="flex:1;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none">
+                      <select style="flex:1;border:1px solid var(--border-med);border-radius:var(--radius-md);padding:8px 12px;font-size:13px;font-family:var(--font);outline:none"><option>Eastern (EST)</option><option>Central (CST)</option><option>Pacific (PST)</option></select>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /compose-main -->
+
+              <!-- Right: audience summary -->
+              <div>
+                <div class="audience-summary">
+                  <div class="as-header">
+                    <h3>Audience</h3>
+                    <div class="as-count" id="as-total-count">38</div>
+                    <div class="as-count-label">accounts selected · <span id="as-contact-count">52</span> contacts</div>
+                  </div>
+                  <div class="as-breakdown">
+                    <div class="as-row"><span><i class="ti ti-mail" style="font-size:14px"></i>Email contacts</span><strong>48</strong></div>
+                    <div class="as-row"><span><i class="ti ti-message" style="font-size:14px"></i>SMS contacts</span><strong>31</strong></div>
+                    <div class="as-row"><span><i class="ti ti-bell-off" style="font-size:14px"></i>Opted out (marketing)</span><strong style="color:var(--red)">6</strong></div>
+                    <div class="as-row"><span><i class="ti ti-shield-check" style="font-size:14px;color:var(--green)"></i>Transactional reach</span><strong style="color:var(--green)">38 / 38</strong></div>
+                  </div>
+                  <div class="as-transact-note">
+                    <i class="ti ti-shield-check" style="font-size:16px;flex-shrink:0"></i>
+                    <div>As a <strong>transactional</strong> message, this will reach all 38 accounts. Opted-out contacts receive only at least 1 person per account.</div>
+                  </div>
+                  <div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:8px">
+                    <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px">Current filter</div>
+                    <div style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);padding:10px;border-radius:var(--radius-md);line-height:1.6">
+                      <i class="ti ti-run" style="font-size:13px;color:var(--blue)"></i> Program: <strong>Youth Swim Lessons</strong><br>
+                      <i class="ti ti-calendar" style="font-size:13px;color:var(--blue)"></i> Session: <strong>Session A (Jun 23–Jul 11)</strong><br>
+                      <i class="ti ti-filter" style="font-size:13px;color:var(--blue)"></i> Status: <strong>Active + Waitlist</strong>
+                    </div>
+                    <button class="btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="mcNav('mc-audience')"><i class="ti ti-users-group"></i>Change audience</button>
+                    <button class="btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="showToast('Preview email sent to r.feeney@springfield.gov')"><i class="ti ti-eye"></i>Send preview to myself</button>
+                    <button class="btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:14px" onclick="showMsgConfirm()"><i class="ti ti-send"></i>Send to 38 accounts</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ══ PANE: CAMPAIGNS ══ -->
+          <div id="mc-campaigns" class="mc-pane">
+            <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+              <div class="kpi-card"><div class="kpi-label">Messages sent (30d)</div><div class="kpi-value">4,821</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>12 campaigns</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg open rate</div><div class="kpi-value">61%</div><div class="kpi-delta up"><i class="ti ti-trending-up" style="font-size:13px"></i>+4pts vs last month</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg delivery rate</div><div class="kpi-value">98.4%</div><div class="kpi-delta up"><i class="ti ti-check" style="font-size:13px"></i>47 bounces</div></div>
+              <div class="kpi-card"><div class="kpi-label">Unsubscribes (30d)</div><div class="kpi-value">12</div><div class="kpi-delta" style="color:var(--text-tertiary)"><i class="ti ti-bell-off" style="font-size:13px"></i>0.25% rate</div></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>All campaigns</h3>
+                <div style="display:flex;gap:8px">
+                  <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option>All types</option><option>Transactional</option><option>Marketing</option></select>
+                  <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option>All channels</option><option>Email</option><option>SMS</option></select>
+                </div>
+              </div>
+
+              <!-- Scheduled -->
+              <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Scheduled</div>
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-calendar"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Fall Soccer League — Registration now open! <span class="msg-badge msg-marketing">Marketing</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-send" style="font-size:11px"></i>Scheduled: Jul 1, 2026 · 9:00 AM</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>Email + SMS</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Audience: Wishlist signups + prior soccer registrants</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--purple)">142</div><div class="camp-stat-label">Recipients</div></div>
+                </div>
+                <div style="display:flex;gap:6px">
+                  <button class="btn-secondary" style="font-size:12px"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:12px;color:var(--red)"><i class="ti ti-trash"></i></button>
+                </div>
+              </div>
+
+              <!-- Sent -->
+              <div style="padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);border-top:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px">Sent</div>
+
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-shield-check"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Swim Lessons — Waiver missing reminder <span class="msg-badge msg-transact">Transactional</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-calendar" style="font-size:11px"></i>Sent Jun 20, 2026 · 10:00 AM</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>Email only</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Accounts with unsigned waiver · Youth Swim Lessons</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num">14</div><div class="camp-stat-label">Sent</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">13</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">86%</div><div class="camp-stat-label">Opened</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">11</div><div class="camp-stat-label">Waivers signed</div></div>
+                </div>
+                <button class="btn-secondary" style="font-size:12px" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Report</button>
+              </div>
+
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-shield-check"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Summer session start reminder + balance due <span class="msg-badge msg-transact">Transactional</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-calendar" style="font-size:11px"></i>Sent Jun 18, 2026 · 9:00 AM</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>Email + SMS</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>All active summer registrations with outstanding balance</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num">38</div><div class="camp-stat-label">Sent</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">38</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">74%</div><div class="camp-stat-label">Opened</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">$1,240</div><div class="camp-stat-label">Collected</div></div>
+                </div>
+                <button class="btn-secondary" style="font-size:12px" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Report</button>
+              </div>
+
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-speakerphone"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Summer programs — last spots available! <span class="msg-badge msg-marketing">Marketing</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-calendar" style="font-size:11px"></i>Sent Jun 14, 2026 · 8:00 AM</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>Email only</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>All opted-in accounts · historical registrants</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num">1,241</div><div class="camp-stat-label">Sent</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">1,218</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">58%</div><div class="camp-stat-label">Opened</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">22%</div><div class="camp-stat-label">Clicked</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--red)">4</div><div class="camp-stat-label">Unsubs</div></div>
+                </div>
+                <button class="btn-secondary" style="font-size:12px" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Report</button>
+              </div>
+
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-shield-check"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Balance due — payment reminder (over 30 days) <span class="msg-badge msg-transact">Transactional</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-calendar" style="font-size:11px"></i>Sent Jun 10, 2026 · 9:00 AM</span>
+                    <span><i class="ti ti-message" style="font-size:11px"></i>SMS only</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Accounts with balance &gt; $0 · overdue 30+ days</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num">23</div><div class="camp-stat-label">Sent</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">23</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">100%</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">$890</div><div class="camp-stat-label">Collected</div></div>
+                </div>
+                <button class="btn-secondary" style="font-size:12px" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Report</button>
+              </div>
+
+              <div class="campaign-row">
+                <div class="camp-type-icon" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-speakerphone"></i></div>
+                <div class="camp-info">
+                  <div class="camp-name">Pool membership renewal — summer is coming! <span class="msg-badge msg-marketing">Marketing</span></div>
+                  <div class="camp-meta">
+                    <span><i class="ti ti-calendar" style="font-size:11px"></i>Sent May 1, 2026 · 10:00 AM</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>Email only</span>
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Prior pool membership holders · opted-in only</span>
+                  </div>
+                </div>
+                <div class="camp-stats">
+                  <div class="camp-stat"><div class="camp-stat-num">284</div><div class="camp-stat-label">Sent</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">278</div><div class="camp-stat-label">Delivered</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--green)">64%</div><div class="camp-stat-label">Opened</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num">31%</div><div class="camp-stat-label">Clicked</div></div>
+                  <div class="camp-stat"><div class="camp-stat-num" style="color:var(--red)">3</div><div class="camp-stat-label">Unsubs</div></div>
+                </div>
+                <button class="btn-secondary" style="font-size:12px" onclick="mcNav('mc-analytics')"><i class="ti ti-chart-bar"></i>Report</button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ══ PANE: AUDIENCE BUILDER ══ -->
+          <div id="mc-audience" class="mc-pane">
+            <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+              <div>
+                <div class="card" style="margin-bottom:16px">
+                  <div class="card-header">
+                    <h3><i class="ti ti-filter" style="color:var(--blue);font-size:16px;vertical-align:-2px;margin-right:6px"></i>Build your audience</h3>
+                    <div style="display:flex;gap:8px">
+                      <button class="btn-secondary" style="font-size:12px" onclick="showToast('Audience saved as: Summer Swim Active')"><i class="ti ti-device-floppy"></i>Save segment</button>
+                      <button class="btn-secondary" style="font-size:12px" onclick="showToast('Audience cleared')"><i class="ti ti-x"></i>Clear all</button>
+                    </div>
+                  </div>
+                  <div style="padding:16px 20px">
+
+                    <!-- By program -->
+                    <div style="font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-run" style="color:var(--blue)"></i>By program / class</div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-run"></i>Program</div>
+                      <div class="ab-filter-controls">
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option>All programs</option>
+                          <option selected>Youth Swim Lessons</option>
+                          <option>Soccer Skills Camp</option>
+                          <option>Adult Yoga</option>
+                          <option>Summer Art Studio</option>
+                          <option>Adult Fitness Bootcamp</option>
+                          <option>Senior Fitness</option>
+                        </select>
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option>All sessions</option>
+                          <option selected>Session A (Jun 23–Jul 11)</option>
+                          <option>Session B (Jul 14–Aug 1)</option>
+                          <option>Session C (Aug 4–Aug 22)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-status-change"></i>Enrollment status</div>
+                      <div class="ab-filter-controls">
+                        <div class="ab-chip-toggle on" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-check"></i>Active</div>
+                        <div class="ab-chip-toggle on" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-clock"></i>Waitlisted</div>
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-x"></i>Cancelled</div>
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-check-all"></i>Completed</div>
+                      </div>
+                    </div>
+
+                    <!-- By membership -->
+                    <div style="font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-id-badge" style="color:var(--purple)"></i>By membership</div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-id-badge"></i>Membership type</div>
+                      <div class="ab-filter-controls">
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option selected>Any / all types</option>
+                          <option>Pool membership</option>
+                          <option>Gym membership</option>
+                          <option>Family Recreation</option>
+                        </select>
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option selected>Any status</option>
+                          <option>Active</option>
+                          <option>Expiring in 30 days</option>
+                          <option>Expired</option>
+                          <option>Never purchased</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- By financial status -->
+                    <div style="font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-cash" style="color:var(--green)"></i>By financial status</div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-alert-circle"></i>Balance due</div>
+                      <div class="ab-filter-controls">
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option selected>Any outstanding balance</option>
+                          <option>Balance over $25</option>
+                          <option>Balance over $50</option>
+                          <option>Balance over $100</option>
+                          <option>No balance due</option>
+                        </select>
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option selected>Any age</option>
+                          <option>Overdue 14+ days</option>
+                          <option>Overdue 30+ days</option>
+                          <option>Overdue 60+ days</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- By missing documents -->
+                    <div style="font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-file-alert" style="color:var(--red)"></i>By missing documents</div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-files"></i>Missing</div>
+                      <div class="ab-filter-controls">
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-writing"></i>Required waiver</div>
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-forms"></i>Required form</div>
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-credit-card"></i>Payment method</div>
+                        <div class="ab-chip-toggle" onclick="this.classList.toggle('on');updateAudienceCount()"><i class="ti ti-id"></i>Residency doc</div>
+                      </div>
+                    </div>
+
+                    <!-- By account / demographics -->
+                    <div style="font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-users" style="color:var(--amber)"></i>By account</div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-home"></i>Residency</div>
+                      <div class="ab-filter-controls">
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option selected>All accounts</option>
+                          <option>Residents only</option>
+                          <option>Non-residents only</option>
+                          <option>Unverified</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="ab-filter-row">
+                      <div class="ab-filter-label"><i class="ti ti-history"></i>Activity range</div>
+                      <div class="ab-filter-controls">
+                        <select class="ab-select" onchange="updateAudienceCount()">
+                          <option>Currently active (any reg)</option>
+                          <option>Active this season</option>
+                          <option selected>All time (historical)</option>
+                          <option>Active within 1 year</option>
+                          <option>Active within 2 years</option>
+                          <option>Never registered</option>
+                        </select>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Saved segments -->
+                <div class="card">
+                  <div class="card-header"><h3>Saved segments</h3><button class="btn-primary" style="font-size:12px" onclick="showToast('Segment wizard opening...')"><i class="ti ti-plus"></i>New segment</button></div>
+                  <table style="width:100%;border-collapse:collapse;font-size:13px">
+                    <thead><tr style="background:var(--bg-secondary)"><th style="padding:9px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Segment name</th><th style="padding:9px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Definition</th><th style="padding:9px 16px;text-align:right;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Size</th><th style="padding:9px 16px;border-bottom:1px solid var(--border)"></th></tr></thead>
+                    <tbody>
+                      <tr><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-weight:500">All active members</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-secondary)">Any active registration or membership</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">1,284</td><td style="padding:11px 16px;border-bottom:1px solid var(--border)"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Segment loaded')">Use</button></td></tr>
+                      <tr><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-weight:500">Balance due (any)</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-secondary)">Outstanding balance &gt; $0</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">47</td><td style="padding:11px 16px;border-bottom:1px solid var(--border)"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Segment loaded')">Use</button></td></tr>
+                      <tr><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-weight:500">Missing waivers — Summer 2026</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-secondary)">Active summer reg + unsigned waiver</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">14</td><td style="padding:11px 16px;border-bottom:1px solid var(--border)"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Segment loaded')">Use</button></td></tr>
+                      <tr><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-weight:500">Pool membership — expiring 30d</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-secondary)">Pool membership, expires within 30 days</td><td style="padding:11px 16px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">28</td><td style="padding:11px 16px;border-bottom:1px solid var(--border)"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Segment loaded')">Use</button></td></tr>
+                      <tr><td style="padding:11px 16px;font-weight:500">Historical — all time</td><td style="padding:11px 16px;font-size:12px;color:var(--text-secondary)">All accounts ever created, opted-in only</td><td style="padding:11px 16px;text-align:right;font-weight:600">2,841</td><td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Segment loaded')">Use</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Live count sidebar -->
+              <div>
+                <div class="audience-summary">
+                  <div class="as-header">
+                    <h3>Live audience count</h3>
+                    <div class="as-count" id="ab-total">38</div>
+                    <div class="as-count-label">accounts match current filters</div>
+                  </div>
+                  <div class="as-breakdown">
+                    <div class="as-row"><span><i class="ti ti-mail" style="font-size:14px"></i>Email contacts</span><strong id="ab-email">48</strong></div>
+                    <div class="as-row"><span><i class="ti ti-message" style="font-size:14px"></i>SMS contacts</span><strong id="ab-sms">31</strong></div>
+                    <div class="as-row"><span><i class="ti ti-bell" style="font-size:14px"></i>Push-enabled</span><strong id="ab-push">22</strong></div>
+                    <div class="as-row"><span><i class="ti ti-bell-off" style="font-size:14px;color:var(--red)"></i>Marketing opt-outs</span><strong style="color:var(--red)" id="ab-optout">6</strong></div>
+                    <div class="as-row"><span><i class="ti ti-shield-check" style="font-size:14px;color:var(--green)"></i>Transactional reach</span><strong style="color:var(--green)">38 / 38</strong></div>
+                  </div>
+                  <div style="padding:0 14px 14px">
+                    <button class="btn-primary" style="width:100%;justify-content:center;font-size:13px" onclick="mcNav('mc-compose');showToast('Audience applied to compose')"><i class="ti ti-arrow-right"></i>Use this audience</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ PANE: TEMPLATES ══ -->
+          <div id="mc-templates" class="mc-pane">
+            <div class="card">
+              <div class="card-header"><h3>Message templates</h3><button class="btn-primary" style="font-size:12px" onclick="showToast('Template editor opened')"><i class="ti ti-plus"></i>New template</button></div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="background:var(--bg-secondary)"><th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Template</th><th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Type</th><th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Channel</th><th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Last used</th><th style="padding:10px 16px;border-bottom:1px solid var(--border)"></th></tr></thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Registration confirmation</div><div style="font-size:11px;color:var(--text-secondary)">Confirms enrollment, shows session details and next steps</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Auto-sent · daily</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Waitlist notification — spot available</div><div style="font-size:11px;color:var(--text-secondary)">Notifies waitlisted member a spot has opened; link to register</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email + SMS</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 18, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Balance due — payment reminder</div><div style="font-size:11px;color:var(--text-secondary)">Outstanding balance notice with payment link; configurable urgency</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email + SMS</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 10, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Waiver signature required</div><div style="font-size:11px;color:var(--text-secondary)">Prompts unsigned waiver completion; direct link to sign</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 20, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Program start reminder</div><div style="font-size:11px;color:var(--text-secondary)">Sent 3–5 days before session start; includes location, time, what to bring</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email + SMS</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 20, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Program cancellation notice</div><div style="font-size:11px;color:var(--text-secondary)">Notifies registrants of cancellation; refund instructions and alternatives</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email + SMS</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">May 12, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">Membership renewal reminder</div><div style="font-size:11px;color:var(--text-secondary)">Sent 30 days before expiry; renewal link and pricing</div></td><td style="padding:12px 16px"><span class="msg-badge msg-transact">Transactional</span></td><td style="padding:12px 16px;font-size:12px">Email</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 1, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:12px 16px"><div style="font-weight:500">New programs — seasonal announcement</div><div style="font-size:11px;color:var(--text-secondary)">Promotes upcoming season catalog to all opted-in accounts</div></td><td style="padding:12px 16px"><span class="msg-badge msg-marketing">Marketing</span></td><td style="padding:12px 16px;font-size:12px">Email</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Mar 1, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                  <tr><td style="padding:12px 16px"><div style="font-weight:500">Last spots available</div><div style="font-size:11px;color:var(--text-secondary)">Urgency message for near-full programs to opted-in contacts</div></td><td style="padding:12px 16px"><span class="msg-badge msg-marketing">Marketing</span></td><td style="padding:12px 16px;font-size:12px">Email + SMS</td><td style="padding:12px 16px;font-size:12px;color:var(--text-secondary)">Jun 14, 2026</td><td style="padding:12px 16px"><div style="display:flex;gap:6px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template opened')"><i class="ti ti-edit"></i>Edit</button><button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="showToast('Template loaded into composer')">Use</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ PANE: ANALYTICS ══ -->
+          <div id="mc-analytics" class="mc-pane">
+            <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">
+              <div class="kpi-card"><div class="kpi-label">Total sent (30d)</div><div class="kpi-value">4,821</div></div>
+              <div class="kpi-card"><div class="kpi-label">Delivery rate</div><div class="kpi-value">98.4%</div><div class="kpi-delta up">47 bounced</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg open rate</div><div class="kpi-value">61%</div><div class="kpi-delta up">+4pts vs prior</div></div>
+              <div class="kpi-card"><div class="kpi-label">Avg click rate</div><div class="kpi-value">24%</div><div class="kpi-delta up">+2pts vs prior</div></div>
+              <div class="kpi-card"><div class="kpi-label">Unsubscribes</div><div class="kpi-value">12</div><div class="kpi-delta neutral">0.25% rate</div></div>
+            </div>
+
+            <div class="two-col">
+              <div class="card">
+                <div class="card-header"><h3>Campaign detail — Summer session reminder + balance due</h3></div>
+                <div style="padding:14px 20px">
+                  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+                    <span class="msg-badge msg-transact" style="font-size:12px;padding:4px 10px">Transactional</span>
+                    <span style="font-size:12px;color:var(--text-secondary)">Email + SMS · Sent Jun 18 · 9:00 AM</span>
+                    <span style="font-size:12px;color:var(--text-secondary)">Audience: 38 accounts with outstanding balance</span>
+                  </div>
+
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Sent</span><strong>38</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Delivered</span><strong>38 (100%)</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Opened (email)</span><strong>28 (74%)</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:74%;background:var(--green)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Clicked payment link</span><strong>21 (55%)</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:55%;background:var(--green)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>SMS delivered</span><strong>31 / 31 (100%)</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--purple-mid)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Payments collected after send</span><strong>$1,240 from 21 accounts</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:55%;background:var(--amber-mid)"></div></div>
+                  </div>
+                  <div class="stat-bar-wrap">
+                    <div class="stat-bar-label"><span>Unsubscribed</span><strong>0</strong></div>
+                    <div class="stat-bar"><div class="stat-bar-fill" style="width:0%;background:var(--red-mid)"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Account-level delivery log</h3></div>
+                <div style="overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead><tr style="background:var(--bg-secondary)"><th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Account</th><th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Email</th><th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);border-bottom:1px solid var(--border)">SMS</th><th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Opened</th><th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Paid</th></tr></thead>
+                    <tbody>
+                      <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-weight:500">Sarah Johnson</td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">Yes · 9:04am</span></td><td style="padding:9px 14px"><span style="color:var(--green)">$86.50</span></td></tr>
+                      <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-weight:500">Marcus Rivera</td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">Yes · 9:18am</span></td><td style="padding:9px 14px"><span style="color:var(--green)">$85.00</span></td></tr>
+                      <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-weight:500">Ana Lopez</td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px;color:var(--text-tertiary)">No SMS</td><td style="padding:9px 14px;color:var(--text-tertiary)">Not opened</td><td style="padding:9px 14px;color:var(--amber)">Pending</td></tr>
+                      <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 14px;font-weight:500">Brian Chen</td><td style="padding:9px 14px"><span style="color:var(--red)">Bounced</span></td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px;color:var(--text-tertiary)">SMS only</td><td style="padding:9px 14px"><span style="color:var(--green)">$120.00</span></td></tr>
+                      <tr><td style="padding:9px 14px;font-weight:500">Karen Liu</td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">✓ Delivered</span></td><td style="padding:9px 14px"><span style="color:var(--green)">Yes · 11:32am</span></td><td style="padding:9px 14px;color:var(--amber)">Pending</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ PANE: OPT-OUT MANAGER ══ -->
+          <div id="mc-optouts" class="mc-pane">
+            <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+              <div class="kpi-card" style="border-left:3px solid var(--green)"><div class="kpi-label">Opted in — email marketing</div><div class="kpi-value">1,198</div><div class="kpi-delta up">91.7% of accounts</div></div>
+              <div class="kpi-card" style="border-left:3px solid var(--blue)"><div class="kpi-label">Opted in — SMS marketing</div><div class="kpi-value">842</div><div class="kpi-delta up">64.4% of accounts</div></div>
+              <div class="kpi-card" style="border-left:3px solid var(--red)"><div class="kpi-label">Opted out — any marketing</div><div class="kpi-value">108</div><div class="kpi-delta neutral">8.3% of accounts</div></div>
+              <div class="kpi-card" style="border-left:3px solid var(--amber)"><div class="kpi-label">Transactional only accounts</div><div class="kpi-value">108</div><div class="kpi-delta warn">Still receive critical notices</div></div>
+            </div>
+
+            <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--blue-dark);display:flex;gap:12px;align-items:flex-start">
+              <i class="ti ti-info-circle" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>
+              <div>
+                <strong>Transactional message protection:</strong> Accounts with an active registration must always have at least one contact opted in to receive transactional messages (registration confirmations, balance notices, waiver reminders, program updates). Even if all household members opt out of marketing, the system guarantees transactional delivery to a minimum of one contact. Admins cannot suppress transactional messages entirely for active accounts.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>Account opt-out status</h3>
+                <div style="display:flex;gap:8px">
+                  <input type="text" placeholder="Search accounts..." style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 12px;font-size:12px;font-family:var(--font);outline:none;width:200px">
+                  <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none"><option>All accounts</option><option>Opted out</option><option>Partial opt-out</option><option>Fully opted in</option></select>
+                </div>
+              </div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="background:var(--bg-secondary)">
+                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Account</th>
+                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Email marketing</th>
+                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">SMS marketing</th>
+                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Transactional</th>
+                  <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid var(--border)">Active reg?</th>
+                  <th style="padding:10px 16px;border-bottom:1px solid var(--border)"></th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:11px 16px"><div style="font-weight:500">Sarah Johnson</div><div style="font-size:11px;color:var(--text-tertiary)">s.johnson@email.com</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Opted in</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Opted in</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Always on</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--green);font-size:12px;font-weight:500">Yes</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Johnson account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:11px 16px"><div style="font-weight:500">Marcus Rivera</div><div style="font-size:11px;color:var(--text-tertiary)">m.rivera@email.com</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Opted in</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Always on</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--green);font-size:12px;font-weight:500">Yes</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Rivera account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:11px 16px"><div style="font-weight:500">Ana Lopez</div><div style="font-size:11px;color:var(--text-tertiary)">a.lopez@email.com</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-partial">⚠ Email only (protected)</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--green);font-size:12px;font-weight:500">Yes</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Lopez account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:11px 16px"><div style="font-weight:500">Brian Chen</div><div style="font-size:11px;color:var(--text-tertiary)">b.chen@email.com · bounced</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip" style="background:var(--red-bg);color:var(--red)">⚠ Email bounced</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Opted in</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-partial">⚠ SMS only (protected)</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--green);font-size:12px;font-weight:500">Yes</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Chen account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border)">
+                    <td style="padding:11px 16px"><div style="font-weight:500">Karen Liu</div><div style="font-size:11px;color:var(--text-tertiary)">k.liu@email.com</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Opted in</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-in">✓ Always on</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--green);font-size:12px;font-weight:500">Yes</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Liu account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                  <tr>
+                    <td style="padding:11px 16px"><div style="font-weight:500">Tom Williams</div><div style="font-size:11px;color:var(--text-tertiary)">t.williams@email.com</div></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ Opted out</span></td>
+                    <td style="padding:11px 16px"><span class="optout-chip optout-out">✗ No active reg</span></td>
+                    <td style="padding:11px 16px"><span style="color:var(--text-tertiary);font-size:12px">No</span></td>
+                    <td style="padding:11px 16px"><button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Viewing Williams account preferences')"><i class="ti ti-edit"></i>Manage</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="padding:12px 18px;background:var(--bg-secondary);border-top:1px solid var(--border);font-size:12px;color:var(--text-secondary)">
+                <i class="ti ti-lock" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>
+                Admins cannot override a resident's opt-out for marketing messages. Transactional protection is system-enforced for active accounts and cannot be disabled.
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /admin-body -->
+      </div><!-- /admin-messages -->
 
       <!-- FINANCE -->
       <div id="admin-finance" class="admin-section">
@@ -10628,6 +11429,77 @@
     if (target) target.style.display = 'block';
   }
 
+
+  /* ── MESSAGE CENTER ── */
+  function mcNav(pane) {
+    document.querySelectorAll('.mc-pane').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.mc-subnav-btn').forEach(function(b){ b.classList.remove('active'); });
+    var el = document.getElementById(pane); if (el) el.classList.add('active');
+    var btnId = 'mcnav-' + pane.replace('mc-','');
+    var btn = document.getElementById(btnId); if (btn) btn.classList.add('active');
+  }
+
+  function setMsgType(type) {
+    var tBtn = document.getElementById('mtt-transact');
+    var mBtn = document.getElementById('mtt-market');
+    var tNote = document.getElementById('transact-notice');
+    var mNote = document.getElementById('market-notice');
+    var sendBtn = document.querySelector('.as-transact-note');
+    if (!tBtn) return;
+    if (type === 'transact') {
+      tBtn.className = 'mtt-btn active-transact';
+      mBtn.className = 'mtt-btn';
+      if (tNote) tNote.style.display = 'flex';
+      if (mNote) mNote.style.display = 'none';
+      if (sendBtn) sendBtn.style.display = 'flex';
+    } else {
+      tBtn.className = 'mtt-btn';
+      mBtn.className = 'mtt-btn active-market';
+      if (tNote) tNote.style.display = 'none';
+      if (mNote) { mNote.style.display = 'flex'; mNote.style.removeProperty('display'); mNote.style.display = 'flex'; }
+      if (sendBtn) sendBtn.style.display = 'none';
+    }
+  }
+
+  function toggleChannel(ch) {
+    var el = document.getElementById('ch-' + ch);
+    if (el) el.classList.toggle('selected');
+  }
+
+  function setSchedule(type) {
+    var nowBtn = document.getElementById('sched-now');
+    var laterBtn = document.getElementById('sched-later');
+    var picker = document.getElementById('sched-picker');
+    if (type === 'now') {
+      if (nowBtn) nowBtn.classList.add('selected');
+      if (laterBtn) laterBtn.classList.remove('selected');
+      if (picker) picker.style.display = 'none';
+    } else {
+      if (nowBtn) nowBtn.classList.remove('selected');
+      if (laterBtn) laterBtn.classList.add('selected');
+      if (picker) picker.style.display = 'flex';
+    }
+  }
+
+  function updateAudienceCount() {
+    // Simulates live count updates as filters change
+    var counts = [38, 52, 74, 142, 284, 1241, 23, 14];
+    var n = counts[Math.floor(Math.random() * counts.length)];
+    var totalEl = document.getElementById('ab-total');
+    var emailEl = document.getElementById('ab-email');
+    var smsEl = document.getElementById('ab-sms');
+    var pushEl = document.getElementById('ab-push');
+    var optoutEl = document.getElementById('ab-optout');
+    if (totalEl) totalEl.textContent = n;
+    if (emailEl) emailEl.textContent = Math.round(n * 1.2);
+    if (smsEl) smsEl.textContent = Math.round(n * 0.8);
+    if (pushEl) pushEl.textContent = Math.round(n * 0.6);
+    if (optoutEl) optoutEl.textContent = Math.round(n * 0.12);
+  }
+
+  function showMsgConfirm() {
+    showToast('✓ Message sent to 38 accounts — view in Campaigns');
+  }
 
   /* ── CONDITIONAL FORM LOGIC ── */
   function setPriorLessons(val) {
