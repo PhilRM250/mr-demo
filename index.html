@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 071526 Added Message Center --->
+  <!--- PR 070126 Added account search --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1105,6 +1105,127 @@
   .cond-question-inner .reg-form-textarea { border-color:#C4B5FD; }
   .cond-question-inner .reg-form-textarea:focus { border-color:var(--purple); }
   .cond-triggered-by { font-size:10px; color:#7C3AED; font-weight:600; display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+
+  /* ── ACCOUNT SEARCH ── */
+  .acct-search-bar {
+    display:flex; gap:10px; align-items:center;
+    background:var(--bg-primary); border:2px solid var(--blue);
+    border-radius:var(--radius-xl); padding:10px 16px;
+    margin-bottom:18px; box-shadow:0 2px 12px rgba(24,95,165,0.10);
+  }
+  .acct-search-icon { font-size:22px; color:var(--blue); flex-shrink:0; }
+  .acct-search-input {
+    flex:1; border:none; outline:none; font-family:var(--font);
+    font-size:16px; color:var(--text-primary); background:none;
+  }
+  .acct-search-input::placeholder { color:var(--text-tertiary); }
+  .acct-search-clear { font-size:13px; color:var(--text-tertiary); background:none; border:none; cursor:pointer; padding:4px 8px; border-radius:var(--radius-md); }
+  .acct-search-clear:hover { background:var(--bg-tertiary); color:var(--text-primary); }
+  .acct-search-go { background:var(--blue); color:#fff; border:none; border-radius:var(--radius-md); padding:9px 20px; font-family:var(--font); font-size:14px; font-weight:600; cursor:pointer; flex-shrink:0; }
+  .acct-search-go:hover { background:var(--blue-dark); }
+
+  /* Field type pills */
+  .search-field-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+  .sfp { display:flex; align-items:center; gap:5px; padding:5px 11px; border:1.5px solid var(--border-med); border-radius:var(--radius-pill); font-size:12px; font-weight:500; color:var(--text-secondary); cursor:pointer; background:var(--bg-primary); transition:all 0.12s; white-space:nowrap; }
+  .sfp i { font-size:14px; }
+  .sfp.active { border-color:var(--blue); background:var(--blue-light); color:var(--blue-dark); }
+  .sfp-label { font-size:10px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-right:2px; }
+
+  /* Advanced filter panel */
+  .adv-filter-panel {
+    background:var(--bg-secondary); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:16px 20px;
+    margin-bottom:18px; display:none;
+  }
+  .adv-filter-panel.open { display:block; }
+  .adv-filter-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px; }
+  .adv-field { display:flex; flex-direction:column; gap:4px; }
+  .adv-field label { font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.3px; }
+  .adv-field input, .adv-field select {
+    border:1px solid var(--border-med); border-radius:var(--radius-md);
+    padding:7px 10px; font-size:13px; font-family:var(--font);
+    color:var(--text-primary); background:var(--bg-primary); outline:none;
+  }
+  .adv-field input:focus, .adv-field select:focus { border-color:var(--blue); }
+
+  /* Results table */
+  .acct-result-row {
+    display:flex; align-items:center; gap:14px; padding:13px 20px;
+    border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.1s;
+  }
+  .acct-result-row:last-child { border-bottom:none; }
+  .acct-result-row:hover { background:var(--blue-light); }
+  .acct-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0; }
+  .acct-main { flex:1; }
+  .acct-name { font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:2px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .acct-id  { font-size:11px; font-weight:600; color:var(--text-tertiary); font-family:monospace; }
+  .acct-sub { font-size:12px; color:var(--text-secondary); display:flex; gap:14px; flex-wrap:wrap; }
+  .acct-sub span { display:flex; align-items:center; gap:4px; }
+  .acct-flags { display:flex; gap:6px; flex-shrink:0; align-items:center; }
+  .acct-flag { font-size:10px; font-weight:700; padding:2px 7px; border-radius:var(--radius-pill); }
+  .flag-balance { background:var(--red-bg); color:var(--red); }
+  .flag-waiver  { background:var(--amber-bg); color:var(--amber); }
+  .flag-expired { background:var(--bg-tertiary); color:var(--text-tertiary); }
+  .flag-resident { background:var(--green-bg); color:var(--green); }
+  .flag-nonres  { background:var(--amber-bg); color:var(--amber); }
+  .match-highlight { background:#FEF3C7; color:#92400E; border-radius:2px; padding:0 2px; font-weight:600; }
+
+  /* Account detail panel (slide-in) */
+  .acct-detail-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:700;
+    align-items:flex-start; justify-content:flex-end;
+  }
+  .acct-detail-overlay.open { display:flex; }
+  .acct-detail-panel {
+    width:680px; height:100vh; background:var(--bg-primary);
+    overflow-y:auto; box-shadow:-8px 0 32px rgba(0,0,0,0.15);
+  }
+  .adp-header {
+    background:var(--blue-dark); padding:20px 24px; color:#fff;
+    position:sticky; top:0; z-index:10; display:flex; align-items:flex-start; gap:14px;
+  }
+  .adp-av { width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+  .adp-info { flex:1; }
+  .adp-name { font-size:19px; font-weight:700; margin-bottom:4px; }
+  .adp-meta { font-size:12px; color:rgba(255,255,255,0.65); display:flex; gap:14px; flex-wrap:wrap; }
+  .adp-close { background:rgba(255,255,255,0.12); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .adp-tabs { display:flex; background:var(--blue-darkest,#071E38); border-bottom:1px solid rgba(255,255,255,0.08); }
+  .adp-tab { padding:10px 18px; border:none; background:none; color:rgba(255,255,255,0.5); font-family:var(--font); font-size:13px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; transition:all 0.12s; }
+  .adp-tab.active { color:#fff; border-bottom-color:var(--blue-mid,#378ADD); }
+  .adp-body { padding:20px 24px; }
+  .adp-section { margin-bottom:22px; }
+  .adp-section-title { font-size:11px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:7px; }
+  .adp-row { display:flex; justify-content:space-between; align-items:flex-start; font-size:13px; padding:7px 0; border-bottom:1px solid var(--border); gap:10px; }
+  .adp-row:last-child { border-bottom:none; }
+  .adp-row span:first-child { color:var(--text-secondary); flex-shrink:0; min-width:150px; }
+  .adp-row strong { color:var(--text-primary); text-align:right; word-break:break-all; }
+
+  /* Household member chips */
+  .hh-member-card { background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-lg); padding:12px 14px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+  .hh-av { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .hh-info { flex:1; }
+  .hh-name { font-size:13px; font-weight:600; color:var(--text-primary); }
+  .hh-sub  { font-size:11px; color:var(--text-secondary); margin-top:1px; }
+  .hh-actions { display:flex; gap:6px; }
+
+  /* Mini timeline */
+  .adp-timeline { display:flex; flex-direction:column; gap:0; }
+  .adp-tl-row { display:flex; gap:12px; align-items:flex-start; padding-bottom:14px; position:relative; }
+  .adp-tl-row::before { content:''; position:absolute; left:11px; top:22px; width:2px; bottom:0; background:var(--border); }
+  .adp-tl-row:last-child::before { display:none; }
+  .adp-tl-dot { width:24px; height:24px; border-radius:50%; border:2px solid var(--border); background:var(--bg-primary); display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; }
+  .adp-tl-dot.blue { border-color:var(--blue); color:var(--blue); }
+  .adp-tl-dot.green { border-color:var(--green); color:var(--green); }
+  .adp-tl-dot.amber { border-color:var(--amber-mid); color:var(--amber-mid); }
+  .adp-tl-dot.red { border-color:var(--red); color:var(--red); }
+  .adp-tl-content { flex:1; padding-top:2px; }
+  .adp-tl-label { font-size:13px; color:var(--text-primary); font-weight:500; }
+  .adp-tl-date { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+
+  /* No results state */
+  .no-results { text-align:center; padding:48px 20px; color:var(--text-secondary); }
+  .no-results i { font-size:48px; color:var(--text-tertiary); display:block; margin-bottom:12px; }
+  .no-results strong { display:block; font-size:16px; color:var(--text-primary); margin-bottom:6px; }
 
   /* ── MESSAGE CENTER ── */
   .mc-subnav {
@@ -8106,26 +8227,359 @@
         </div>
       </div>
 
-      <!-- MEMBERS -->
+      <!-- MEMBERS / ACCOUNT SEARCH -->
       <div id="admin-members" class="admin-section">
         <div class="admin-topbar">
-          <div class="topbar-title">Members</div>
+          <div class="topbar-title">Account search</div>
           <div class="topbar-actions">
-            <button class="btn-secondary"><i class="ti ti-search"></i>Search</button>
-            <button class="btn-secondary"><i class="ti ti-download"></i>Export</button>
-            <button class="btn-primary"><i class="ti ti-plus"></i>Add member</button>
+            <button class="btn-secondary" onclick="showToast('Exporting member list...')"><i class="ti ti-download"></i>Export results</button>
+            <button class="btn-primary" onclick="showToast('New account wizard opening...')"><i class="ti ti-plus"></i>Add account</button>
           </div>
         </div>
         <div class="admin-body">
-          <div class="card">
-            <div class="card-header"><h3>All members · 1,284</h3></div>
-            <div class="member-table-row"><div class="avatar av-blue" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">SJ</div><div class="mt-name"><div class="mname">Johnson, Sarah</div><div class="msub">Family · 3 members · Exp Dec 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
-            <div class="member-table-row"><div class="avatar av-green" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">MR</div><div class="mt-name"><div class="mname">Rivera, Marcus</div><div class="msub">Individual · Exp Sep 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
-            <div class="member-table-row"><div class="avatar av-amber" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">KL</div><div class="mt-name"><div class="mname">Liu, Karen</div><div class="msub">Family · 4 members · Exp Mar 2027</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
-            <div class="member-table-row"><div class="avatar av-purple" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">DP</div><div class="mt-name"><div class="mname">Park, David</div><div class="msub">Individual · Exp Jun 2026</div></div><span class="badge badge-few">Expiring soon</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
-            <div class="member-table-row"><div class="avatar av-green" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">AL</div><div class="mt-name"><div class="mname">Lopez, Ana</div><div class="msub">Senior · Exp Dec 2025</div></div><span class="badge badge-full">Expired</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
-            <div class="member-table-row"><div class="avatar av-amber" style="width:36px;height:36px;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">BC</div><div class="mt-name"><div class="mname">Chen, Brian</div><div class="msub">Family · 2 members · Exp Aug 2026</div></div><span class="badge badge-open">Active</span><button class="btn-secondary" style="padding:5px 10px;font-size:12px;margin-left:8px"><i class="ti ti-eye"></i></button></div>
+
+          <!-- Search bar -->
+          <div class="acct-search-bar">
+            <i class="ti ti-search acct-search-icon"></i>
+            <input class="acct-search-input" id="acct-search-input" type="text" placeholder="Search by name, email, phone, address, member ID, ID card number..." onkeydown="if(event.key==='Enter')runAcctSearch()" oninput="acctSearchLive(this.value)">
+            <button class="acct-search-clear" onclick="clearAcctSearch()"><i class="ti ti-x"></i> Clear</button>
+            <button class="acct-search-go" onclick="runAcctSearch()"><i class="ti ti-search" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Search</button>
           </div>
+
+          <!-- Search field type selector -->
+          <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Search by field — or leave unspecified for smart match across all fields</div>
+          <div class="search-field-pills">
+            <span class="sfp-label">Quick:</span>
+            <div class="sfp active" id="sfp-all" onclick="setSfp(this,'all')"><i class="ti ti-sparkles"></i>Smart match (all fields)</div>
+            <div class="sfp" id="sfp-name" onclick="setSfp(this,'name')"><i class="ti ti-user"></i>Last name</div>
+            <div class="sfp" id="sfp-email" onclick="setSfp(this,'email')"><i class="ti ti-mail"></i>Email address</div>
+            <div class="sfp" id="sfp-phone" onclick="setSfp(this,'phone')"><i class="ti ti-phone"></i>Phone number</div>
+            <div class="sfp" id="sfp-address" onclick="setSfp(this,'address')"><i class="ti ti-home"></i>Street address</div>
+            <div class="sfp" id="sfp-memberid" onclick="setSfp(this,'memberid')"><i class="ti ti-id-badge"></i>Member / family ID</div>
+            <div class="sfp" id="sfp-cardid" onclick="setSfp(this,'cardid')"><i class="ti ti-qrcode"></i>ID card / QR number</div>
+            <div class="sfp" id="sfp-program" onclick="setSfp(this,'program')"><i class="ti ti-run"></i>Program enrolled</div>
+            <div class="sfp" id="sfp-dob" onclick="setSfp(this,'dob')"><i class="ti ti-cake"></i>Date of birth</div>
+            <div class="sfp" id="sfp-zip" onclick="setSfp(this,'zip')"><i class="ti ti-map-pin"></i>ZIP code</div>
+            <div class="sfp" id="sfp-balance" onclick="setSfp(this,'balance')"><i class="ti ti-cash"></i>Has balance due</div>
+            <button class="sfp" onclick="toggleAdvFilter()" id="adv-toggle"><i class="ti ti-adjustments-horizontal"></i>Advanced filters</button>
+          </div>
+
+          <!-- Advanced filter panel -->
+          <div class="adv-filter-panel" id="adv-filter-panel">
+            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-adjustments-horizontal" style="color:var(--blue)"></i>Advanced search filters — combine any number of these</div>
+            <div class="adv-filter-grid">
+              <div class="adv-field">
+                <label>Last name</label>
+                <input type="text" id="af-lastname" placeholder="e.g. Johnson">
+              </div>
+              <div class="adv-field">
+                <label>First name</label>
+                <input type="text" id="af-firstname" placeholder="e.g. Sarah">
+              </div>
+              <div class="adv-field">
+                <label>Email address</label>
+                <input type="text" id="af-email" placeholder="e.g. s.johnson@email.com">
+              </div>
+              <div class="adv-field">
+                <label>Phone number</label>
+                <input type="text" id="af-phone" placeholder="e.g. (413) 555-">
+              </div>
+              <div class="adv-field">
+                <label>Street address</label>
+                <input type="text" id="af-address" placeholder="e.g. 42 Maple Street">
+              </div>
+              <div class="adv-field">
+                <label>City</label>
+                <input type="text" id="af-city" placeholder="e.g. Springfield">
+              </div>
+              <div class="adv-field">
+                <label>ZIP code</label>
+                <input type="text" id="af-zip" placeholder="e.g. 01105">
+              </div>
+              <div class="adv-field">
+                <label>Member / family ID</label>
+                <input type="text" id="af-memberid" placeholder="e.g. FAM-00041">
+              </div>
+              <div class="adv-field">
+                <label>ID card / QR number</label>
+                <input type="text" id="af-cardid" placeholder="e.g. QR-8821441">
+              </div>
+              <div class="adv-field">
+                <label>Date of birth</label>
+                <input type="date" id="af-dob">
+              </div>
+              <div class="adv-field">
+                <label>Program enrolled in</label>
+                <select id="af-program">
+                  <option value="">Any program</option>
+                  <option>Youth Swim Lessons</option>
+                  <option>Soccer Skills Camp</option>
+                  <option>Adult Yoga</option>
+                  <option>Summer Art Studio</option>
+                  <option>Adult Fitness Bootcamp</option>
+                  <option>Senior Fitness</option>
+                  <option>Fall Soccer League</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Membership type</label>
+                <select id="af-membership">
+                  <option value="">Any / none</option>
+                  <option>Pool membership</option>
+                  <option>Gym membership</option>
+                  <option>Family Recreation</option>
+                </select>
+              </div>
+            </div>
+            <div class="adv-filter-grid">
+              <div class="adv-field">
+                <label>Account status</label>
+                <select id="af-status">
+                  <option value="">Any status</option>
+                  <option>Active</option>
+                  <option>Expired membership</option>
+                  <option>No membership</option>
+                  <option>Deactivated</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Residency status</label>
+                <select id="af-residency">
+                  <option value="">Any</option>
+                  <option>Verified resident</option>
+                  <option>Non-resident</option>
+                  <option>Unverified</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Financial flags</label>
+                <select id="af-financial">
+                  <option value="">No filter</option>
+                  <option>Has outstanding balance</option>
+                  <option>Balance overdue 30+ days</option>
+                  <option>Fee assistance recipient</option>
+                  <option>No outstanding balance</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Document flags</label>
+                <select id="af-docs">
+                  <option value="">No filter</option>
+                  <option>Missing required waiver</option>
+                  <option>Missing required form</option>
+                  <option>Missing residency doc</option>
+                  <option>All documents complete</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Household size</label>
+                <select id="af-household">
+                  <option value="">Any</option>
+                  <option>1 member (individual)</option>
+                  <option>2 members</option>
+                  <option>3+ members (family)</option>
+                </select>
+              </div>
+              <div class="adv-field">
+                <label>Last activity</label>
+                <select id="af-activity">
+                  <option value="">Any</option>
+                  <option>Active this season</option>
+                  <option>Active within 1 year</option>
+                  <option>Active within 2 years</option>
+                  <option>Inactive 2+ years</option>
+                  <option>Never registered</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button class="btn-secondary" onclick="clearAdvFilters()"><i class="ti ti-x"></i>Clear filters</button>
+              <button class="btn-primary" onclick="runAcctSearch()"><i class="ti ti-search"></i>Search with filters</button>
+            </div>
+          </div>
+
+          <!-- Results summary -->
+          <div id="acct-results-summary" style="display:none;margin-bottom:12px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:12px">
+            <span id="acct-results-count" style="font-weight:600;color:var(--text-primary)"></span>
+            <span id="acct-results-query"></span>
+            <button onclick="clearAcctSearch()" style="font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0">Clear search</button>
+          </div>
+
+          <!-- Results / default list -->
+          <div class="card" id="acct-results-card">
+            <div class="card-header" id="acct-results-header">
+              <h3>All accounts · 1,284</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <select style="border:1px solid var(--border-med);border-radius:var(--radius-md);padding:6px 10px;font-size:12px;font-family:var(--font);outline:none" id="acct-sort">
+                  <option>Sort: Last name A–Z</option>
+                  <option>Sort: Recently active</option>
+                  <option>Sort: Balance due (high)</option>
+                  <option>Sort: Account created</option>
+                </select>
+                <span style="font-size:12px;color:var(--text-tertiary)" id="acct-showing">Showing 1–8 of 1,284</span>
+              </div>
+            </div>
+            <div id="acct-result-list">
+
+              <div class="acct-result-row" onclick="openAcctDetail('Johnson')">
+                <div class="acct-av" style="background:var(--blue-light);color:var(--blue-dark)">SJ</div>
+                <div class="acct-main">
+                  <div class="acct-name">Johnson, Sarah <span class="acct-id">FAM-00041</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Family · 3 members</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>42 Maple St, Springfield 01105</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>s.johnson@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0198</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-8821441</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                  <span class="acct-flag flag-balance">$86.50 due</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Johnson')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Rivera')">
+                <div class="acct-av" style="background:var(--green-bg);color:var(--green)">MR</div>
+                <div class="acct-main">
+                  <div class="acct-name">Rivera, Marcus <span class="acct-id">IND-00128</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-user" style="font-size:11px"></i>Individual</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>18 Oak Ave, Springfield 01103</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>m.rivera@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0241</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-4419820</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Rivera')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Liu')">
+                <div class="acct-av" style="background:var(--amber-bg);color:var(--amber)">KL</div>
+                <div class="acct-main">
+                  <div class="acct-name">Liu, Karen <span class="acct-id">FAM-00087</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Family · 4 members</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>204 Elm St, Springfield 01108</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>k.liu@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0312</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-7731029</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Liu')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Chen')">
+                <div class="acct-av" style="background:var(--purple-bg);color:var(--purple)">BC</div>
+                <div class="acct-main">
+                  <div class="acct-name">Chen, Brian <span class="acct-id">FAM-00203</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Family · 2 members</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>77 Pine Rd, Springfield 01104</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>b.chen@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0478</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-3301847</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                  <span class="acct-flag flag-waiver">Waiver missing</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Chen')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Lopez')">
+                <div class="acct-av" style="background:var(--green-bg);color:var(--green)">AL</div>
+                <div class="acct-main">
+                  <div class="acct-name">Lopez, Ana <span class="acct-id">IND-00341</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-user" style="font-size:11px"></i>Individual · Senior</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>9 Cedar Lane, Springfield 01107</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>a.lopez@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0551</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-9920384</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-full">Expired</span>
+                  <span class="acct-flag flag-expired">Exp Dec 2025</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Lopez')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Patel')">
+                <div class="acct-av" style="background:var(--bg-tertiary);color:var(--text-secondary)">TP</div>
+                <div class="acct-main">
+                  <div class="acct-name">Patel, Tanya <span class="acct-id">FAM-00512</span><span style="font-size:10px;font-weight:600;background:var(--amber-bg);color:var(--amber);padding:2px 7px;border-radius:var(--radius-pill)">⚠ Non-resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-users" style="font-size:11px"></i>Family · 3 members</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>33 Birch Ct, Longmeadow 01106</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>t.patel@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0622</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-6614920</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                  <span class="acct-flag flag-balance">$15.00 surcharge</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Patel')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Williams')">
+                <div class="acct-av" style="background:var(--blue-light);color:var(--blue)">TW</div>
+                <div class="acct-main">
+                  <div class="acct-name">Williams, Tom <span class="acct-id">IND-00789</span><span style="font-size:10px;font-weight:600;background:var(--bg-tertiary);color:var(--text-tertiary);padding:2px 7px;border-radius:var(--radius-pill)">Unverified</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-user" style="font-size:11px"></i>Individual</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>112 Walnut Ave, Springfield 01119</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>t.williams@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0744</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-1128475</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-open">Active</span>
+                  <span class="acct-flag flag-waiver">Residency doc pending</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Williams')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+              <div class="acct-result-row" onclick="openAcctDetail('Park')">
+                <div class="acct-av" style="background:var(--purple-bg);color:var(--purple)">DP</div>
+                <div class="acct-main">
+                  <div class="acct-name">Park, David <span class="acct-id">IND-00902</span><span style="font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:var(--radius-pill)">✓ Resident</span></div>
+                  <div class="acct-sub">
+                    <span><i class="ti ti-user" style="font-size:11px"></i>Individual</span>
+                    <span><i class="ti ti-home" style="font-size:11px"></i>56 Spruce St, Springfield 01105</span>
+                    <span><i class="ti ti-mail" style="font-size:11px"></i>d.park@email.com</span>
+                    <span><i class="ti ti-phone" style="font-size:11px"></i>(413) 555-0819</span>
+                    <span><i class="ti ti-id-badge" style="font-size:11px"></i>QR-5509281</span>
+                  </div>
+                </div>
+                <div class="acct-flags">
+                  <span class="badge badge-few">Expiring soon</span>
+                </div>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail('Park')"><i class="ti ti-eye"></i>View</button>
+              </div>
+
+            </div>
+            <div style="padding:12px 20px;background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:12px;color:var(--text-secondary)">Page 1 of 161 · 1,284 total accounts</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn-secondary" style="font-size:12px;padding:5px 12px" disabled>← Prev</button>
+                <button class="btn-secondary" style="font-size:12px;padding:5px 12px">Next →</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -11430,6 +11884,169 @@
   }
 
 
+
+  /* ── ACCOUNT SEARCH ── */
+  var currentSfp = 'all';
+
+  function setSfp(el, type) {
+    document.querySelectorAll('.sfp').forEach(function(s){ s.classList.remove('active'); });
+    el.classList.add('active');
+    currentSfp = type;
+    var input = document.getElementById('acct-search-input');
+    if (!input) return;
+    var placeholders = {
+      all:      'Search by name, email, phone, address, member ID, ID card number...',
+      name:     'Enter last name to search...',
+      email:    'Enter email address to search...',
+      phone:    'Enter phone number to search...',
+      address:  'Enter street address or ZIP to search...',
+      memberid: 'Enter member ID or family ID (e.g. FAM-00041)...',
+      cardid:   'Enter ID card or QR number (e.g. QR-8821441)...',
+      program:  'Enter program name to find enrolled accounts...',
+      dob:      'Enter date of birth (MM/DD/YYYY)...',
+      zip:      'Enter ZIP code...',
+      balance:  'Search accounts with outstanding balance...'
+    };
+    input.placeholder = placeholders[type] || placeholders.all;
+    input.focus();
+  }
+
+  function toggleAdvFilter() {
+    var panel = document.getElementById('adv-filter-panel');
+    var btn = document.getElementById('adv-toggle');
+    if (!panel) return;
+    var open = panel.classList.toggle('open');
+    if (btn) btn.classList.toggle('active', open);
+  }
+
+  function clearAdvFilters() {
+    ['af-lastname','af-firstname','af-email','af-phone','af-address','af-city','af-zip','af-memberid','af-cardid'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    ['af-dob','af-program','af-membership','af-status','af-residency','af-financial','af-docs','af-household','af-activity'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.selectedIndex = 0;
+    });
+    showToast('Advanced filters cleared');
+  }
+
+  var acctData = [
+    { id:'FAM-00041', qr:'QR-8821441', name:'Johnson, Sarah',  first:'Sarah',  last:'Johnson',  email:'s.johnson@email.com',  phone:'(413) 555-0198', address:'42 Maple St, Springfield 01105',   type:'Family · 3 members',  status:'Active',        res:'Resident', flags:['$86.50 due'],             color:'var(--blue-light)', fg:'var(--blue-dark)',       initials:'SJ', key:'Johnson' },
+    { id:'IND-00128', qr:'QR-4419820', name:'Rivera, Marcus',  first:'Marcus', last:'Rivera',   email:'m.rivera@email.com',   phone:'(413) 555-0241', address:'18 Oak Ave, Springfield 01103',     type:'Individual',          status:'Active',        res:'Resident', flags:[],                          color:'var(--green-bg)',   fg:'var(--green)',           initials:'MR', key:'Rivera' },
+    { id:'FAM-00087', qr:'QR-7731029', name:'Liu, Karen',      first:'Karen',  last:'Liu',      email:'k.liu@email.com',      phone:'(413) 555-0312', address:'204 Elm St, Springfield 01108',     type:'Family · 4 members',  status:'Active',        res:'Resident', flags:[],                          color:'var(--amber-bg)',   fg:'var(--amber)',           initials:'KL', key:'Liu' },
+    { id:'FAM-00203', qr:'QR-3301847', name:'Chen, Brian',     first:'Brian',  last:'Chen',     email:'b.chen@email.com',     phone:'(413) 555-0478', address:'77 Pine Rd, Springfield 01104',     type:'Family · 2 members',  status:'Active',        res:'Resident', flags:['Waiver missing'],          color:'var(--purple-bg)', fg:'var(--purple)',          initials:'BC', key:'Chen' },
+    { id:'IND-00341', qr:'QR-9920384', name:'Lopez, Ana',      first:'Ana',    last:'Lopez',    email:'a.lopez@email.com',    phone:'(413) 555-0551', address:'9 Cedar Lane, Springfield 01107',   type:'Individual · Senior', status:'Expired',       res:'Resident', flags:['Exp Dec 2025'],            color:'var(--green-bg)',   fg:'var(--green)',           initials:'AL', key:'Lopez' },
+    { id:'FAM-00512', qr:'QR-6614920', name:'Patel, Tanya',    first:'Tanya',  last:'Patel',    email:'t.patel@email.com',    phone:'(413) 555-0622', address:'33 Birch Ct, Longmeadow 01106',     type:'Family · 3 members',  status:'Active',        res:'Non-resident', flags:['$15.00 surcharge'], color:'var(--bg-tertiary)', fg:'var(--text-secondary)', initials:'TP', key:'Patel' },
+    { id:'IND-00789', qr:'QR-1128475', name:'Williams, Tom',   first:'Tom',    last:'Williams', email:'t.williams@email.com', phone:'(413) 555-0744', address:'112 Walnut Ave, Springfield 01119', type:'Individual',          status:'Active',        res:'Unverified', flags:['Residency doc pending'], color:'var(--blue-light)', fg:'var(--blue)',            initials:'TW', key:'Williams' },
+    { id:'IND-00902', qr:'QR-5509281', name:'Park, David',     first:'David',  last:'Park',     email:'d.park@email.com',     phone:'(413) 555-0819', address:'56 Spruce St, Springfield 01105',   type:'Individual',          status:'Expiring soon', res:'Resident', flags:[],                          color:'var(--purple-bg)', fg:'var(--purple)',          initials:'DP', key:'Park' },
+  ];
+
+  function acctSearchLive(val) {
+    if (val.length >= 2) runAcctSearch(val, true);
+    else if (val.length === 0) resetAcctList();
+  }
+
+  function runAcctSearch(q, silent) {
+    var input = document.getElementById('acct-search-input');
+    var query = (typeof q === 'string' ? q : (input ? input.value : '')).trim().toLowerCase();
+    if (!query) { resetAcctList(); return; }
+    var results = acctData.filter(function(a) {
+      if (currentSfp === 'name')     return a.last.toLowerCase().includes(query);
+      if (currentSfp === 'email')    return a.email.toLowerCase().includes(query);
+      if (currentSfp === 'phone')    return a.phone.replace(/\D/g,'').includes(query.replace(/\D/g,''));
+      if (currentSfp === 'address')  return a.address.toLowerCase().includes(query);
+      if (currentSfp === 'memberid') return a.id.toLowerCase().includes(query);
+      if (currentSfp === 'cardid')   return a.qr.toLowerCase().includes(query);
+      if (currentSfp === 'zip')      return a.address.includes(query);
+      if (currentSfp === 'balance')  return a.flags.some(function(f){ return f.includes('due')||f.includes('surcharge'); });
+      return (a.name+a.email+a.phone+a.address+a.id+a.qr).toLowerCase().includes(query);
+    });
+    renderAcctResults(results, query);
+    if (!silent) {
+      var summary = document.getElementById('acct-results-summary');
+      var countEl = document.getElementById('acct-results-count');
+      var queryEl = document.getElementById('acct-results-query');
+      var headerEl = document.getElementById('acct-results-header') ? document.getElementById('acct-results-header').querySelector('h3') : null;
+      var showingEl = document.getElementById('acct-showing');
+      if (summary) summary.style.display = 'flex';
+      if (countEl) countEl.textContent = results.length + ' result' + (results.length !== 1 ? 's' : '');
+      if (queryEl) queryEl.textContent = 'for "' + query + '"';
+      if (headerEl) headerEl.textContent = 'Search results · ' + results.length;
+      if (showingEl) showingEl.textContent = results.length + ' result' + (results.length !== 1 ? 's' : '');
+    }
+  }
+
+  function renderAcctResults(results, query) {
+    var list = document.getElementById('acct-result-list');
+    if (!list) return;
+    if (results.length === 0) {
+      list.innerHTML = '<div class="no-results"><i class="ti ti-search-off"></i><strong>No accounts found</strong>Try a different search term or use Advanced filters.</div>';
+      return;
+    }
+    function hl(text) {
+      if (!query) return text;
+      var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+      return text.replace(re, '<span class="match-highlight">$1</span>');
+    }
+    var resColors = { 'Resident':['var(--green-bg)','var(--green)','✓ Resident'], 'Non-resident':['var(--amber-bg)','var(--amber)','⚠ Non-resident'], 'Unverified':['var(--bg-tertiary)','var(--text-tertiary)','Unverified'] };
+    list.innerHTML = results.map(function(a) {
+      var rc = resColors[a.res] || resColors['Unverified'];
+      var flagsHtml = a.flags.map(function(f){
+        var cls = (f.includes('due')||f.includes('surcharge')) ? 'flag-balance' : (f.includes('Waiver')||f.includes('doc')) ? 'flag-waiver' : 'flag-expired';
+        return '<span class="acct-flag '+cls+'">'+f+'</span>';
+      }).join('');
+      var statusCls = a.status==='Active'?'badge-open':a.status==='Expiring soon'?'badge-few':'badge-full';
+      return '<div class="acct-result-row" onclick="openAcctDetail(\''+a.key+'\')">' +
+        '<div class="acct-av" style="background:'+a.color+';color:'+a.fg+'">'+a.initials+'</div>' +
+        '<div class="acct-main">' +
+          '<div class="acct-name">'+hl(a.name)+' <span class="acct-id">'+hl(a.id)+'</span><span style="font-size:10px;font-weight:600;background:'+rc[0]+';color:'+rc[1]+';padding:2px 7px;border-radius:var(--radius-pill)">'+rc[2]+'</span></div>' +
+          '<div class="acct-sub">' +
+            '<span><i class="ti ti-users" style="font-size:11px"></i>'+a.type+'</span>' +
+            '<span><i class="ti ti-home" style="font-size:11px"></i>'+hl(a.address)+'</span>' +
+            '<span><i class="ti ti-mail" style="font-size:11px"></i>'+hl(a.email)+'</span>' +
+            '<span><i class="ti ti-phone" style="font-size:11px"></i>'+hl(a.phone)+'</span>' +
+            '<span><i class="ti ti-id-badge" style="font-size:11px"></i>'+hl(a.qr)+'</span>' +
+          '</div></div>' +
+        '<div class="acct-flags"><span class="badge '+statusCls+'">'+a.status+'</span>'+flagsHtml+'</div>' +
+        '<button class="btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="event.stopPropagation();openAcctDetail(\''+a.key+'\')"><i class="ti ti-eye"></i>View</button>' +
+        '</div>';
+    }).join('');
+  }
+
+  function resetAcctList() {
+    var summary = document.getElementById('acct-results-summary');
+    var headerEl = document.getElementById('acct-results-header') ? document.getElementById('acct-results-header').querySelector('h3') : null;
+    var showingEl = document.getElementById('acct-showing');
+    if (summary) summary.style.display = 'none';
+    if (headerEl) headerEl.textContent = 'All accounts · 1,284';
+    if (showingEl) showingEl.textContent = 'Showing 1–8 of 1,284';
+    renderAcctResults(acctData, '');
+  }
+
+  function clearAcctSearch() {
+    var input = document.getElementById('acct-search-input');
+    if (input) input.value = '';
+    resetAcctList();
+    setSfp(document.getElementById('sfp-all'), 'all');
+  }
+
+  function openAcctDetail(key) {
+    document.getElementById('acct-detail-overlay').classList.add('open');
+    adpTab('overview');
+  }
+
+  function closeAcctDetail() {
+    document.getElementById('acct-detail-overlay').classList.remove('open');
+  }
+
+  function adpTab(tab) {
+    ['overview','household','registrations','financial','history'].forEach(function(t) {
+      var body = document.getElementById('adp-' + t);
+      var btn  = document.getElementById('adpt-' + t);
+      if (body) body.style.display = (t === tab) ? 'block' : 'none';
+      if (btn)  btn.classList.toggle('active', t === tab);
+    });
+  }
+
   /* ── MESSAGE CENTER ── */
   function mcNav(pane) {
     document.querySelectorAll('.mc-pane').forEach(function(p){ p.classList.remove('active'); });
@@ -12023,6 +12640,217 @@
         <button style="flex:2;padding:11px;border-radius:var(--radius-md);border:none;background:var(--blue);color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer" onclick="sendInvite()"><i class="ti ti-send" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Send invitation</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ACCOUNT DETAIL PANEL -->
+<div id="acct-detail-overlay" class="acct-detail-overlay" onclick="if(event.target===this)closeAcctDetail()">
+  <div class="acct-detail-panel">
+    <div class="adp-header">
+      <div class="adp-av" id="adp-av">SJ</div>
+      <div class="adp-info">
+        <div class="adp-name" id="adp-name">Johnson, Sarah</div>
+        <div class="adp-meta">
+          <span id="adp-id">FAM-00041</span>
+          <span id="adp-type">Family · 3 members</span>
+          <span id="adp-status">Active</span>
+          <span id="adp-residency">✓ Verified Resident</span>
+        </div>
+      </div>
+      <button class="adp-close" onclick="closeAcctDetail()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="adp-tabs">
+      <button class="adp-tab active" id="adpt-overview" onclick="adpTab('overview')">Overview</button>
+      <button class="adp-tab" id="adpt-household" onclick="adpTab('household')">Household</button>
+      <button class="adp-tab" id="adpt-registrations" onclick="adpTab('registrations')">Registrations</button>
+      <button class="adp-tab" id="adpt-financial" onclick="adpTab('financial')">Financial</button>
+      <button class="adp-tab" id="adpt-history" onclick="adpTab('history')">History</button>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div class="adp-body" id="adp-overview">
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-user" style="font-size:14px;color:var(--blue)"></i>Contact information</div>
+        <div class="adp-row"><span>Email address</span><strong>s.johnson@email.com</strong></div>
+        <div class="adp-row"><span>Phone (mobile)</span><strong>(413) 555-0198</strong></div>
+        <div class="adp-row"><span>Phone (home)</span><strong>(413) 555-0142</strong></div>
+        <div class="adp-row"><span>Street address</span><strong>42 Maple Street, Springfield MA 01105</strong></div>
+        <div class="adp-row"><span>Mailing address</span><strong>Same as above</strong></div>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-id-badge" style="font-size:14px;color:var(--blue)"></i>Account identifiers</div>
+        <div class="adp-row"><span>Family / account ID</span><strong style="font-family:monospace">FAM-00041</strong></div>
+        <div class="adp-row"><span>ID card / QR number</span><strong style="font-family:monospace">QR-8821441</strong></div>
+        <div class="adp-row"><span>Member since</span><strong>Mar 12, 2022</strong></div>
+        <div class="adp-row"><span>Last login</span><strong>Today · 8:44am</strong></div>
+        <div class="adp-row"><span>Last activity</span><strong>Registration: Youth Swim Lessons (Jun 1)</strong></div>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-map-pin" style="font-size:14px;color:var(--blue)"></i>Residency</div>
+        <div class="adp-row"><span>Residency status</span><strong style="color:var(--green)">✓ Verified resident</strong></div>
+        <div class="adp-row"><span>Verification method</span><strong>ZIP code match (01105)</strong></div>
+        <div class="adp-row"><span>Verified on</span><strong>Mar 5, 2026</strong></div>
+        <div class="adp-row"><span>Pricing tier</span><strong>Resident rates apply to all programs</strong></div>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-id-badge-2" style="font-size:14px;color:var(--blue)"></i>Membership</div>
+        <div class="adp-row"><span>Current membership</span><strong>Family Recreation Membership</strong></div>
+        <div class="adp-row"><span>Status</span><strong style="color:var(--green)">Active</strong></div>
+        <div class="adp-row"><span>Valid through</span><strong>Dec 31, 2026</strong></div>
+        <div class="adp-row"><span>Auto-renew</span><strong>Yes — renews Dec 1, 2026</strong></div>
+        <div class="adp-row"><span>Fee assistance</span><strong>No</strong></div>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-bell" style="font-size:14px;color:var(--blue)"></i>Communication preferences</div>
+        <div class="adp-row"><span>Email — marketing</span><strong style="color:var(--green)">✓ Opted in</strong></div>
+        <div class="adp-row"><span>SMS — marketing</span><strong style="color:var(--green)">✓ Opted in</strong></div>
+        <div class="adp-row"><span>Transactional (system)</span><strong style="color:var(--green)">✓ Always on</strong></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-primary" onclick="showToast('Opening compose for Johnson household')"><i class="ti ti-send"></i>Send message</button>
+        <button class="btn-secondary" onclick="showToast('Edit account form opening...')"><i class="ti ti-edit"></i>Edit account</button>
+        <button class="btn-secondary" onclick="showToast('Residency override panel opening...')"><i class="ti ti-map-pin"></i>Override residency</button>
+        <button class="btn-secondary" style="color:var(--red)" onclick="showToast('Deactivate flow requires confirmation')"><i class="ti ti-user-off"></i>Deactivate</button>
+      </div>
+    </div>
+
+    <!-- TAB: HOUSEHOLD -->
+    <div class="adp-body" id="adp-household" style="display:none">
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-users" style="font-size:14px;color:var(--blue)"></i>Household members (3)</div>
+        <div class="hh-member-card">
+          <div class="hh-av" style="background:var(--blue-light);color:var(--blue-dark)">SJ</div>
+          <div class="hh-info">
+            <div class="hh-name">Sarah Johnson <span style="font-size:10px;background:var(--blue-light);color:var(--blue-dark);padding:1px 6px;border-radius:4px;margin-left:4px;font-weight:600">Account holder</span></div>
+            <div class="hh-sub">Adult · DOB Mar 14, 1985 · Age 41 · s.johnson@email.com · (413) 555-0198</div>
+            <div class="hh-sub" style="margin-top:2px;font-family:monospace;font-size:10px;color:var(--text-tertiary)">Member ID: MEM-00041-A · ID Card: QR-8821441</div>
+          </div>
+          <div class="hh-actions">
+            <button class="btn-secondary" style="font-size:11px;padding:4px 9px" onclick="showToast('Viewing Sarah Johnson profile')"><i class="ti ti-eye"></i></button>
+          </div>
+        </div>
+        <div class="hh-member-card">
+          <div class="hh-av" style="background:var(--green-bg);color:var(--green)">EJ</div>
+          <div class="hh-info">
+            <div class="hh-name">Emma Johnson <span style="font-size:10px;background:var(--bg-tertiary);color:var(--text-secondary);padding:1px 6px;border-radius:4px;margin-left:4px;font-weight:600">Child</span></div>
+            <div class="hh-sub">Child · DOB Sep 5, 2017 · Age 8 · No email (minor)</div>
+            <div class="hh-sub" style="margin-top:2px;font-family:monospace;font-size:10px;color:var(--text-tertiary)">Member ID: MEM-00041-B · ID Card: QR-8821442</div>
+          </div>
+          <div class="hh-actions">
+            <button class="btn-secondary" style="font-size:11px;padding:4px 9px" onclick="showToast('Viewing Emma Johnson profile')"><i class="ti ti-eye"></i></button>
+          </div>
+        </div>
+        <div class="hh-member-card">
+          <div class="hh-av" style="background:var(--amber-bg);color:var(--amber)">LJ</div>
+          <div class="hh-info">
+            <div class="hh-name">Liam Johnson <span style="font-size:10px;background:var(--bg-tertiary);color:var(--text-secondary);padding:1px 6px;border-radius:4px;margin-left:4px;font-weight:600">Child</span></div>
+            <div class="hh-sub">Child · DOB Feb 20, 2015 · Age 11 · No email (minor)</div>
+            <div class="hh-sub" style="margin-top:2px;font-family:monospace;font-size:10px;color:var(--text-tertiary)">Member ID: MEM-00041-C · ID Card: QR-8821443</div>
+          </div>
+          <div class="hh-actions">
+            <button class="btn-secondary" style="font-size:11px;padding:4px 9px" onclick="showToast('Viewing Liam Johnson profile')"><i class="ti ti-eye"></i></button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="showToast('Add household member form opening...')"><i class="ti ti-user-plus"></i>Add household member</button>
+    </div>
+
+    <!-- TAB: REGISTRATIONS -->
+    <div class="adp-body" id="adp-registrations" style="display:none">
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-run" style="font-size:14px;color:var(--blue)"></i>Active registrations (3)</div>
+        <div class="adp-row" style="align-items:flex-start;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;width:100%"><strong>Youth Swim Lessons — Session A</strong><span class="badge badge-few">Waitlisted · #3</span></div>
+          <span style="font-size:12px;color:var(--text-secondary)">Emma Johnson · Jun 23 – Jul 11 · MWF 9–10am · Community Center Pool</span>
+          <span style="font-size:12px;color:var(--red);font-weight:500">⚠ Balance due: $85.00</span>
+        </div>
+        <div class="adp-row" style="align-items:flex-start;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;width:100%"><strong>Fall Soccer League — Fall 2026</strong><span class="badge badge-wait" style="background:var(--purple-bg);color:var(--purple)">Wishlist</span></div>
+          <span style="font-size:12px;color:var(--text-secondary)">Liam Johnson · Sep 6 – Oct 25 · Sat 9–11am · Centennial Fields</span>
+          <span style="font-size:12px;color:var(--amber);font-weight:500">⚠ Waiver pending</span>
+        </div>
+        <div class="adp-row" style="align-items:flex-start;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;width:100%"><strong>Adult Fitness Bootcamp — Session A</strong><span class="badge badge-open">Active</span></div>
+          <span style="font-size:12px;color:var(--text-secondary)">Sarah Johnson · Jun 5 – Jul 10 · T/Th 6–7am · Maple Street Gym</span>
+          <span style="font-size:12px;color:var(--green);font-weight:500">✓ Paid · Waiver signed</span>
+        </div>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-ticket" style="font-size:14px;color:var(--blue)"></i>Active passes (2)</div>
+        <div class="adp-row"><span>Beach Day Pass</span><strong>2 of 5 uses remaining · Expires Sep 1</strong></div>
+        <div class="adp-row"><span>Community Pool Punch Card</span><strong>8 of 10 uses remaining · Active</strong></div>
+      </div>
+    </div>
+
+    <!-- TAB: FINANCIAL -->
+    <div class="adp-body" id="adp-financial" style="display:none">
+      <div style="background:var(--red-bg);border:1px solid rgba(163,45,45,0.2);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+        <i class="ti ti-alert-circle" style="font-size:20px;color:var(--red);flex-shrink:0"></i>
+        <div style="flex:1"><div style="font-weight:600;color:var(--red);font-size:13px">Outstanding balance: $86.50</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px">Youth Swim Lessons registration fee · Due since Jun 1, 2026</div></div>
+        <button class="btn-secondary" style="font-size:12px;flex-shrink:0" onclick="showToast('Recording manual payment...')"><i class="ti ti-cash"></i>Record payment</button>
+      </div>
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-cash" style="font-size:14px;color:var(--blue)"></i>Transaction history</div>
+        <div class="adp-row"><span>Jun 1, 2026</span><strong>Youth Swim Lessons (Emma) · $85.00 + $1.50 fee</strong></div>
+        <div class="adp-row"><span>Jun 1, 2026</span><strong style="color:var(--red)">Outstanding · $86.50 balance due</strong></div>
+        <div class="adp-row"><span>May 28, 2026</span><strong>Adult Fitness Bootcamp (Sarah) · $95.00 + $1.50 · Visa ···4821</strong></div>
+        <div class="adp-row"><span>May 28, 2026</span><strong>Late registration fee · $10.00 · Visa ···4821</strong></div>
+        <div class="adp-row"><span>Mar 14, 2026</span><strong>Beach Day Pass × 5 · $40.00 · Apple Pay</strong></div>
+        <div class="adp-row"><span>Jan 1, 2026</span><strong>Family Recreation Membership (renewal) · $250.00 · Visa ···4821</strong></div>
+        <div class="adp-row"><span>Jun 10, 2025</span><strong>Refund — Soccer Skills Camp (Liam) · -$120.00 · Visa ···4821</strong></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-secondary" onclick="showToast('GL-coded ledger downloading...')"><i class="ti ti-download"></i>Export transaction history</button>
+        <button class="btn-secondary" onclick="showToast('Refund flow opening...')"><i class="ti ti-rotate-clockwise"></i>Issue refund</button>
+        <button class="btn-secondary" onclick="showToast('Fee assistance application opening...')"><i class="ti ti-heart"></i>Apply fee assistance</button>
+      </div>
+    </div>
+
+    <!-- TAB: HISTORY -->
+    <div class="adp-body" id="adp-history" style="display:none">
+      <div class="adp-section">
+        <div class="adp-section-title"><i class="ti ti-history" style="font-size:14px;color:var(--blue)"></i>Account activity timeline</div>
+        <div class="adp-timeline">
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot blue"><i class="ti ti-login" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Account login</div><div class="adp-tl-date">Today · 8:44am</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot green"><i class="ti ti-run" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Registered — Youth Swim Lessons (Emma, waitlisted)</div><div class="adp-tl-date">Jun 1, 2026</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot green"><i class="ti ti-run" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Registered — Adult Fitness Bootcamp (Sarah)</div><div class="adp-tl-date">May 28, 2026</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot blue"><i class="ti ti-send" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Message received — "Summer session reminder + balance due"</div><div class="adp-tl-date">Jun 18, 2026 · Opened 9:04am</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot amber"><i class="ti ti-writing" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Waiver signed — Adult Fitness Bootcamp</div><div class="adp-tl-date">May 28, 2026</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot blue"><i class="ti ti-ticket" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Purchased — Beach Day Pass × 5</div><div class="adp-tl-date">Mar 14, 2026</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot green"><i class="ti ti-id-badge" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Membership renewed — Family Recreation Membership 2026</div><div class="adp-tl-date">Jan 1, 2026</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot red"><i class="ti ti-rotate-clockwise" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Refund issued — Soccer Skills Camp (Liam) · $120.00</div><div class="adp-tl-date">Jun 10, 2025</div></div>
+          </div>
+          <div class="adp-tl-row">
+            <div class="adp-tl-dot green"><i class="ti ti-id-badge" style="font-size:11px"></i></div>
+            <div class="adp-tl-content"><div class="adp-tl-label">Account created — Family household registered online</div><div class="adp-tl-date">Mar 12, 2022</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
