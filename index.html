@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 070126 Added account search --->
+  <!--- PR 071626 added and fixed POS view --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -552,6 +552,7 @@
   .admin-layout {
     display: flex;
     height: calc(100vh - 52px);
+    overflow: hidden;
   }
   .admin-sidebar {
     width: 220px;
@@ -602,6 +603,7 @@
     background: var(--bg-tertiary);
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
   .admin-topbar {
     background: var(--bg-primary);
@@ -852,8 +854,78 @@
   /* Hidden sections */
   .admin-section { display: none; }
   .admin-section.active { display: block; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  /* POS fills admin-main as a flex child */
+  #admin-pos {
+    display: none;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  #admin-pos.active {
+    display: flex;
+    flex-direction: column;
+  }
   .pub-page { display: none; }
   .pub-page.active { display: block; }
+
+  /* Participant picker modal */
+  .pos-picker-overlay {
+    display:none; position:fixed; inset:0; background:rgba(10,22,40,0.75);
+    z-index:650; align-items:center; justify-content:center; padding:16px;
+  }
+  .pos-picker-overlay.open { display:flex; }
+  .pos-picker-modal {
+    background:#1E293B; border-radius:16px; width:100%; max-width:400px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.5); overflow:hidden; border:1px solid #334155;
+  }
+  .pos-picker-header {
+    background:#0F172A; padding:14px 18px; display:flex; align-items:flex-start; gap:12px;
+  }
+  .pos-picker-header-info { flex:1; }
+  .pos-picker-header h3 { font-size:14px; font-weight:700; color:#fff; margin-bottom:2px; }
+  .pos-picker-header p  { font-size:11px; color:#64748B; }
+  .pos-picker-close { background:rgba(255,255,255,0.08); border:none; color:rgba(255,255,255,0.5); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .pos-picker-body { padding:14px 16px; }
+  .pos-picker-label { font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px; }
+  .pos-picker-member {
+    display:flex; align-items:center; gap:12px; padding:11px 14px;
+    background:#293548; border:1.5px solid #334155; border-radius:10px;
+    cursor:pointer; margin-bottom:8px; transition:all 0.12s;
+  }
+  .pos-picker-member:hover { border-color:#3B82F6; background:#1E3A5F; }
+  .pos-picker-member.selected { border-color:#3B82F6; background:#1E3A5F; }
+  .pos-picker-member.disabled { opacity:0.4; cursor:not-allowed; pointer-events:none; }
+  .pos-picker-av { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .pos-picker-info { flex:1; }
+  .pos-picker-name { font-size:13px; font-weight:600; color:#F1F5F9; }
+  .pos-picker-sub  { font-size:11px; color:#64748B; margin-top:1px; }
+  .pos-picker-check { font-size:18px; color:#3B82F6; display:none; }
+  .pos-picker-member.selected .pos-picker-check { display:block; }
+  .pos-picker-already { font-size:10px; font-weight:600; padding:2px 7px; border-radius:4px; background:rgba(220,38,38,0.2); color:#FCA5A5; margin-top:2px; display:none; }
+  .pos-picker-member.disabled .pos-picker-already { display:inline-block; }
+  .pos-picker-walkin {
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    background:#1E293B; border:1.5px dashed #334155; border-radius:10px;
+    cursor:pointer; margin-bottom:14px; transition:all 0.12s;
+  }
+  .pos-picker-walkin:hover { border-color:#60A5FA; }
+  .pos-picker-walkin-label { font-size:13px; font-weight:500; color:#94A3B8; }
+  .pos-picker-footer { padding:0 16px 16px; display:flex; gap:8px; }
+  .pos-picker-add-btn {
+    flex:1; padding:12px; background:linear-gradient(135deg,#185FA5,#378ADD);
+    color:#fff; border:none; border-radius:9px; font-family:var(--font);
+    font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+  }
+  .pos-picker-add-btn:disabled { background:#293548; color:#475569; cursor:not-allowed; }
+  .pos-picker-cancel { padding:12px 16px; background:#293548; color:#94A3B8; border:1px solid #334155; border-radius:9px; font-family:var(--font); font-size:13px; cursor:pointer; }
+
+  /* Cart item participant line */
+  .cart-item-participant {
+    display:flex; align-items:center; gap:5px; margin-top:4px;
+    font-size:11px; color:#6EE7B7; font-weight:600;
+  }
+  .cart-item-participant i { font-size:12px; }
 
   @media (max-width: 900px) {
     .public-wrapper { flex-direction: column; align-items: center; }
@@ -1105,6 +1177,321 @@
   .cond-question-inner .reg-form-textarea { border-color:#C4B5FD; }
   .cond-question-inner .reg-form-textarea:focus { border-color:var(--purple); }
   .cond-triggered-by { font-size:10px; color:#7C3AED; font-weight:600; display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+
+  /* ── POINT OF SALE ── */
+  .pos-shell {
+    display:grid; grid-template-columns:1fr clamp(300px, 28vw, 460px); gap:0;
+    width:100%; height:100%; overflow:hidden; background:#1A2035;
+  }
+  /* Left panel — catalog */
+  .pos-left {
+    display:flex; flex-direction:column; background:#F0F2F7; overflow:hidden;
+  }
+  .pos-topbar {
+    background:#1A2035; padding:10px 16px; display:flex; align-items:center; gap:10px;
+  }
+  .pos-topbar-title { font-size:14px; font-weight:700; color:#fff; margin-right:auto; display:flex; align-items:center; gap:8px; }
+  .pos-topbar-title i { color:#60A5FA; font-size:18px; }
+  .pos-kbd-hint { font-size:10px; color:rgba(255,255,255,0.35); font-family:monospace; }
+
+  /* Account lookup bar */
+  .pos-acct-bar {
+    background:#fff; border-bottom:1px solid #E2E8F0; padding:10px 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .pos-acct-search {
+    flex:1; display:flex; align-items:center; gap:8px;
+    border:1.5px solid #CBD5E1; border-radius:8px; padding:7px 12px;
+    background:#F8FAFC; transition:border-color 0.15s;
+  }
+  .pos-acct-search:focus-within { border-color:#185FA5; background:#fff; }
+  .pos-acct-search i { font-size:16px; color:#94A3B8; flex-shrink:0; }
+  .pos-acct-search input { border:none; outline:none; background:none; font-family:var(--font); font-size:13px; color:#1E293B; flex:1; }
+  .pos-acct-search input::placeholder { color:#CBD5E1; }
+  .pos-walkin-btn {
+    display:flex; align-items:center; gap:6px; padding:8px 14px;
+    background:#F1F5F9; border:1.5px solid #CBD5E1; border-radius:8px;
+    font-family:var(--font); font-size:12px; font-weight:600; color:#64748B;
+    cursor:pointer; white-space:nowrap;
+  }
+  .pos-walkin-btn:hover { background:#E2E8F0; color:#334155; }
+
+  /* Account card (attached) */
+  .pos-acct-card {
+    background:#fff; border-bottom:2px solid #185FA5; padding:10px 14px;
+    display:none; align-items:center; gap:12px;
+  }
+  .pos-acct-card.attached { display:flex; }
+  .pac-av { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+  .pac-info { flex:1; }
+  .pac-name { font-size:13px; font-weight:700; color:#1E293B; }
+  .pac-meta { font-size:11px; color:#64748B; display:flex; gap:10px; flex-wrap:wrap; margin-top:2px; }
+  .pac-flags { display:flex; gap:6px; flex-shrink:0; }
+  .pac-flag { font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
+  .pac-resident { background:#D1FAE5; color:#065F46; }
+  .pac-nonres   { background:#FEF3C7; color:#92400E; }
+  .pac-balance  { background:#FEE2E2; color:#991B1B; }
+  .pac-member   { background:#DBEAFE; color:#1E40AF; }
+  .pac-change-btn { font-size:11px; color:#185FA5; background:none; border:none; cursor:pointer; font-family:var(--font); font-weight:600; padding:4px 8px; border-radius:6px; }
+  .pac-change-btn:hover { background:#EBF4FF; }
+
+  /* Catalog browser */
+  .pos-catalog { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+  .pos-cat-tabs { display:flex; background:#fff; border-bottom:1px solid #E2E8F0; overflow-x:auto; }
+  .pct { padding:10px 16px; border:none; background:none; font-family:var(--font); font-size:12px; font-weight:600; color:#64748B; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; display:flex; align-items:center; gap:5px; }
+  .pct i { font-size:15px; }
+  .pct.active { color:#185FA5; border-bottom-color:#185FA5; background:#F0F7FF; }
+  .pos-cat-pane { display:none; overflow-y:auto; flex:1; padding:12px; }
+  .pos-cat-pane.active { display:block; }
+
+  /* Catalog search */
+  .pos-cat-search {
+    display:flex; align-items:center; gap:8px; padding:8px 12px;
+    background:#fff; border:1px solid #E2E8F0; border-radius:8px; margin-bottom:10px;
+  }
+  .pos-cat-search input { border:none; outline:none; font-family:var(--font); font-size:13px; color:#1E293B; flex:1; background:none; }
+  .pos-cat-search i { color:#94A3B8; font-size:15px; }
+
+  /* Catalog item cards */
+  .pos-item-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
+  .pos-item {
+    background:#fff; border:1.5px solid #E2E8F0; border-radius:10px;
+    padding:12px; cursor:pointer; transition:all 0.12s; display:flex; flex-direction:column; gap:6px;
+  }
+  .pos-item:hover { border-color:#185FA5; background:#F0F7FF; transform:translateY(-1px); box-shadow:0 2px 8px rgba(24,95,165,0.1); }
+  .pos-item:active { transform:translateY(0); }
+  .pos-item-icon { font-size:22px; margin-bottom:2px; }
+  .pos-item-name { font-size:12px; font-weight:600; color:#1E293B; line-height:1.3; }
+  .pos-item-desc { font-size:10px; color:#64748B; line-height:1.4; }
+  .pos-item-footer { display:flex; justify-content:space-between; align-items:center; margin-top:4px; }
+  .pos-item-price { font-size:14px; font-weight:700; color:#185FA5; }
+  .pos-item-price.res { color:#065F46; }
+  .pos-item-add { width:26px; height:26px; border-radius:50%; background:#185FA5; color:#fff; border:none; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .pos-item-add:hover { background:#0C3C6E; }
+  .pos-item-tag { font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; align-self:flex-start; }
+
+  /* Program list style for sessions */
+  .pos-prog-row {
+    background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:11px 14px;
+    display:flex; align-items:center; gap:12px; margin-bottom:6px; cursor:pointer;
+    transition:all 0.1s;
+  }
+  .pos-prog-row:hover { border-color:#185FA5; background:#F0F7FF; }
+  .pos-prog-color { width:4px; height:40px; border-radius:2px; flex-shrink:0; }
+  .pos-prog-info { flex:1; }
+  .pos-prog-name { font-size:13px; font-weight:600; color:#1E293B; }
+  .pos-prog-meta { font-size:11px; color:#64748B; margin-top:2px; }
+  .pos-prog-price { font-size:15px; font-weight:700; color:#185FA5; flex-shrink:0; }
+  .pos-prog-add-btn { background:#185FA5; color:#fff; border:none; border-radius:6px; padding:6px 12px; font-family:var(--font); font-size:12px; font-weight:600; cursor:pointer; flex-shrink:0; }
+  .pos-prog-add-btn:hover { background:#0C3C6E; }
+  .pos-prog-cap { font-size:10px; font-weight:600; padding:2px 6px; border-radius:4px; }
+  .cap-few { background:#FEF3C7; color:#92400E; }
+  .cap-open { background:#D1FAE5; color:#065F46; }
+  .cap-full { background:#FEE2E2; color:#991B1B; }
+
+  /* ── CART (right panel) ── */
+  .pos-right {
+    background:#1E293B; display:flex; flex-direction:column; overflow:hidden;
+    border-left:1px solid #0F172A;
+  }
+  .pos-cart-header {
+    background:#0F172A; padding:12px 16px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .pos-cart-title { font-size:13px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; }
+  .pos-cart-title i { color:#60A5FA; }
+  .pos-cart-txn { font-size:10px; font-weight:600; color:rgba(255,255,255,0.4); font-family:monospace; }
+  .pos-cart-clear { font-size:11px; color:rgba(255,255,255,0.4); background:none; border:none; cursor:pointer; font-family:var(--font); }
+  .pos-cart-clear:hover { color:#FCA5A5; }
+
+  /* Cart items */
+  .pos-cart-items { flex:1; overflow-y:auto; padding:8px; }
+  .pos-cart-empty {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100%; color:rgba(255,255,255,0.2); text-align:center; gap:8px; padding:20px;
+  }
+  .pos-cart-empty i { font-size:48px; }
+  .pos-cart-empty p { font-size:13px; }
+  .cart-item {
+    background:#293548; border-radius:8px; padding:10px 12px; margin-bottom:6px;
+    display:flex; align-items:flex-start; gap:10px; border:1px solid #334155;
+  }
+  .cart-item-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+  .cart-item-info { flex:1; }
+  .cart-item-name { font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:2px; }
+  .cart-item-sub  { font-size:11px; color:#94A3B8; }
+  .cart-item-right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+  .cart-item-price { font-size:14px; font-weight:700; color:#60A5FA; }
+  .cart-item-qty { display:flex; align-items:center; gap:6px; }
+  .qty-btn { width:22px; height:22px; border-radius:50%; border:1px solid #475569; background:#1E293B; color:#94A3B8; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .qty-btn:hover { background:#334155; color:#fff; }
+  .qty-val { font-size:13px; font-weight:600; color:#F1F5F9; min-width:20px; text-align:center; }
+  .cart-item-remove { font-size:14px; color:#475569; background:none; border:none; cursor:pointer; padding:2px; }
+  .cart-item-remove:hover { color:#FCA5A5; }
+  .cart-item-badge { font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; }
+  .cib-res { background:rgba(16,185,129,0.2); color:#6EE7B7; }
+  .cib-walkin { background:rgba(99,102,241,0.2); color:#A5B4FC; }
+
+  /* Cart totals */
+  .pos-cart-totals {
+    padding:10px 14px; background:#0F172A; border-top:1px solid #1E293B;
+  }
+  .pos-total-row { display:flex; justify-content:space-between; font-size:12px; padding:4px 0; }
+  .pos-total-row span { color:#94A3B8; }
+  .pos-total-row strong { color:#CBD5E1; }
+  .pos-grand-total { display:flex; justify-content:space-between; font-size:18px; font-weight:700; padding:10px 0 6px; border-top:1px solid #334155; margin-top:4px; }
+  .pos-grand-total span { color:#94A3B8; font-size:13px; align-self:center; }
+  .pos-grand-total strong { color:#fff; }
+
+  /* Discount row */
+  .pos-discount-row { display:flex; gap:6px; margin:6px 0; }
+  .pos-discount-input { flex:1; background:#1E293B; border:1px solid #334155; border-radius:6px; padding:6px 10px; font-size:12px; font-family:var(--font); color:#F1F5F9; outline:none; }
+  .pos-discount-input:focus { border-color:#60A5FA; }
+  .pos-discount-input::placeholder { color:#475569; }
+  .pos-discount-type { background:#1E293B; border:1px solid #334155; border-radius:6px; padding:6px 8px; font-size:12px; font-family:var(--font); color:#F1F5F9; outline:none; cursor:pointer; }
+
+  /* Charge button */
+  .pos-charge-btn {
+    width:100%; padding:14px; background:linear-gradient(135deg,#185FA5,#378ADD);
+    color:#fff; border:none; border-radius:10px; font-family:var(--font);
+    font-size:16px; font-weight:700; cursor:pointer; margin:10px 0 0;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all 0.15s; letter-spacing:0.3px;
+  }
+  .pos-charge-btn:hover { background:linear-gradient(135deg,#0C3C6E,#185FA5); transform:translateY(-1px); box-shadow:0 4px 16px rgba(24,95,165,0.4); }
+  .pos-charge-btn:disabled { background:#1E293B; color:#475569; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  /* ── TENDER SCREEN ── */
+  .pos-tender-overlay {
+    display:none; position:fixed; inset:0; background:rgba(10,22,40,0.85);
+    z-index:600; align-items:center; justify-content:center; padding:16px;
+  }
+  .pos-tender-overlay.open { display:flex; }
+  .pos-tender-modal {
+    background:#1E293B; border-radius:18px; width:100%; max-width:520px;
+    box-shadow:0 32px 80px rgba(0,0,0,0.5); overflow:hidden; border:1px solid #334155;
+  }
+  .pos-tender-header {
+    background:#0F172A; padding:16px 20px; display:flex; align-items:center; gap:12px;
+  }
+  .pos-tender-header h3 { font-size:16px; font-weight:700; color:#fff; flex:1; }
+  .pos-tender-total { font-size:24px; font-weight:700; color:#60A5FA; }
+  .pos-tender-close { background:rgba(255,255,255,0.08); border:none; color:rgba(255,255,255,0.6); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
+
+  /* Payment method tabs */
+  .pos-pay-tabs { display:flex; background:#0F172A; border-bottom:1px solid #1E293B; }
+  .pos-pay-tab {
+    flex:1; padding:11px 8px; border:none; background:none; font-family:var(--font);
+    font-size:12px; font-weight:600; color:#64748B; cursor:pointer; border-bottom:2px solid transparent;
+    display:flex; align-items:center; justify-content:center; gap:5px; transition:all 0.12s;
+  }
+  .pos-pay-tab i { font-size:15px; }
+  .pos-pay-tab.active { color:#60A5FA; border-bottom-color:#60A5FA; }
+  .pos-pay-pane { display:none; padding:18px 20px; }
+  .pos-pay-pane.active { display:block; }
+
+  /* Cash pane */
+  .cash-amount-display {
+    background:#0F172A; border-radius:10px; padding:16px 20px; margin-bottom:14px;
+    text-align:center;
+  }
+  .cash-label { font-size:11px; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+  .cash-value { font-size:36px; font-weight:700; color:#F1F5F9; font-family:monospace; }
+  .cash-keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:12px; }
+  .cash-key {
+    padding:14px; background:#293548; border:1px solid #334155; border-radius:8px;
+    font-family:var(--font); font-size:16px; font-weight:600; color:#F1F5F9;
+    cursor:pointer; transition:all 0.1s; text-align:center;
+  }
+  .cash-key:hover { background:#334155; }
+  .cash-key:active { background:#185FA5; }
+  .cash-key.double { grid-column:span 2; }
+  .cash-key.special { color:#60A5FA; }
+  .cash-presets { display:flex; gap:6px; margin-bottom:14px; }
+  .cash-preset { flex:1; padding:8px; background:#1E293B; border:1px solid #334155; border-radius:6px; font-family:var(--font); font-size:12px; font-weight:600; color:#94A3B8; cursor:pointer; text-align:center; }
+  .cash-preset:hover { border-color:#60A5FA; color:#60A5FA; }
+  .cash-change-display { background:#064E3B; border:1px solid #065F46; border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+  .cash-change-display span { font-size:13px; color:#6EE7B7; font-weight:500; }
+  .cash-change-display strong { font-size:22px; font-weight:700; color:#34D399; font-family:monospace; }
+
+  /* Check pane */
+  .check-field { margin-bottom:12px; }
+  .check-field label { font-size:11px; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:0.4px; display:block; margin-bottom:5px; }
+  .check-field input { width:100%; background:#0F172A; border:1px solid #334155; border-radius:8px; padding:10px 12px; font-size:13px; font-family:var(--font); color:#F1F5F9; outline:none; }
+  .check-field input:focus { border-color:#60A5FA; }
+  .check-field input::placeholder { color:#475569; }
+
+  /* Card / tap pane */
+  .card-terminal {
+    background:#0F172A; border-radius:12px; padding:20px; text-align:center; margin-bottom:14px;
+    border:2px dashed #334155;
+  }
+  .card-terminal i { font-size:48px; color:#475569; display:block; margin-bottom:10px; }
+  .card-terminal-title { font-size:14px; font-weight:600; color:#94A3B8; margin-bottom:4px; }
+  .card-terminal-sub { font-size:12px; color:#475569; }
+  .tap-btn { width:100%; padding:14px; background:#1E3A5F; border:2px solid #3B82F6; border-radius:10px; color:#60A5FA; font-family:var(--font); font-size:14px; font-weight:700; cursor:pointer; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.12s; }
+  .tap-btn:hover { background:#1D4ED8; color:#fff; border-color:#1D4ED8; }
+  .tap-btn i { font-size:20px; }
+  .manual-btn { width:100%; padding:11px; background:#293548; border:1px solid #334155; border-radius:8px; color:#94A3B8; font-family:var(--font); font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
+  .manual-btn:hover { background:#334155; color:#F1F5F9; }
+
+  /* Split tender */
+  .split-item { background:#0F172A; border-radius:8px; padding:10px 12px; margin-bottom:8px; display:flex; gap:8px; align-items:center; }
+  .split-item select, .split-item input { background:#1E293B; border:1px solid #334155; border-radius:6px; padding:7px 10px; font-size:13px; font-family:var(--font); color:#F1F5F9; outline:none; }
+  .split-item select { width:140px; }
+  .split-item input { flex:1; }
+  .split-rem { font-size:12px; color:#60A5FA; font-weight:600; text-align:right; margin-bottom:6px; }
+
+  /* Complete btn */
+  .pos-complete-btn {
+    width:100%; padding:14px; background:linear-gradient(135deg,#065F46,#059669);
+    color:#fff; border:none; border-radius:10px; font-family:var(--font);
+    font-size:15px; font-weight:700; cursor:pointer; margin-top:14px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .pos-complete-btn:hover { filter:brightness(1.1); }
+
+  /* Receipt overlay */
+  .pos-receipt-overlay {
+    display:none; position:fixed; inset:0; background:rgba(10,22,40,0.85);
+    z-index:700; align-items:center; justify-content:center; padding:16px;
+  }
+  .pos-receipt-overlay.open { display:flex; }
+  .pos-receipt-modal {
+    background:#fff; border-radius:16px; width:100%; max-width:400px;
+    box-shadow:0 32px 80px rgba(0,0,0,0.5); overflow:hidden;
+  }
+  .receipt-header { background:#065F46; padding:20px; text-align:center; color:#fff; }
+  .receipt-header i { font-size:40px; display:block; margin-bottom:8px; color:#6EE7B7; }
+  .receipt-header h3 { font-size:18px; font-weight:700; }
+  .receipt-header p { font-size:12px; opacity:0.7; margin-top:4px; }
+  .receipt-body { padding:20px; }
+  .receipt-txn { text-align:center; font-family:monospace; font-size:11px; color:var(--text-tertiary); margin-bottom:16px; }
+  .receipt-line { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px dashed var(--border); }
+  .receipt-line:last-of-type { border-bottom:none; }
+  .receipt-total { display:flex; justify-content:space-between; font-size:16px; font-weight:700; padding:10px 0; border-top:2px solid var(--text-primary); margin-top:8px; }
+  .receipt-payment { background:var(--bg-secondary); border-radius:8px; padding:10px 12px; margin-top:12px; }
+  .receipt-payment-row { display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); padding:3px 0; }
+  .receipt-change { font-size:14px; font-weight:700; color:var(--green); margin-top:4px; }
+  .receipt-actions { display:flex; gap:8px; padding:0 20px 20px; }
+  .receipt-actions button { flex:1; padding:10px; border-radius:8px; font-family:var(--font); font-size:12px; font-weight:600; cursor:pointer; }
+
+  /* POS search dropdown */
+  .pos-search-dropdown {
+    position:absolute; top:100%; left:0; right:0; background:#fff;
+    border:1px solid #E2E8F0; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+    z-index:200; overflow:hidden; display:none;
+  }
+  .pos-search-dropdown.open { display:block; }
+  .psd-item { display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; border-bottom:1px solid #F1F5F9; }
+  .psd-item:hover { background:#F0F7FF; }
+  .psd-item:last-child { border-bottom:none; }
+  .psd-av { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+  .psd-info { flex:1; }
+  .psd-name { font-size:13px; font-weight:600; color:#1E293B; }
+  .psd-meta { font-size:11px; color:#64748B; }
+  .psd-badge { font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; }
+  .pos-acct-wrap { position:relative; flex:1; }
 
   /* ── ACCOUNT SEARCH ── */
   .acct-search-bar {
@@ -6933,6 +7320,7 @@
       <div class="sidebar-section-label">Members</div>
       <button class="sidebar-item" onclick="adminNav(this,'members')"><i class="ti ti-users"></i>Members</button>
       <button class="sidebar-item" onclick="adminNav(this,'checkin')"><i class="ti ti-scan"></i>Check-in</button>
+      <button class="sidebar-item" onclick="adminNav(this,'pos')"><i class="ti ti-device-desktop"></i>Point of sale</button>
       <div class="sidebar-section-label">Messages</div>
       <button class="sidebar-item" onclick="adminNav(this,'messages')"><i class="ti ti-send"></i>Message center</button>
       <div class="sidebar-section-label">Finance</div>
@@ -8609,6 +8997,328 @@
         </div>
       </div>
 
+      <!-- POINT OF SALE -->
+      <div id="admin-pos" class="admin-section">
+        <div class="pos-shell">
+
+          <!-- ── LEFT: CATALOG ── -->
+          <div class="pos-left">
+
+            <!-- Top bar -->
+            <div class="pos-topbar">
+              <div class="pos-topbar-title"><i class="ti ti-device-desktop"></i>Point of sale</div>
+              <span class="pos-kbd-hint">TXN #2026-0622-0041</span>
+              <button class="btn-secondary" style="font-size:11px;padding:5px 10px;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7)" onclick="posNewTxn()"><i class="ti ti-plus"></i>New transaction</button>
+            </div>
+
+            <!-- Account lookup -->
+            <div class="pos-acct-bar">
+              <div class="pos-acct-wrap">
+                <div class="pos-acct-search">
+                  <i class="ti ti-search"></i>
+                  <input type="text" id="pos-search-input" placeholder="Look up account by name, ID, email, phone, or QR scan..." oninput="posSearchLive(this.value)" onkeydown="if(event.key==='Enter')posSelectFirst()">
+                </div>
+                <div class="pos-search-dropdown" id="pos-search-dropdown">
+                  <div class="psd-item" onclick="posAttachAccount('Johnson')">
+                    <div class="psd-av" style="background:var(--blue-light);color:var(--blue-dark)">SJ</div>
+                    <div class="psd-info"><div class="psd-name">Johnson, Sarah — FAM-00041</div><div class="psd-meta">42 Maple St, Springfield · Family · 3 members</div></div>
+                    <span class="psd-badge" style="background:#D1FAE5;color:#065F46">✓ Resident</span>
+                  </div>
+                  <div class="psd-item" onclick="posAttachAccount('Liu')">
+                    <div class="psd-av" style="background:var(--amber-bg);color:var(--amber)">KL</div>
+                    <div class="psd-info"><div class="psd-name">Liu, Karen — FAM-00087</div><div class="psd-meta">204 Elm St, Springfield · Family · 4 members</div></div>
+                    <span class="psd-badge" style="background:#D1FAE5;color:#065F46">✓ Resident</span>
+                  </div>
+                  <div class="psd-item" onclick="posAttachAccount('Rivera')">
+                    <div class="psd-av" style="background:var(--green-bg);color:var(--green)">MR</div>
+                    <div class="psd-info"><div class="psd-name">Rivera, Marcus — IND-00128</div><div class="psd-meta">18 Oak Ave, Springfield · Individual</div></div>
+                    <span class="psd-badge" style="background:#D1FAE5;color:#065F46">✓ Resident</span>
+                  </div>
+                  <div class="psd-item" onclick="posAttachAccount('Patel')">
+                    <div class="psd-av" style="background:var(--bg-tertiary);color:var(--text-secondary)">TP</div>
+                    <div class="psd-info"><div class="psd-name">Patel, Tanya — FAM-00512</div><div class="psd-meta">33 Birch Ct, Longmeadow · Family · 3 members</div></div>
+                    <span class="psd-badge" style="background:#FEF3C7;color:#92400E">⚠ Non-resident</span>
+                  </div>
+                </div>
+              </div>
+              <button class="pos-walkin-btn" onclick="posAttachWalkin()"><i class="ti ti-user-plus"></i>Walk-in / Guest</button>
+            </div>
+
+            <!-- Account card (shown when attached) -->
+            <div class="pos-acct-card" id="pos-acct-card">
+              <div class="pac-av" id="pac-av" style="background:var(--blue-light);color:var(--blue-dark)">SJ</div>
+              <div class="pac-info">
+                <div class="pac-name" id="pac-name">Johnson, Sarah</div>
+                <div class="pac-meta">
+                  <span id="pac-id">FAM-00041 · Family · 3 members</span>
+                  <span id="pac-membership">✓ Family Rec Membership (active)</span>
+                </div>
+              </div>
+              <div class="pac-flags" id="pac-flags">
+                <span class="pac-flag pac-resident" id="pac-res">✓ Resident</span>
+                <span class="pac-flag pac-member">Member</span>
+              </div>
+              <button class="pac-change-btn" onclick="posDetachAccount()"><i class="ti ti-x" style="font-size:12px"></i> Change</button>
+            </div>
+
+            <!-- Catalog tabs -->
+            <div class="pos-catalog">
+              <div class="pos-cat-tabs">
+                <button class="pct active" id="pct-programs" onclick="posCatTab('programs')"><i class="ti ti-run"></i>Programs</button>
+                <button class="pct" id="pct-passes" onclick="posCatTab('passes')"><i class="ti ti-ticket"></i>Passes &amp; tickets</button>
+                <button class="pct" id="pct-fees" onclick="posCatTab('fees')"><i class="ti ti-door-enter"></i>Daily fees</button>
+                <button class="pct" id="pct-merch" onclick="posCatTab('merch')"><i class="ti ti-shirt"></i>Merchandise</button>
+              </div>
+
+              <!-- Programs pane -->
+              <div class="pos-cat-pane active" id="pos-pane-programs">
+                <div class="pos-cat-search"><i class="ti ti-search"></i><input type="text" placeholder="Search programs..."></div>
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Aquatics</div>
+                <div class="pos-prog-row" onclick="posAddItem('swim-a','Youth Swim Lessons L1 — Session A','MWF 9–10am · Jun 23–Jul 11','🏊','program',85,'resident')">
+                  <div class="pos-prog-color" style="background:#185FA5"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Youth Swim Lessons L1 — Session A</div><div class="pos-prog-meta">MWF 9–10am · Jun 23–Jul 11 · Community Center Pool</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div style="font-size:11px;color:#94A3B8;text-decoration:line-through">$110</div>
+                    <div class="pos-prog-price" style="color:#059669">$85 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-few">4 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('swim-a','Youth Swim Lessons L1 — Session A','MWF 9–10am · Jun 23–Jul 11','🏊','program',85,'resident')">Add</button>
+                </div>
+                <div class="pos-prog-row" onclick="posAddItem('swim-b','Youth Swim Lessons L1 — Session B','MWF 9–10am · Jul 14–Aug 1','🏊','program',85,'resident')">
+                  <div class="pos-prog-color" style="background:#185FA5"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Youth Swim Lessons L1 — Session B</div><div class="pos-prog-meta">MWF 9–10am · Jul 14–Aug 1 · Community Center Pool</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div class="pos-prog-price" style="color:#059669">$85 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-open">12 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('swim-b','Youth Swim Lessons L1 — Session B','MWF 9–10am · Jul 14–Aug 1','🏊','program',85,'resident')">Add</button>
+                </div>
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px">Fitness</div>
+                <div class="pos-prog-row" onclick="posAddItem('yoga','Adult Yoga — Summer 2026','Sat 8–9am · Jun 7–Jul 26','🧘','program',60,'resident')">
+                  <div class="pos-prog-color" style="background:#534AB7"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Adult Yoga — Summer 2026</div><div class="pos-prog-meta">Sat 8–9am · Jun 7–Jul 26 · Maple Street Gym</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div class="pos-prog-price" style="color:#059669">$60 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-open">8 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('yoga','Adult Yoga — Summer 2026','Sat 8–9am · Jun 7–Jul 26','🧘','program',60,'resident')">Add</button>
+                </div>
+                <div class="pos-prog-row" onclick="posAddItem('boot','Adult Fitness Bootcamp — Session A','T/Th 6–7am · Jun 5–Jul 10','💪','program',95,'resident')">
+                  <div class="pos-prog-color" style="background:#534AB7"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Adult Fitness Bootcamp — Session A</div><div class="pos-prog-meta">T/Th 6–7am · Jun 5–Jul 10 · Maple Street Gym</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div class="pos-prog-price" style="color:#059669">$95 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-open">6 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('boot','Adult Fitness Bootcamp — Session A','T/Th 6–7am · Jun 5–Jul 10','💪','program',95,'resident')">Add</button>
+                </div>
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px">Youth Sports</div>
+                <div class="pos-prog-row" onclick="posAddItem('soccer','Soccer Skills Camp — Session B','Sat 9–11am · Jul 6–Jul 27','⚽','program',120,'resident')">
+                  <div class="pos-prog-color" style="background:#3B6D11"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Soccer Skills Camp — Session B</div><div class="pos-prog-meta">Sat 9–11am · Jul 6–Jul 27 · Centennial Fields</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div class="pos-prog-price" style="color:#059669">$120 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-open">14 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('soccer','Soccer Skills Camp — Session B','Sat 9–11am · Jul 6–Jul 27','⚽','program',120,'resident')">Add</button>
+                </div>
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px">Arts</div>
+                <div class="pos-prog-row" onclick="posAddItem('art','Summer Art Studio — Session A','M–F 1–3pm · Jul 7–Aug 1','🎨','program',150,'resident')">
+                  <div class="pos-prog-color" style="background:#854F0B"></div>
+                  <div class="pos-prog-info"><div class="pos-prog-name">Summer Art Studio — Session A</div><div class="pos-prog-meta">M–F 1–3pm · Jul 7–Aug 1 · Rec Center Room B</div></div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div class="pos-prog-price" style="color:#059669">$150 <span style="font-size:10px">res.</span></div>
+                    <span class="pos-prog-cap cap-few">2 spots</span>
+                  </div>
+                  <button class="pos-prog-add-btn" onclick="event.stopPropagation();posAddItem('art','Summer Art Studio — Session A','M–F 1–3pm · Jul 7–Aug 1','🎨','program',150,'resident')">Add</button>
+                </div>
+              </div>
+
+              <!-- Passes pane -->
+              <div class="pos-cat-pane" id="pos-pane-passes">
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Day passes &amp; punch cards</div>
+                <div class="pos-item-grid">
+                  <div class="pos-item" onclick="posAddItem('beach','Beach Day Pass','Single-day beach admission','🏖️','pass',8,'any')">
+                    <div class="pos-item-icon">🏖️</div>
+                    <div class="pos-item-name">Beach Day Pass</div>
+                    <div class="pos-item-desc">Single-day admission · Riverside Beach</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$8</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('beach','Beach Day Pass','Single-day beach admission','🏖️','pass',8,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('beach5','Beach Pass · 5-pack','5-visit punch card for beach','🏖️','pass',35,'any')">
+                    <div class="pos-item-icon">🏖️</div>
+                    <div class="pos-item-name">Beach Pass — 5 pack</div>
+                    <div class="pos-item-desc">5-visit punch card · Riverside Beach</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$35</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('beach5','Beach Pass · 5-pack','5-visit punch card','🏖️','pass',35,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('pool5','Pool Punch Card','5-visit community pool','🏊','pass',24,'any')">
+                    <div class="pos-item-icon">🏊</div>
+                    <div class="pos-item-name">Pool Punch Card</div>
+                    <div class="pos-item-desc">5-visit card · Community Pool</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$24</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('pool5','Pool Punch Card','5-visit community pool','🏊','pass',24,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('guest','Guest Day Pass','One-time guest admission','👤','pass',5,'any')">
+                    <div class="pos-item-icon">👤</div>
+                    <div class="pos-item-name">Guest Day Pass</div>
+                    <div class="pos-item-desc">Single-day guest admission</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$5</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('guest','Guest Day Pass','One-time guest admission','👤','pass',5,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('fitness10','Fitness Punch Card','10-visit gym card','💪','pass',45,'any')">
+                    <div class="pos-item-icon">💪</div>
+                    <div class="pos-item-name">Fitness Punch Card</div>
+                    <div class="pos-item-desc">10-visit card · Maple St Gym</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$45</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('fitness10','Fitness Punch Card','10-visit gym card','💪','pass',45,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('giftcard','Gift Card','Redeemable for any program or pass','🎁','other',25,'any')">
+                    <div class="pos-item-icon">🎁</div>
+                    <div class="pos-item-name">Gift card — $25</div>
+                    <div class="pos-item-desc">Redeemable for any program or fee</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$25</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('giftcard','Gift Card — $25','Redeemable for any program','🎁','other',25,'any')">+</button></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Daily fees pane -->
+              <div class="pos-cat-pane" id="pos-pane-fees">
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Walk-in / drop-in daily fees</div>
+                <div class="pos-item-grid">
+                  <div class="pos-item" onclick="posAddItem('dropin-pool','Drop-in Pool — Resident','Daily lap swim or open swim','🏊','fee',5,'resident')">
+                    <div class="pos-item-icon">🏊</div>
+                    <div class="pos-item-name">Drop-in Pool — Resident</div>
+                    <div class="pos-item-desc">Daily open swim · Community Pool</div>
+                    <div class="pos-item-footer"><span class="pos-item-price res">$5</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('dropin-pool','Drop-in Pool — Resident','Daily lap swim','🏊','fee',5,'resident')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('dropin-pool-nr','Drop-in Pool — Non-res.','Daily lap swim or open swim','🏊','fee',8,'nonresident')">
+                    <div class="pos-item-icon">🏊</div>
+                    <div class="pos-item-name">Drop-in Pool — Non-res.</div>
+                    <div class="pos-item-desc">Daily open swim · Community Pool</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$8</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('dropin-pool-nr','Drop-in Pool — Non-res.','Daily lap swim','🏊','fee',8,'nonresident')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('dropin-gym','Drop-in Gym — Resident','Daily gym access · Maple St','💪','fee',6,'resident')">
+                    <div class="pos-item-icon">💪</div>
+                    <div class="pos-item-name">Drop-in Gym — Resident</div>
+                    <div class="pos-item-desc">Daily gym access · Maple St</div>
+                    <div class="pos-item-footer"><span class="pos-item-price res">$6</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('dropin-gym','Drop-in Gym — Resident','Daily gym access','💪','fee',6,'resident')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('dropin-gym-nr','Drop-in Gym — Non-res.','Daily gym access · Maple St','💪','fee',10,'nonresident')">
+                    <div class="pos-item-icon">💪</div>
+                    <div class="pos-item-name">Drop-in Gym — Non-res.</div>
+                    <div class="pos-item-desc">Daily gym access · Maple St</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$10</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('dropin-gym-nr','Drop-in Gym — Non-res.','Daily gym access','💪','fee',10,'nonresident')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('dropin-tennis','Tennis Court — 1 hr','Court rental · per person','🎾','fee',8,'any')">
+                    <div class="pos-item-icon">🎾</div>
+                    <div class="pos-item-name">Tennis Court — 1 hr</div>
+                    <div class="pos-item-desc">Court rental per person</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$8</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('dropin-tennis','Tennis Court — 1 hr','Court rental per person','🎾','fee',8,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('locker','Locker rental — daily','Single-day locker','🔒','fee',2,'any')">
+                    <div class="pos-item-icon">🔒</div>
+                    <div class="pos-item-name">Locker rental — daily</div>
+                    <div class="pos-item-desc">Single-day locker at any facility</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$2</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('locker','Locker rental — daily','Single-day locker','🔒','fee',2,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('towel','Towel rental','Single-use pool towel','🏊','fee',1,'any')">
+                    <div class="pos-item-icon">🏖️</div>
+                    <div class="pos-item-name">Towel rental</div>
+                    <div class="pos-item-desc">Single-use pool towel</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$1</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('towel','Towel rental','Single-use pool towel','🏖️','fee',1,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('parking','Parking permit — daily','Centennial Fields lot','🅿️','fee',3,'any')">
+                    <div class="pos-item-icon">🅿️</div>
+                    <div class="pos-item-name">Parking permit — daily</div>
+                    <div class="pos-item-desc">Centennial Fields parking lot</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$3</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('parking','Parking permit — daily','Centennial Fields lot','🅿️','fee',3,'any')">+</button></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Merchandise pane -->
+              <div class="pos-cat-pane" id="pos-pane-merch">
+                <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Springfield Rec merchandise</div>
+                <div class="pos-item-grid">
+                  <div class="pos-item" onclick="posAddItem('tshirt','Springfield Rec T-Shirt','Unisex cotton tee · sizes S–XXL','👕','merch',18,'any')">
+                    <div class="pos-item-icon">👕</div>
+                    <div class="pos-item-name">Springfield Rec T-Shirt</div>
+                    <div class="pos-item-desc">Unisex · S / M / L / XL / XXL</div>
+                    <div style="margin:4px 0"><select onclick="event.stopPropagation()" style="font-size:11px;border:1px solid #E2E8F0;border-radius:4px;padding:2px 6px;width:100%"><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$18</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('tshirt','T-Shirt (M)','Springfield Rec unisex tee','👕','merch',18,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('hoodie','Springfield Rec Hoodie','Pull-over · sizes S–XXL','🧥','merch',38,'any')">
+                    <div class="pos-item-icon">🧥</div>
+                    <div class="pos-item-name">Springfield Rec Hoodie</div>
+                    <div class="pos-item-desc">Pull-over · S / M / L / XL</div>
+                    <div style="margin:4px 0"><select onclick="event.stopPropagation()" style="font-size:11px;border:1px solid #E2E8F0;border-radius:4px;padding:2px 6px;width:100%"><option>S</option><option selected>M</option><option>L</option><option>XL</option></select></div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$38</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('hoodie','Hoodie (M)','Springfield Rec hoodie','🧥','merch',38,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('waterbottle','Springfield Rec Water Bottle','32oz insulated stainless','💧','merch',22,'any')">
+                    <div class="pos-item-icon">💧</div>
+                    <div class="pos-item-name">Water Bottle — 32oz</div>
+                    <div class="pos-item-desc">Insulated stainless · Springfield Rec logo</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$22</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('waterbottle','Water Bottle 32oz','Insulated stainless','💧','merch',22,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('bag','Springfield Rec Tote Bag','Reusable canvas tote','👜','merch',12,'any')">
+                    <div class="pos-item-icon">👜</div>
+                    <div class="pos-item-name">Tote Bag</div>
+                    <div class="pos-item-desc">Reusable canvas · Springfield Rec</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$12</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('bag','Springfield Rec Tote Bag','Reusable canvas tote','👜','merch',12,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('cap','Springfield Rec Cap','Adjustable baseball cap','🧢','merch',20,'any')">
+                    <div class="pos-item-icon">🧢</div>
+                    <div class="pos-item-name">Baseball Cap</div>
+                    <div class="pos-item-desc">Adjustable · Springfield Rec logo</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$20</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('cap','Springfield Rec Cap','Adjustable baseball cap','🧢','merch',20,'any')">+</button></div>
+                  </div>
+                  <div class="pos-item" onclick="posAddItem('giftcard50','Gift Card — $50','Redeemable for any program or pass','🎁','other',50,'any')">
+                    <div class="pos-item-icon">🎁</div>
+                    <div class="pos-item-name">Gift Card — $50</div>
+                    <div class="pos-item-desc">Redeemable for any program or fee</div>
+                    <div class="pos-item-footer"><span class="pos-item-price">$50</span><button class="pos-item-add" onclick="event.stopPropagation();posAddItem('giftcard50','Gift Card — $50','Redeemable for any program','🎁','other',50,'any')">+</button></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- /pos-left -->
+
+          <!-- ── RIGHT: CART ── -->
+          <div class="pos-right">
+            <div class="pos-cart-header">
+              <div class="pos-cart-title"><i class="ti ti-shopping-cart"></i>Cart</div>
+              <span class="pos-cart-txn">TXN #2026-0622-0041</span>
+              <button class="pos-cart-clear" onclick="posClearCart()"><i class="ti ti-trash" style="font-size:13px"></i> Clear</button>
+            </div>
+
+            <div class="pos-cart-items" id="pos-cart-items">
+              <!-- Populated by JS; default shows empty state -->
+              <div class="pos-cart-empty" id="pos-cart-empty">
+                <i class="ti ti-shopping-cart"></i>
+                <p>Cart is empty<br><span style="font-size:11px">Add items from the catalog →</span></p>
+              </div>
+            </div>
+
+            <!-- Totals -->
+            <div class="pos-cart-totals">
+              <!-- Discount -->
+              <div class="pos-discount-row">
+                <input class="pos-discount-input" type="text" id="pos-discount-val" placeholder="Discount code or amount..." oninput="posCalcTotals()">
+                <select class="pos-discount-type" id="pos-discount-type" onchange="posCalcTotals()">
+                  <option value="pct">%</option>
+                  <option value="flat">$</option>
+                </select>
+              </div>
+              <div class="pos-total-row"><span>Subtotal</span><strong id="pos-subtotal">$0.00</strong></div>
+              <div class="pos-total-row" id="pos-discount-row" style="display:none"><span>Discount</span><strong id="pos-discount-amt" style="color:#6EE7B7">-$0.00</strong></div>
+              <div class="pos-total-row"><span>Processing fee</span><strong id="pos-proc-fee">$0.00</strong></div>
+              <div class="pos-grand-total">
+                <span>Total due</span>
+                <strong id="pos-total">$0.00</strong>
+              </div>
+              <button class="pos-charge-btn" id="pos-charge-btn" onclick="posOpenTender()" disabled>
+                <i class="ti ti-credit-card"></i> Charge $0.00
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- MESSAGE CENTER -->
@@ -11885,6 +12595,530 @@
 
 
 
+  /* ── POINT OF SALE ── */
+
+  // State
+  var posCart = [];
+  var posAttachedAccount = null;
+  var posCashEntry = '';
+  var posCurrentPayTab = 'cash';
+  var posTxnCounter = 41;
+
+  var posAccountData = {
+    'Johnson': { initials:'SJ', name:'Johnson, Sarah', id:'FAM-00041', meta:'Family · 3 members', membership:'✓ Family Rec Membership', res:'resident', email:'s.johnson@email.com', color:'var(--blue-light)', fg:'var(--blue-dark)', balanceFlag:true  },
+    'Liu':     { initials:'KL', name:'Liu, Karen',     id:'FAM-00087', meta:'Family · 4 members', membership:'✓ Family Rec Membership', res:'resident', email:'k.liu@email.com',     color:'var(--amber-bg)',  fg:'var(--amber)',    balanceFlag:false },
+    'Rivera':  { initials:'MR', name:'Rivera, Marcus', id:'IND-00128', meta:'Individual',         membership:'✓ Gym Membership',         res:'resident', email:'m.rivera@email.com',  color:'var(--green-bg)', fg:'var(--green)',    balanceFlag:false },
+    'Patel':   { initials:'TP', name:'Patel, Tanya',   id:'FAM-00512', meta:'Family · 3 members', membership:'No active membership',     res:'nonresident', email:'t.patel@email.com',color:'var(--bg-tertiary)',fg:'var(--text-secondary)',balanceFlag:false }
+  };
+
+  function posSearchLive(val) {
+    var dd = document.getElementById('pos-search-dropdown');
+    if (!dd) return;
+    if (val.length >= 1) { dd.classList.add('open'); }
+    else { dd.classList.remove('open'); }
+  }
+
+  function posSelectFirst() {
+    var first = document.querySelector('#pos-search-dropdown .psd-item');
+    if (first) first.click();
+  }
+
+  function posAttachAccount(key) {
+    var a = posAccountData[key];
+    if (!a) return;
+    a._key = key;   // store so picker can look up household
+    posAttachedAccount = a;
+    document.getElementById('pos-search-dropdown').classList.remove('open');
+    document.getElementById('pos-search-input').value = '';
+    // Show account card
+    var card = document.getElementById('pos-acct-card');
+    if (card) {
+      card.classList.add('attached');
+      document.getElementById('pac-av').style.background    = a.color;
+      document.getElementById('pac-av').style.color         = a.fg;
+      document.getElementById('pac-av').textContent         = a.initials;
+      document.getElementById('pac-name').textContent       = a.name;
+      document.getElementById('pac-id').textContent         = a.id + ' · ' + a.meta;
+      document.getElementById('pac-membership').textContent = a.membership;
+      var resEl = document.getElementById('pac-res');
+      if (resEl) {
+        resEl.textContent  = a.res === 'resident' ? '✓ Resident' : '⚠ Non-resident';
+        resEl.className    = 'pac-flag ' + (a.res === 'resident' ? 'pac-resident' : 'pac-nonres');
+      }
+      var flags = document.getElementById('pac-flags');
+      if (a.balanceFlag && flags) {
+        var b = document.createElement('span');
+        b.className = 'pac-flag pac-balance'; b.textContent = '⚠ Balance due';
+        flags.appendChild(b);
+      }
+    }
+    posCalcTotals();
+    showToast('Account linked: ' + a.name);
+  }
+
+  function posAttachWalkin() {
+    posAttachedAccount = { initials:'GU', name:'Walk-in Guest', id:'WALKIN', meta:'No account', membership:'', res:'nonresident', email:'—', color:'#E2E8F0', fg:'#64748B', balanceFlag:false };
+    var card = document.getElementById('pos-acct-card');
+    if (card) {
+      card.classList.add('attached');
+      document.getElementById('pac-av').style.background    = '#E2E8F0';
+      document.getElementById('pac-av').style.color         = '#64748B';
+      document.getElementById('pac-av').textContent         = 'GU';
+      document.getElementById('pac-name').textContent       = 'Walk-in / Guest';
+      document.getElementById('pac-id').textContent         = 'No account on file · Guest transaction';
+      document.getElementById('pac-membership').textContent = 'Non-member · non-resident pricing applies';
+      var resEl = document.getElementById('pac-res');
+      if (resEl) { resEl.textContent = '⚠ Non-resident'; resEl.className = 'pac-flag pac-nonres'; }
+    }
+    posCalcTotals();
+    showToast('Walk-in guest transaction started');
+  }
+
+  function posDetachAccount() {
+    posAttachedAccount = null;
+    var card = document.getElementById('pos-acct-card');
+    if (card) card.classList.remove('attached');
+    posCalcTotals();
+  }
+
+  function posCatTab(tab) {
+    document.querySelectorAll('.pct').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.pos-cat-pane').forEach(function(p){ p.classList.remove('active'); });
+    var btn = document.getElementById('pct-' + tab);
+    var pane = document.getElementById('pos-pane-' + tab);
+    if (btn) btn.classList.add('active');
+    if (pane) pane.classList.add('active');
+  }
+
+  function posAddItem(id, name, sub, icon, type, price, tier) {
+    // Programs need a participant — show picker first
+    if (type === 'program') {
+      openPicker({ id:id, name:name, sub:sub, icon:icon, type:type, price:price, tier:tier });
+      return;
+    }
+    // All other item types go straight to cart (passes, fees, merch — no roster)
+    var existing = posCart.find(function(i){ return i.id === id; });
+    if (existing) { existing.qty++; }
+    else { posCart.push({ id:id, name:name, sub:sub, icon:icon, type:type, price:price, tier:tier, qty:1, participant:null }); }
+    renderCart();
+    posCalcTotals();
+    showToast(name + ' added to cart');
+  }
+
+  function posRemoveItem(cartIdx) {
+    posCart.splice(cartIdx, 1);
+    renderCart();
+    posCalcTotals();
+  }
+
+  function posQty(cartIdx, delta) {
+    var item = posCart[cartIdx];
+    if (!item) return;
+    // Programs are one-per-participant — no qty bump
+    if (item.type === 'program') return;
+    item.qty += delta;
+    if (item.qty < 1) { posRemoveItem(cartIdx); return; }
+    renderCart();
+    posCalcTotals();
+  }
+
+  function renderCart() {
+    var container = document.getElementById('pos-cart-items');
+    if (!container) return;
+    if (posCart.length === 0) {
+      container.innerHTML = '<div class="pos-cart-empty" id="pos-cart-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.2);text-align:center;gap:8px;padding:20px"><i class="ti ti-shopping-cart" style="font-size:48px"></i><p>Cart is empty<br><span style="font-size:11px">Add items from the catalog</span></p></div>';
+      return;
+    }
+    var isRes = posAttachedAccount && posAttachedAccount.res === 'resident';
+    var html = posCart.map(function(item, idx) {
+      var badgeHtml = isRes && item.tier === 'resident'
+        ? '<span class="cart-item-badge cib-res">Resident rate</span>'
+        : (posAttachedAccount ? '<span class="cart-item-badge cib-walkin">Standard</span>' : '');
+      // Participant line — only for programs
+      var participantHtml = '';
+      if (item.type === 'program' && item.participant) {
+        participantHtml = '<div class="cart-item-participant"><i class="ti ti-user"></i>' + item.participant + '</div>';
+      }
+      // Qty controls — disabled for programs (one registration per line)
+      var qtyHtml = item.type === 'program'
+        ? '<span style="font-size:10px;color:#475569;font-weight:600">1 reg.</span>'
+        : '<div class="cart-item-qty">' +
+            '<button class="qty-btn" onclick="posQty(' + idx + ',-1)">−</button>' +
+            '<span class="qty-val">' + item.qty + '</span>' +
+            '<button class="qty-btn" onclick="posQty(' + idx + ',1)">+</button>' +
+          '</div>';
+      return '<div class="cart-item">' +
+        '<div class="cart-item-icon">' + item.icon + '</div>' +
+        '<div class="cart-item-info">' +
+          '<div class="cart-item-name">' + item.name + ' ' + badgeHtml + '</div>' +
+          '<div class="cart-item-sub">' + item.sub + '</div>' +
+          participantHtml +
+        '</div>' +
+        '<div class="cart-item-right">' +
+          '<div class="cart-item-price">$' + (item.price * item.qty).toFixed(2) + '</div>' +
+          qtyHtml +
+          '<button class="cart-item-remove" onclick="posRemoveItem(' + idx + ')"><i class="ti ti-x"></i></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    container.innerHTML = html;
+  }
+
+  /* ── PARTICIPANT PICKER ── */
+  var pickerPendingItem = null;
+  var pickerSelectedMember = null;
+
+  // Household members per account — keyed by account key
+  var posHouseholds = {
+    'Johnson': [
+      { id:'SJ', name:'Sarah Johnson',  sub:'Adult · Age 41',  color:'var(--blue-light)', fg:'var(--blue-dark)' },
+      { id:'EJ', name:'Emma Johnson',   sub:'Child · Age 8',   color:'var(--green-bg)',  fg:'var(--green)'     },
+      { id:'LJ', name:'Liam Johnson',   sub:'Child · Age 11',  color:'var(--amber-bg)',  fg:'var(--amber)'     }
+    ],
+    'Liu': [
+      { id:'KL',  name:'Karen Liu',    sub:'Adult · Age 38',  color:'var(--amber-bg)',  fg:'var(--amber)'     },
+      { id:'JL',  name:'James Liu',    sub:'Adult · Age 41',  color:'var(--blue-light)',fg:'var(--blue-dark)' },
+      { id:'ML1', name:'Mia Liu',      sub:'Child · Age 7',   color:'var(--green-bg)',  fg:'var(--green)'     },
+      { id:'ML2', name:'Max Liu',      sub:'Child · Age 10',  color:'var(--purple-bg)', fg:'var(--purple)'    }
+    ],
+    'Rivera': [
+      { id:'MR', name:'Marcus Rivera', sub:'Individual · Age 34', color:'var(--green-bg)', fg:'var(--green)' }
+    ],
+    'Patel': [
+      { id:'TP',  name:'Tanya Patel',  sub:'Adult · Age 36',  color:'var(--bg-tertiary)',fg:'var(--text-secondary)' },
+      { id:'RP',  name:'Raj Patel',    sub:'Adult · Age 39',  color:'var(--bg-tertiary)',fg:'var(--text-secondary)' },
+      { id:'AP',  name:'Arya Patel',   sub:'Child · Age 9',   color:'var(--amber-bg)',  fg:'var(--amber)'     }
+    ]
+  };
+
+  function openPicker(item) {
+    pickerPendingItem = item;
+    pickerSelectedMember = null;
+
+    // Update header
+    var progName = document.getElementById('picker-prog-name');
+    var progSub  = document.getElementById('picker-prog-sub');
+    if (progName) progName.textContent = item.name;
+    if (progSub)  progSub.textContent  = item.sub;
+
+    // Build member list
+    var membersDiv = document.getElementById('picker-members');
+    var walkinRow  = document.getElementById('picker-walkin-row');
+    if (!membersDiv) return;
+
+    // Which members are already registered for THIS program in this cart?
+    var alreadyRegistered = posCart
+      .filter(function(ci){ return ci.id === item.id && ci.participant; })
+      .map(function(ci){ return ci.participant; });
+
+    var acctKey = posAttachedAccount ? posAttachedAccount._key : null;
+    var members = acctKey && posHouseholds[acctKey] ? posHouseholds[acctKey] : [];
+
+    if (members.length > 0) {
+      membersDiv.innerHTML = members.map(function(m) {
+        var taken = alreadyRegistered.indexOf(m.name) !== -1;
+        return '<div class="pos-picker-member' + (taken ? ' disabled' : '') + '" id="pm-' + m.id + '" onclick="pickerSelectMember(\'' + m.id + '\',\'' + m.name.replace(/'/g,"\\'") + '\')">' +
+          '<div class="pos-picker-av" style="background:' + m.color + ';color:' + m.fg + '">' + m.id.slice(0,2) + '</div>' +
+          '<div class="pos-picker-info">' +
+            '<div class="pos-picker-name">' + m.name + '</div>' +
+            '<div class="pos-picker-sub">' + m.sub + '</div>' +
+            (taken ? '<div class="pos-picker-already">Already in cart for this program</div>' : '') +
+          '</div>' +
+          '<i class="ti ti-circle-check pos-picker-check"></i>' +
+        '</div>';
+      }).join('');
+      if (walkinRow) walkinRow.style.display = 'none';
+    } else {
+      // No account or walk-in — show name field
+      membersDiv.innerHTML = '';
+      if (walkinRow) walkinRow.style.display = 'flex';
+    }
+
+    // Reset manual name
+    var manual = document.getElementById('picker-manual-name');
+    var nameInp = document.getElementById('picker-name-input');
+    if (manual) manual.style.display = 'none';
+    if (nameInp) nameInp.value = '';
+
+    // Reset add button
+    pickerValidate();
+    document.getElementById('pos-picker-overlay').classList.add('open');
+  }
+
+  function closePicker() {
+    document.getElementById('pos-picker-overlay').classList.remove('open');
+    pickerPendingItem = null;
+    pickerSelectedMember = null;
+  }
+
+  function pickerSelectMember(id, name) {
+    // Deselect all
+    document.querySelectorAll('.pos-picker-member').forEach(function(el){ el.classList.remove('selected'); });
+    document.getElementById('pm-' + id).classList.add('selected');
+    pickerSelectedMember = name;
+    pickerValidate();
+  }
+
+  function pickerSelectWalkin() {
+    var manual = document.getElementById('picker-manual-name');
+    var walkin = document.getElementById('picker-walkin-row');
+    if (manual) manual.style.display = 'block';
+    if (walkin) walkin.style.display = 'none';
+    pickerValidate();
+  }
+
+  function pickerValidate() {
+    var btn = document.getElementById('picker-add-btn');
+    if (!btn) return;
+    var nameInp = document.getElementById('picker-name-input');
+    var manualVal = nameInp && nameInp.closest('[style*="block"]') ? nameInp.value.trim() : '';
+    var valid = !!(pickerSelectedMember || manualVal);
+    btn.disabled = !valid;
+    if (valid) {
+      var displayName = pickerSelectedMember || manualVal;
+      btn.innerHTML = '<i class="ti ti-plus"></i> Register ' + displayName.split(' ')[0] + ' — $' + (pickerPendingItem ? pickerPendingItem.price.toFixed(2) : '0.00');
+    } else {
+      btn.innerHTML = '<i class="ti ti-plus"></i> Add to cart';
+    }
+  }
+
+  function pickerConfirm() {
+    if (!pickerPendingItem) return;
+    var nameInp = document.getElementById('picker-name-input');
+    var participant = pickerSelectedMember || (nameInp ? nameInp.value.trim() : '') || 'Guest';
+
+    // Programs go in as separate line items per participant (no qty stacking)
+    var item = pickerPendingItem;
+    posCart.push({
+      id: item.id + '-' + participant.replace(/\s+/g,'-').toLowerCase(),
+      name: item.name, sub: item.sub, icon: item.icon,
+      type: 'program', price: item.price, tier: item.tier,
+      qty: 1, participant: participant
+    });
+
+    renderCart();
+    posCalcTotals();
+    closePicker();
+    showToast(participant.split(' ')[0] + ' registered for ' + item.name);
+  }
+
+  function posCalcTotals() {
+    var subtotal = posCart.reduce(function(sum, i){ return sum + i.price * i.qty; }, 0);
+    var discountVal = parseFloat(document.getElementById('pos-discount-val') ? document.getElementById('pos-discount-val').value : 0) || 0;
+    var discountType = document.getElementById('pos-discount-type') ? document.getElementById('pos-discount-type').value : 'pct';
+    var discountAmt = discountType === 'pct' ? subtotal * (discountVal / 100) : discountVal;
+    discountAmt = Math.min(discountAmt, subtotal);
+    var afterDiscount = subtotal - discountAmt;
+    var procFee = afterDiscount > 0 ? parseFloat((afterDiscount * 0.015 + 0.25).toFixed(2)) : 0;
+    var total = afterDiscount + procFee;
+
+    function fmt(n){ return '$' + n.toFixed(2); }
+    var sub = document.getElementById('pos-subtotal');
+    var discRow = document.getElementById('pos-discount-row');
+    var discAmt = document.getElementById('pos-discount-amt');
+    var fee = document.getElementById('pos-proc-fee');
+    var tot = document.getElementById('pos-total');
+    var chargeBtn = document.getElementById('pos-charge-btn');
+
+    if (sub) sub.textContent = fmt(subtotal);
+    if (discRow) discRow.style.display = discountAmt > 0 ? 'flex' : 'none';
+    if (discAmt) discAmt.textContent = '-' + fmt(discountAmt);
+    if (fee) fee.textContent = fmt(procFee);
+    if (tot) tot.textContent = fmt(total);
+    if (chargeBtn) {
+      chargeBtn.textContent = '';
+      chargeBtn.innerHTML = '<i class="ti ti-credit-card"></i> Charge ' + fmt(total);
+      chargeBtn.disabled = (total <= 0);
+    }
+    // Sync tender modal total
+    var td = document.getElementById('tender-total-display');
+    if (td) td.textContent = fmt(total);
+    var labels = ['card-amount-label','card-total-btn','card-charge-label','tap-amount-label','tap-total-btn'];
+    labels.forEach(function(lid){
+      var el = document.getElementById(lid); if (el) el.textContent = fmt(total);
+    });
+  }
+
+  function posClearCart() {
+    posCart = [];
+    renderCart();
+    posCalcTotals();
+  }
+
+  function posNewTxn() {
+    posTxnCounter++;
+    var txnId = '2026-0622-' + String(posTxnCounter).padStart(4,'0');
+    posCart = [];
+    posDetachAccount();
+    renderCart();
+    posCalcTotals();
+    // Reset discount
+    var dv = document.getElementById('pos-discount-val'); if (dv) dv.value = '';
+    // Update TXN display
+    document.querySelectorAll('.pos-cart-txn, .pos-kbd-hint').forEach(function(el){ el.textContent = 'TXN #' + txnId; });
+    showToast('New transaction started · TXN #' + txnId);
+  }
+
+  function posOpenTender() {
+    if (posCart.length === 0) return;
+    document.getElementById('pos-tender-overlay').classList.add('open');
+    posPayTab('cash');
+    posCashEntry = '';
+    updateCashDisplay();
+    // Sync split remaining
+    var total = getTotal();
+    var sr = document.getElementById('split-remaining'); if (sr) sr.textContent = '$' + total.toFixed(2);
+    // Sync split complete btn
+    var scb = document.getElementById('split-complete-btn'); if (scb) scb.disabled = true;
+    splitCalcRemaining();
+  }
+
+  function closeTender() {
+    document.getElementById('pos-tender-overlay').classList.remove('open');
+  }
+
+  function getTotal() {
+    var subtotal = posCart.reduce(function(sum, i){ return sum + i.price * i.qty; }, 0);
+    var discountVal = parseFloat(document.getElementById('pos-discount-val') ? document.getElementById('pos-discount-val').value : 0) || 0;
+    var discountType = document.getElementById('pos-discount-type') ? document.getElementById('pos-discount-type').value : 'pct';
+    var discountAmt = discountType === 'pct' ? subtotal * (discountVal / 100) : discountVal;
+    discountAmt = Math.min(discountAmt, subtotal);
+    var afterDiscount = subtotal - discountAmt;
+    var procFee = afterDiscount > 0 ? parseFloat((afterDiscount * 0.015 + 0.25).toFixed(2)) : 0;
+    return afterDiscount + procFee;
+  }
+
+  function posPayTab(tab) {
+    posCurrentPayTab = tab;
+    document.querySelectorAll('.pos-pay-tab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.pos-pay-pane').forEach(function(p){ p.classList.remove('active'); });
+    var btn = document.getElementById('ptab-' + tab);
+    var pane = document.getElementById('ppane-' + tab);
+    if (btn) btn.classList.add('active');
+    if (pane) pane.classList.add('active');
+  }
+
+  // Cash keypad
+  function cashKey(key) {
+    if (key === 'back') {
+      posCashEntry = posCashEntry.slice(0, -1);
+    } else if (key === '.') {
+      if (!posCashEntry.includes('.')) posCashEntry += '.';
+    } else {
+      // Limit to 2 decimal places
+      if (posCashEntry.includes('.') && posCashEntry.split('.')[1].length >= 2) return;
+      posCashEntry += key;
+    }
+    updateCashDisplay();
+  }
+
+  function setCashPreset(val) {
+    var total = getTotal();
+    if (val === 'exact') { posCashEntry = total.toFixed(2); }
+    else { posCashEntry = val; }
+    updateCashDisplay();
+  }
+
+  function updateCashDisplay() {
+    var total = getTotal();
+    var tendered = parseFloat(posCashEntry) || 0;
+    var disp = document.getElementById('cash-tendered-display');
+    var changeRow = document.getElementById('cash-change-row');
+    var changeDisp = document.getElementById('cash-change-display');
+    var completeBtn = document.getElementById('cash-complete-btn');
+    if (disp) disp.textContent = posCashEntry ? '$' + posCashEntry : '$0.00';
+    if (tendered >= total && total > 0) {
+      var change = tendered - total;
+      if (changeRow) changeRow.style.display = 'flex';
+      if (changeDisp) changeDisp.textContent = '$' + change.toFixed(2);
+      if (completeBtn) {
+        completeBtn.disabled = false;
+        completeBtn.innerHTML = '<i class="ti ti-check"></i> Collect cash · Change: $' + change.toFixed(2);
+      }
+    } else {
+      if (changeRow) changeRow.style.display = 'none';
+      if (completeBtn) { completeBtn.disabled = true; completeBtn.innerHTML = '<i class="ti ti-check"></i> Complete — collect cash'; }
+    }
+  }
+
+  function validateCheckForm() {
+    var num = document.getElementById('check-number');
+    var name = document.getElementById('check-name');
+    var amt = document.getElementById('check-amount');
+    var btn = document.getElementById('check-complete-btn');
+    if (!num || !name || !amt || !btn) return;
+    var total = getTotal();
+    var amtVal = parseFloat(amt.value) || 0;
+    btn.disabled = !(num.value.trim() && name.value.trim() && Math.abs(amtVal - total) < 0.01);
+  }
+
+  function addSplitLine() {
+    var container = document.getElementById('split-items');
+    if (!container) return;
+    var idx = container.children.length + 1;
+    var div = document.createElement('div');
+    div.className = 'split-item';
+    div.innerHTML = '<select onchange="splitCalcRemaining()"><option>Cash</option><option>Check</option><option>Credit card</option><option>Tap / NFC</option></select>' +
+      '<input type="text" placeholder="Amount" oninput="splitCalcRemaining()" id="split-amt-' + idx + '">' +
+      '<button onclick="this.closest(\'.split-item\').remove();splitCalcRemaining()" style="background:none;border:none;color:#64748B;cursor:pointer;font-size:18px;padding:4px">×</button>';
+    container.appendChild(div);
+  }
+
+  function splitCalcRemaining() {
+    var total = getTotal();
+    var collected = 0;
+    document.querySelectorAll('#split-items input[type=text]').forEach(function(inp){
+      collected += parseFloat(inp.value) || 0;
+    });
+    var remaining = total - collected;
+    var sr = document.getElementById('split-remaining');
+    if (sr) sr.textContent = '$' + Math.max(remaining, 0).toFixed(2);
+    var btn = document.getElementById('split-complete-btn');
+    if (btn) btn.disabled = remaining > 0.005;
+  }
+
+  function posCompletePayment(method) {
+    var total = getTotal();
+    var tendered = parseFloat(posCashEntry) || total;
+    var change = method === 'cash' ? Math.max(tendered - total, 0) : 0;
+    var methodLabels = { cash:'Cash', check:'Check', card:'Credit card', tap:'Tap / NFC', split:'Split tender' };
+    var methodLabel = methodLabels[method] || method;
+
+    // Close tender
+    document.getElementById('pos-tender-overlay').classList.remove('open');
+
+    // Build receipt
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    document.getElementById('receipt-date').textContent = dateStr;
+
+    // Receipt lines
+    var linesHtml = posCart.map(function(item){
+      return '<div class="receipt-line"><span>' + item.icon + ' ' + item.name + (item.qty > 1 ? ' ×' + item.qty : '') + '</span><strong>$' + (item.price * item.qty).toFixed(2) + '</strong></div>';
+    }).join('');
+    document.getElementById('receipt-lines').innerHTML = linesHtml;
+    document.getElementById('receipt-total-display').textContent = '$' + total.toFixed(2);
+    document.getElementById('receipt-pay-method').textContent = methodLabel;
+    document.getElementById('receipt-tendered').textContent = method === 'cash' ? '$' + tendered.toFixed(2) : '$' + total.toFixed(2);
+
+    var changeRow = document.getElementById('receipt-change-row');
+    if (method === 'cash' && change > 0) {
+      changeRow.style.display = 'flex';
+      document.getElementById('receipt-change-amt').textContent = '$' + change.toFixed(2);
+    } else {
+      changeRow.style.display = 'none';
+    }
+
+    var acctName = posAttachedAccount ? posAttachedAccount.name : 'Walk-in Guest';
+    var acctEmail = posAttachedAccount ? posAttachedAccount.email : '—';
+    document.getElementById('receipt-acct-name').textContent = acctName;
+    document.getElementById('receipt-email').textContent = acctEmail;
+    document.getElementById('receipt-method-label').textContent = methodLabel + (change > 0 ? ' · Change: $' + change.toFixed(2) : '');
+
+    // Show receipt
+    document.getElementById('pos-receipt-overlay').classList.add('open');
+  }
+
   /* ── ACCOUNT SEARCH ── */
   var currentSfp = 'all';
 
@@ -12639,6 +13873,213 @@
         <button style="flex:1;padding:11px;border-radius:var(--radius-md);border:1px solid var(--border-med);background:var(--bg-primary);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer" onclick="closeInviteModal()">Cancel</button>
         <button style="flex:2;padding:11px;border-radius:var(--radius-md);border:none;background:var(--blue);color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer" onclick="sendInvite()"><i class="ti ti-send" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Send invitation</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- POS PARTICIPANT PICKER -->
+<div class="pos-picker-overlay" id="pos-picker-overlay">
+  <div class="pos-picker-modal">
+    <div class="pos-picker-header">
+      <div class="pos-picker-header-info">
+        <h3 id="picker-prog-name">Youth Swim Lessons — Session A</h3>
+        <p id="picker-prog-sub">Select who is being registered for this program</p>
+      </div>
+      <button class="pos-picker-close" onclick="closePicker()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="pos-picker-body">
+      <div class="pos-picker-label">Who is registering?</div>
+      <div id="picker-members"><!-- filled by JS --></div>
+      <div class="pos-picker-walkin" id="picker-walkin-row" onclick="pickerSelectWalkin()" style="display:none">
+        <div class="pos-picker-av" style="background:#334155;color:#94A3B8"><i class="ti ti-user" style="font-size:15px"></i></div>
+        <div class="pos-picker-info">
+          <div class="pos-picker-walkin-label">Enter participant name manually</div>
+        </div>
+      </div>
+      <div id="picker-manual-name" style="display:none;margin-bottom:10px">
+        <input type="text" id="picker-name-input" placeholder="Participant name..." style="width:100%;background:#0F172A;border:1px solid #334155;border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--font);color:#F1F5F9;outline:none" oninput="pickerValidate()">
+      </div>
+    </div>
+    <div class="pos-picker-footer">
+      <button class="pos-picker-cancel" onclick="closePicker()">Cancel</button>
+      <button class="pos-picker-add-btn" id="picker-add-btn" onclick="pickerConfirm()" disabled>
+        <i class="ti ti-plus"></i> Add to cart
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- POS TENDER MODAL -->
+<div class="pos-tender-overlay" id="pos-tender-overlay" onclick="if(event.target===this)closeTender()">
+  <div class="pos-tender-modal">
+    <div class="pos-tender-header">
+      <i class="ti ti-credit-card" style="font-size:22px;color:#60A5FA"></i>
+      <h3>Collect payment</h3>
+      <div class="pos-tender-total" id="tender-total-display">$0.00</div>
+      <button class="pos-tender-close" onclick="closeTender()"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Payment method tabs -->
+    <div class="pos-pay-tabs">
+      <button class="pos-pay-tab active" id="ptab-cash" onclick="posPayTab('cash')"><i class="ti ti-cash"></i>Cash</button>
+      <button class="pos-pay-tab" id="ptab-check" onclick="posPayTab('check')"><i class="ti ti-writing"></i>Check</button>
+      <button class="pos-pay-tab" id="ptab-card" onclick="posPayTab('card')"><i class="ti ti-credit-card"></i>Card</button>
+      <button class="pos-pay-tab" id="ptab-tap" onclick="posPayTab('tap')"><i class="ti ti-wifi"></i>Tap / NFC</button>
+      <button class="pos-pay-tab" id="ptab-split" onclick="posPayTab('split')"><i class="ti ti-divide"></i>Split</button>
+    </div>
+
+    <!-- CASH -->
+    <div class="pos-pay-pane active" id="ppane-cash">
+      <div class="cash-amount-display">
+        <div class="cash-label">Cash tendered</div>
+        <div class="cash-value" id="cash-tendered-display">$0.00</div>
+      </div>
+      <div class="cash-presets">
+        <button class="cash-preset" onclick="setCashPreset('exact')">Exact</button>
+        <button class="cash-preset" onclick="setCashPreset('5')">$5</button>
+        <button class="cash-preset" onclick="setCashPreset('10')">$10</button>
+        <button class="cash-preset" onclick="setCashPreset('20')">$20</button>
+        <button class="cash-preset" onclick="setCashPreset('50')">$50</button>
+        <button class="cash-preset" onclick="setCashPreset('100')">$100</button>
+      </div>
+      <div class="cash-keypad">
+        <button class="cash-key" onclick="cashKey('1')">1</button>
+        <button class="cash-key" onclick="cashKey('2')">2</button>
+        <button class="cash-key" onclick="cashKey('3')">3</button>
+        <button class="cash-key" onclick="cashKey('4')">4</button>
+        <button class="cash-key" onclick="cashKey('5')">5</button>
+        <button class="cash-key" onclick="cashKey('6')">6</button>
+        <button class="cash-key" onclick="cashKey('7')">7</button>
+        <button class="cash-key" onclick="cashKey('8')">8</button>
+        <button class="cash-key" onclick="cashKey('9')">9</button>
+        <button class="cash-key special" onclick="cashKey('.')">.</button>
+        <button class="cash-key" onclick="cashKey('0')">0</button>
+        <button class="cash-key special" onclick="cashKey('back')">⌫</button>
+      </div>
+      <div class="cash-change-display" id="cash-change-row" style="display:none">
+        <span>Change due</span>
+        <strong id="cash-change-display">$0.00</strong>
+      </div>
+      <button class="pos-complete-btn" id="cash-complete-btn" onclick="posCompletePayment('cash')" disabled>
+        <i class="ti ti-check"></i> Complete — collect cash
+      </button>
+    </div>
+
+    <!-- CHECK -->
+    <div class="pos-pay-pane" id="ppane-check">
+      <div class="check-field">
+        <label>Check number</label>
+        <input type="text" id="check-number" placeholder="e.g. 1042" oninput="validateCheckForm()">
+      </div>
+      <div class="check-field">
+        <label>Name on check</label>
+        <input type="text" id="check-name" placeholder="e.g. Sarah Johnson" oninput="validateCheckForm()">
+      </div>
+      <div class="check-field">
+        <label>Amount on check</label>
+        <input type="text" id="check-amount" placeholder="Must match total due" oninput="validateCheckForm()">
+      </div>
+      <div style="background:#1E293B;border:1px solid #334155;border-radius:8px;padding:10px 12px;font-size:11px;color:#94A3B8;margin-bottom:12px">
+        <i class="ti ti-info-circle" style="color:#60A5FA;margin-right:4px"></i>
+        Make check payable to: <strong style="color:#F1F5F9">Springfield Parks &amp; Recreation</strong>. Place check in the cash drawer after completing this transaction.
+      </div>
+      <button class="pos-complete-btn" id="check-complete-btn" onclick="posCompletePayment('check')" disabled>
+        <i class="ti ti-check"></i> Complete — record check payment
+      </button>
+    </div>
+
+    <!-- CARD (manual / swipe) -->
+    <div class="pos-pay-pane" id="ppane-card">
+      <div class="card-terminal">
+        <i class="ti ti-credit-card"></i>
+        <div class="card-terminal-title">Card terminal</div>
+        <div class="card-terminal-sub">Insert, swipe, or present card to the terminal.<br>Amount: <strong style="color:#F1F5F9" id="card-amount-label">$0.00</strong></div>
+      </div>
+      <button class="tap-btn" style="background:#1A3A6B;border-color:#3B82F6" onclick="posCompletePayment('card')">
+        <i class="ti ti-credit-card"></i> Process card — <span id="card-total-btn">$0.00</span>
+      </button>
+      <div style="text-align:center;font-size:11px;color:#475569;margin:10px 0">or enter card details manually</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="grid-column:span 2"><div class="check-field"><label>Card number</label><input type="text" placeholder="•••• •••• •••• ••••" maxlength="19" style="letter-spacing:0.1em"></div></div>
+        <div class="check-field"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"></div>
+        <div class="check-field"><label>CVV</label><input type="text" placeholder="•••" maxlength="4"></div>
+      </div>
+      <button class="pos-complete-btn" onclick="posCompletePayment('card')">
+        <i class="ti ti-lock"></i> Charge card — <span id="card-charge-label">$0.00</span>
+      </button>
+    </div>
+
+    <!-- TAP / NFC -->
+    <div class="pos-pay-pane" id="ppane-tap">
+      <div class="card-terminal" style="border-color:#3B82F6;background:#0D1B2E">
+        <i class="ti ti-wifi" style="color:#60A5FA;font-size:56px;animation:pulse 1.5s infinite"></i>
+        <div class="card-terminal-title" style="color:#93C5FD">Waiting for tap...</div>
+        <div class="card-terminal-sub">Hold card, phone, or watch<br>near the reader to pay <strong style="color:#F1F5F9" id="tap-amount-label">$0.00</strong></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;justify-content:center;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B"><i class="ti ti-brand-apple" style="font-size:16px;color:#94A3B8"></i>Apple Pay</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B"><i class="ti ti-brand-google" style="font-size:16px;color:#94A3B8"></i>Google Pay</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B"><i class="ti ti-wifi" style="font-size:16px;color:#94A3B8"></i>Contactless card</div>
+      </div>
+      <button class="tap-btn" onclick="posCompletePayment('tap')">
+        <i class="ti ti-wifi"></i> Simulate tap — <span id="tap-total-btn">$0.00</span>
+      </button>
+      <button class="manual-btn" style="margin-top:8px" onclick="posPayTab('card')"><i class="ti ti-credit-card"></i>Switch to manual card entry</button>
+    </div>
+
+    <!-- SPLIT TENDER -->
+    <div class="pos-pay-pane" id="ppane-split">
+      <div class="split-rem">Remaining to collect: <span id="split-remaining">$0.00</span></div>
+      <div id="split-items">
+        <div class="split-item">
+          <select onchange="splitCalcRemaining()">
+            <option>Cash</option><option>Check</option><option>Credit card</option><option>Tap / NFC</option>
+          </select>
+          <input type="text" placeholder="Amount" oninput="splitCalcRemaining()" id="split-amt-1">
+          <button onclick="this.closest('.split-item').remove();splitCalcRemaining()" style="background:none;border:none;color:#64748B;cursor:pointer;font-size:18px;padding:4px">×</button>
+        </div>
+      </div>
+      <button onclick="addSplitLine()" style="width:100%;padding:8px;background:#1E293B;border:1px dashed #334155;border-radius:6px;color:#60A5FA;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;margin:8px 0"><i class="ti ti-plus" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>Add payment method</button>
+      <div style="background:#0F172A;border-radius:8px;padding:10px 12px;font-size:12px;color:#94A3B8;margin-bottom:4px">
+        Split tender allows collecting payment across multiple methods. Total collected must equal the transaction total before completing.
+      </div>
+      <button class="pos-complete-btn" id="split-complete-btn" onclick="posCompletePayment('split')" disabled>
+        <i class="ti ti-check"></i> Complete split payment
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- POS RECEIPT MODAL -->
+<div class="pos-receipt-overlay" id="pos-receipt-overlay">
+  <div class="pos-receipt-modal">
+    <div class="receipt-header">
+      <i class="ti ti-circle-check"></i>
+      <h3>Payment complete!</h3>
+      <p id="receipt-method-label">Cash payment · Change: $0.00</p>
+    </div>
+    <div class="receipt-body">
+      <div class="receipt-txn">Transaction #2026-0622-0041 · <span id="receipt-date"></span></div>
+      <div id="receipt-lines"><!-- filled by JS --></div>
+      <div class="receipt-total"><span>Total</span><strong id="receipt-total-display">$0.00</strong></div>
+      <div class="receipt-payment">
+        <div class="receipt-payment-row"><span>Payment method</span><span id="receipt-pay-method">—</span></div>
+        <div class="receipt-payment-row"><span>Amount tendered</span><span id="receipt-tendered">—</span></div>
+        <div class="receipt-payment-row receipt-change" id="receipt-change-row" style="display:none">
+          <span style="color:var(--green);font-weight:600">Change due</span>
+          <span id="receipt-change-amt" style="color:var(--green);font-weight:700">$0.00</span>
+        </div>
+      </div>
+      <div style="background:var(--bg-secondary);border-radius:8px;padding:10px 12px;margin-top:12px;font-size:12px;color:var(--text-secondary);text-align:center">
+        <strong id="receipt-acct-name" style="color:var(--text-primary)">Walk-in Guest</strong><br>
+        Receipt sent to: <span id="receipt-email">—</span>
+      </div>
+    </div>
+    <div class="receipt-actions">
+      <button style="background:var(--blue-dark);color:#fff;border:none" onclick="showToast('Sending to receipt printer...')"><i class="ti ti-printer" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Print</button>
+      <button style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-med)" onclick="showToast('Email receipt sent')"><i class="ti ti-mail" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Email</button>
+      <button style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-med)" onclick="showToast('SMS receipt sent')"><i class="ti ti-message" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Text</button>
+      <button style="background:var(--green);color:#fff;border:none" onclick="posNewTxn();document.getElementById('pos-receipt-overlay').classList.remove('open')"><i class="ti ti-plus" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>New TXN</button>
     </div>
   </div>
 </div>
