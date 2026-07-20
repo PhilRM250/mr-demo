@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--- PR 071626 Expanded account management functionality --->
+  <!--- PR 072026 extended alternate pricing functionality --->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1876,6 +1876,100 @@
   .optout-in { background:var(--green-bg); color:var(--green); }
   .optout-out { background:var(--red-bg); color:var(--red); }
   .optout-partial { background:var(--amber-bg); color:var(--amber); }
+
+  /* ── PRICING RULES ── */
+  .pr-section { background:var(--bg-primary); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:20px; }
+  .pr-section-header {
+    padding:14px 20px; background:var(--bg-secondary); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:12px; cursor:pointer;
+  }
+  .pr-section-header:hover { background:var(--bg-tertiary); }
+  .pr-section-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .pr-section-title { font-size:14px; font-weight:600; color:var(--text-primary); flex:1; }
+  .pr-section-desc { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+  .pr-section-badge { font-size:11px; font-weight:600; padding:2px 9px; border-radius:var(--radius-pill); background:var(--blue-light); color:var(--blue-dark); }
+  .pr-section-chevron { font-size:18px; color:var(--text-tertiary); transition:transform 0.2s; }
+  .pr-section-chevron.open { transform:rotate(90deg); }
+  .pr-body { display:none; padding:20px; }
+  .pr-body.open { display:block; }
+
+  /* Rule cards */
+  .pr-rule-card {
+    border:1.5px solid var(--border-med); border-radius:var(--radius-lg);
+    overflow:hidden; margin-bottom:12px; background:var(--bg-primary);
+  }
+  .pr-rule-card.active-rule { border-color:var(--blue-border); background:var(--blue-light); }
+  .pr-rule-header {
+    display:flex; align-items:center; gap:12px; padding:12px 16px;
+    border-bottom:1px solid var(--border);
+  }
+  .pr-rule-header.active-rule { background:var(--blue-light); border-bottom-color:var(--blue-border); }
+  .pr-rule-name { font-size:13px; font-weight:600; color:var(--text-primary); flex:1; }
+  .pr-rule-body { padding:14px 16px; }
+  .pr-rule-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+  .pr-rule-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px; }
+  .pr-field { display:flex; flex-direction:column; gap:4px; }
+  .pr-field label { font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.3px; }
+  .pr-field input, .pr-field select, .pr-field textarea {
+    border:1px solid var(--border-med); border-radius:var(--radius-md);
+    padding:8px 10px; font-size:13px; font-family:var(--font); color:var(--text-primary);
+    background:var(--bg-primary); outline:none;
+  }
+  .pr-field input:focus, .pr-field select:focus { border-color:var(--blue); }
+
+  /* Discount tier rows */
+  .pr-tier-table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:12px; }
+  .pr-tier-table th { padding:8px 12px; background:var(--bg-secondary); border:1px solid var(--border); font-size:11px; font-weight:600; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.3px; text-align:left; }
+  .pr-tier-table td { padding:8px 12px; border:1px solid var(--border); vertical-align:middle; }
+  .pr-tier-table tr:hover td { background:var(--bg-secondary); }
+  .pr-tier-input { border:1px solid var(--border-med); border-radius:6px; padding:5px 8px; font-size:13px; font-family:var(--font); width:100px; outline:none; }
+  .pr-tier-input:focus { border-color:var(--blue); }
+
+  /* Program tag picker */
+  .pr-prog-list { display:flex; flex-wrap:wrap; gap:6px; padding:8px 0; }
+  .pr-prog-chip {
+    display:flex; align-items:center; gap:5px; padding:4px 10px;
+    background:var(--bg-secondary); border:1.5px solid var(--border-med);
+    border-radius:var(--radius-pill); font-size:12px; font-weight:500;
+    color:var(--text-secondary); cursor:pointer; transition:all 0.1s;
+  }
+  .pr-prog-chip.selected { background:var(--blue-light); border-color:var(--blue); color:var(--blue-dark); }
+  .pr-prog-chip i { font-size:13px; }
+
+  /* Live preview box */
+  .pr-preview-box {
+    background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:14px 16px; margin-top:14px;
+  }
+  .pr-preview-title { font-size:11px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px; }
+  .pr-preview-scenario { display:flex; align-items:center; gap:10px; font-size:13px; padding:8px 0; border-bottom:1px solid var(--border); }
+  .pr-preview-scenario:last-child { border-bottom:none; }
+  .pr-preview-scenario .pr-before { color:var(--text-tertiary); text-decoration:line-through; font-size:12px; }
+  .pr-preview-scenario .pr-after { color:var(--green); font-weight:700; }
+  .pr-preview-scenario .pr-saving { font-size:11px; background:var(--green-bg); color:var(--green); padding:1px 7px; border-radius:var(--radius-pill); font-weight:600; }
+  .pr-preview-scenario .pr-label { flex:1; color:var(--text-secondary); }
+  .pr-toggle-on { background:var(--blue); color:#fff; border:none; border-radius:4px; font-size:11px; font-weight:600; padding:2px 8px; cursor:pointer; }
+
+  /* Pricing type selector */
+  .pr-type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  .pr-type-card {
+    border:2px solid var(--border-med); border-radius:var(--radius-lg); padding:14px;
+    cursor:pointer; transition:all 0.12s; text-align:center;
+  }
+  .pr-type-card:hover { border-color:var(--blue); background:var(--blue-light); }
+  .pr-type-card.selected { border-color:var(--blue); background:var(--blue-light); }
+  .pr-type-card i { font-size:24px; display:block; margin-bottom:6px; }
+  .pr-type-card .pr-type-name { font-size:12px; font-weight:700; color:var(--text-primary); }
+  .pr-type-card .pr-type-desc { font-size:10px; color:var(--text-secondary); margin-top:3px; line-height:1.4; }
+
+  /* Add rule button */
+  .pr-add-rule {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px; border:2px dashed var(--border-med); border-radius:var(--radius-lg);
+    color:var(--text-secondary); font-size:13px; font-weight:500; cursor:pointer;
+    transition:all 0.12s; background:none; width:100%; font-family:var(--font);
+  }
+  .pr-add-rule:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-light); }
 
   /* ── RESIDENCY MANAGEMENT ── */
   .res-method-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
@@ -7471,6 +7565,7 @@
       <div class="sidebar-section-label">Programs</div>
       <button class="sidebar-item" onclick="adminNav(this,'catalog')"><i class="ti ti-calendar-month"></i>Catalog periods</button>
       <button class="sidebar-item" onclick="adminNav(this,'programs')"><i class="ti ti-run"></i>Programs</button>
+      <button class="sidebar-item" onclick="adminNav(this,'pricing')"><i class="ti ti-tag"></i>Pricing rules</button>
       <button class="sidebar-item" onclick="adminNav(this,'memberships')"><i class="ti ti-id-badge"></i>Memberships</button>
       <button class="sidebar-item" onclick="adminNav(this,'formbuilder')"><i class="ti ti-forms"></i>Form builder</button>
       <button class="sidebar-item" onclick="adminNav(this,'passes')"><i class="ti ti-ticket"></i>Passes &amp; tickets</button>
@@ -8550,6 +8645,441 @@
           </div>
         </div>
       </div>
+      <div id="admin-pricing" class="admin-section">
+        <div class="admin-topbar">
+          <div class="topbar-title">Pricing rules</div>
+          <div class="topbar-actions">
+            <button class="btn-secondary" onclick="showToast('Pricing rules exported')"><i class="ti ti-download"></i>Export rules</button>
+            <button class="btn-primary" onclick="prNewRule()"><i class="ti ti-plus"></i>New pricing rule</button>
+          </div>
+        </div>
+        <div class="admin-body">
+
+          <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:12px 18px;margin-bottom:22px;font-size:13px;color:var(--blue-dark);display:flex;gap:12px;align-items:flex-start">
+            <i class="ti ti-info-circle" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>
+            <div>Pricing rules are applied automatically at checkout in order of priority. <strong>Residency pricing</strong> is always applied first, then <strong>membership pricing</strong>, then <strong>multi-program bundle discounts</strong>, then <strong>multi-individual / sibling discounts</strong>. Rules within the same type are applied in the order shown here. Only one rule of each type applies per line item — the highest-value discount wins.</div>
+          </div>
+
+          <!-- ══ SECTION 1: MEMBERSHIP PRICING ══ -->
+          <div class="pr-section">
+            <div class="pr-section-header" onclick="prToggle('membership')">
+              <div class="pr-section-icon" style="background:var(--purple-bg);color:var(--purple)"><i class="ti ti-id-badge"></i></div>
+              <div style="flex:1">
+                <div class="pr-section-title">Membership pricing</div>
+                <div class="pr-section-desc">Members with an active membership type pay a different rate than non-members for the same program</div>
+              </div>
+              <span class="pr-section-badge">2 active rules</span>
+              <i class="ti ti-chevron-right pr-section-chevron open" id="pr-chev-membership"></i>
+            </div>
+            <div class="pr-body open" id="pr-body-membership">
+
+              <!-- Rule 1: Community Center Membership pricing -->
+              <div class="pr-rule-card active-rule">
+                <div class="pr-rule-header active-rule">
+                  <div class="pr-rule-name">Community Center Membership — member rate</div>
+                  <span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:var(--radius-pill)">● Active</span>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Rule editing...')"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)" onclick="showToast('Rule deactivated')"><i class="ti ti-toggle-left"></i>Disable</button>
+                </div>
+                <div class="pr-rule-body">
+                  <div class="pr-rule-grid">
+                    <div class="pr-field">
+                      <label>Rule name</label>
+                      <input type="text" value="Community Center Membership — member rate">
+                    </div>
+                    <div class="pr-field">
+                      <label>Qualifying membership(s)</label>
+                      <select>
+                        <option selected>Community Center Membership (active)</option>
+                        <option>Pool Membership (active)</option>
+                        <option>Gym Membership (active)</option>
+                        <option>Any active membership</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="pr-rule-grid">
+                    <div class="pr-field">
+                      <label>Member price</label>
+                      <input type="text" value="$80.00">
+                    </div>
+                    <div class="pr-field">
+                      <label>Non-member (standard) price</label>
+                      <input type="text" value="$100.00">
+                    </div>
+                  </div>
+                  <div class="pr-field" style="margin-bottom:14px">
+                    <label>Apply to programs</label>
+                    <div class="pr-prog-list">
+                      <div class="pr-prog-chip selected" onclick="this.classList.toggle('selected')"><i class="ti ti-swimming"></i>Youth Swim Lessons</div>
+                      <div class="pr-prog-chip selected" onclick="this.classList.toggle('selected')"><i class="ti ti-yoga"></i>Adult Yoga</div>
+                      <div class="pr-prog-chip selected" onclick="this.classList.toggle('selected')"><i class="ti ti-run"></i>Adult Fitness Bootcamp</div>
+                      <div class="pr-prog-chip" onclick="this.classList.toggle('selected')"><i class="ti ti-ball-basketball"></i>Basketball programs</div>
+                      <div class="pr-prog-chip" onclick="this.classList.toggle('selected')"><i class="ti ti-palette"></i>Art Studio</div>
+                      <div class="pr-prog-chip" onclick="this.classList.toggle('selected')"><i class="ti ti-list-check"></i>All programs in category...</div>
+                      <div class="pr-prog-chip" style="border-style:dashed" onclick="showToast('Program selector opening...')"><i class="ti ti-plus"></i>Add program</div>
+                    </div>
+                  </div>
+                  <div class="pr-preview-box">
+                    <div class="pr-preview-title">Live preview — how this appears at checkout</div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label">Adult Yoga · account WITH Community Center Membership</div>
+                      <span class="pr-before">$100.00</span>
+                      <i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i>
+                      <span class="pr-after">$80.00</span>
+                      <span class="pr-saving">Save $20</span>
+                    </div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label">Adult Yoga · account WITHOUT active membership</div>
+                      <span class="pr-after" style="color:var(--text-primary)">$100.00</span>
+                      <span style="font-size:11px;color:var(--text-tertiary)">Standard price</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 2: Pool membership discount -->
+              <div class="pr-rule-card">
+                <div class="pr-rule-header">
+                  <div class="pr-rule-name">Pool Membership — aquatics discount</div>
+                  <span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:var(--radius-pill)">● Active</span>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Rule editing...')"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)" onclick="showToast('Rule deactivated')"><i class="ti ti-toggle-left"></i>Disable</button>
+                </div>
+                <div class="pr-rule-body">
+                  <div class="pr-rule-grid">
+                    <div class="pr-field"><label>Qualifying membership</label><select><option selected>Pool Membership (active)</option></select></div>
+                    <div class="pr-field"><label>Discount type</label><select><option selected>Percentage off standard price</option><option>Fixed dollar amount off</option><option>Set a specific member price</option></select></div>
+                    <div class="pr-field"><label>Discount amount</label><input type="text" value="10%"></div>
+                    <div class="pr-field"><label>Apply to</label><select><option selected>All Aquatics programs</option></select></div>
+                  </div>
+                  <div class="pr-preview-box">
+                    <div class="pr-preview-title">Preview</div>
+                    <div class="pr-preview-scenario"><div class="pr-label">Youth Swim Lessons · Pool Membership holder</div><span class="pr-before">$85.00</span><i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i><span class="pr-after">$76.50</span><span class="pr-saving">10% off</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="pr-add-rule" onclick="prNewRule('membership')"><i class="ti ti-plus"></i>Add membership pricing rule</button>
+            </div>
+          </div>
+
+          <!-- ══ SECTION 2: MULTI-PROGRAM BUNDLE DISCOUNTS ══ -->
+          <div class="pr-section">
+            <div class="pr-section-header" onclick="prToggle('bundle')">
+              <div class="pr-section-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-packages"></i></div>
+              <div style="flex:1">
+                <div class="pr-section-title">Multi-program bundle discounts</div>
+                <div class="pr-section-desc">Discount applied when one individual registers for two or more programs together — e.g. AM + PM same week, or a series of sessions</div>
+              </div>
+              <span class="pr-section-badge">2 active rules</span>
+              <i class="ti ti-chevron-right pr-section-chevron open" id="pr-chev-bundle"></i>
+            </div>
+            <div class="pr-body open" id="pr-body-bundle">
+
+              <!-- Rule: Summer Camp AM+PM -->
+              <div class="pr-rule-card active-rule">
+                <div class="pr-rule-header active-rule">
+                  <div class="pr-rule-name">Summer Camp Week 1 — AM + PM same-week bundle</div>
+                  <span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:var(--radius-pill)">● Active</span>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Rule editing...')"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)" onclick="showToast('Rule deactivated')"><i class="ti ti-toggle-left"></i>Disable</button>
+                </div>
+                <div class="pr-rule-body">
+                  <div class="pr-rule-grid">
+                    <div class="pr-field"><label>Rule name</label><input type="text" value="Summer Camp Week 1 — AM + PM bundle"></div>
+                    <div class="pr-field">
+                      <label>Discount applies to</label>
+                      <select>
+                        <option selected>Lower-priced program</option>
+                        <option>Higher-priced program</option>
+                        <option>All programs in bundle</option>
+                        <option>Total cart value</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Programs that must be in the same cart to trigger this discount (same individual)</div>
+                  <div class="pr-prog-list" style="margin-bottom:14px">
+                    <div class="pr-prog-chip selected"><i class="ti ti-sun"></i>Summer Camp Week 1 — AM (7am–12pm) · $150</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-moon"></i>Summer Camp Week 1 — PM (1pm–6pm) · $100</div>
+                    <div class="pr-prog-chip" style="border-style:dashed" onclick="showToast('Program selector opening...')"><i class="ti ti-plus"></i>Add program to bundle</div>
+                  </div>
+
+                  <div style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Discount tiers</div>
+                  <table class="pr-tier-table">
+                    <thead><tr><th>When both are in cart</th><th>Discount type</th><th>Discount on lower-priced item</th><th>Resulting price</th><th></th></tr></thead>
+                    <tbody>
+                      <tr>
+                        <td>AM + PM (any combination)</td>
+                        <td>
+                          <select class="pr-tier-input" style="width:auto">
+                            <option selected>Fixed dollar ($)</option>
+                            <option>Percentage (%)</option>
+                          </select>
+                        </td>
+                        <td><input class="pr-tier-input" type="text" value="$50.00"></td>
+                        <td style="font-weight:600;color:var(--green)">PM drops: $100 → $50</td>
+                        <td><button class="pr-toggle-on" onclick="showToast('Tier removed')">Remove</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:8px">Alternative: percentage off lowest price</div>
+                  <div class="pr-rule-grid">
+                    <div class="pr-field">
+                      <label>OR — percentage off lower-priced item</label>
+                      <input type="text" placeholder="e.g. 10 (leave blank to use flat $ above)">
+                    </div>
+                    <div class="pr-field">
+                      <label>Which price is discounted</label>
+                      <select><option selected>Lower-priced program</option><option>Higher-priced program</option></select>
+                    </div>
+                  </div>
+
+                  <div class="pr-preview-box">
+                    <div class="pr-preview-title">Live preview</div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label">Registered for AM only ($150)</div>
+                      <span class="pr-after" style="color:var(--text-primary)">$150.00</span>
+                      <span style="font-size:11px;color:var(--text-tertiary)">No bundle discount</span>
+                    </div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label">Registered for AM + PM (bundle triggered)</div>
+                      <div style="display:flex;flex-direction:column;gap:3px;flex:1">
+                        <span style="font-size:12px">Summer Camp AM: <strong>$150.00</strong></span>
+                        <span style="font-size:12px">Summer Camp PM: <span class="pr-before">$100.00</span> → <strong style="color:var(--green)">$50.00</strong></span>
+                      </div>
+                      <span style="font-weight:700;color:var(--green)">Total: $200</span>
+                      <span class="pr-saving">Save $50</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule: Session series discount -->
+              <div class="pr-rule-card">
+                <div class="pr-rule-header">
+                  <div class="pr-rule-name">Swim Lessons multi-session series — 10% off sessions 2 & 3</div>
+                  <span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:var(--radius-pill)">● Active</span>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Rule editing...')"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)" onclick="showToast('Rule deactivated')"><i class="ti ti-toggle-left"></i>Disable</button>
+                </div>
+                <div class="pr-rule-body">
+                  <div class="pr-rule-grid">
+                    <div class="pr-field"><label>Minimum programs required</label><select><option>2</option><option selected>3</option></select></div>
+                    <div class="pr-field"><label>Discount applies to</label><select><option selected>All programs beyond the first</option><option>All programs in bundle</option></select></div>
+                  </div>
+                  <div class="pr-prog-list" style="margin-bottom:12px">
+                    <div class="pr-prog-chip selected"><i class="ti ti-swimming"></i>Swim Lessons — Session A</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-swimming"></i>Swim Lessons — Session B</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-swimming"></i>Swim Lessons — Session C</div>
+                  </div>
+                  <div class="pr-preview-box">
+                    <div class="pr-preview-title">Preview</div>
+                    <div class="pr-preview-scenario"><div class="pr-label">Register for all 3 swim sessions</div><span class="pr-before">$255.00</span><i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i><span class="pr-after">$221.50</span><span class="pr-saving">Save $33.50</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="pr-add-rule" onclick="prNewRule('bundle')"><i class="ti ti-plus"></i>Add multi-program bundle rule</button>
+            </div>
+          </div>
+
+          <!-- ══ SECTION 3: MULTI-INDIVIDUAL / SIBLING DISCOUNTS ══ -->
+          <div class="pr-section">
+            <div class="pr-section-header" onclick="prToggle('sibling')">
+              <div class="pr-section-icon" style="background:var(--amber-bg);color:var(--amber)"><i class="ti ti-users-group"></i></div>
+              <div style="flex:1">
+                <div class="pr-section-title">Multi-individual / sibling discounts</div>
+                <div class="pr-section-desc">Discounts applied when multiple household members register for the same program or program group — 2nd sibling gets $25 off, 3rd+ get $50 off, etc.</div>
+              </div>
+              <span class="pr-section-badge">1 active rule</span>
+              <i class="ti ti-chevron-right pr-section-chevron open" id="pr-chev-sibling"></i>
+            </div>
+            <div class="pr-body open" id="pr-body-sibling">
+
+              <!-- Basketball sibling rule -->
+              <div class="pr-rule-card active-rule">
+                <div class="pr-rule-header active-rule">
+                  <div class="pr-rule-name">Recreational Basketball — sibling discount (any grade)</div>
+                  <span style="font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:var(--radius-pill)">● Active</span>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Rule editing...')"><i class="ti ti-edit"></i>Edit</button>
+                  <button class="btn-secondary" style="font-size:11px;padding:4px 10px;color:var(--red)" onclick="showToast('Rule deactivated')"><i class="ti ti-toggle-left"></i>Disable</button>
+                </div>
+                <div class="pr-rule-body">
+                  <div class="pr-rule-grid">
+                    <div class="pr-field"><label>Rule name</label><input type="text" value="Recreational Basketball — sibling discount"></div>
+                    <div class="pr-field">
+                      <label>Household relationship required</label>
+                      <select>
+                        <option selected>Same household / family account</option>
+                        <option>Any account (not household-restricted)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Programs included in this sibling group — any program below counts toward the sibling count</div>
+                  <div class="pr-prog-list" style="margin-bottom:16px">
+                    <div class="pr-prog-chip selected"><i class="ti ti-ball-basketball"></i>3rd Grade Basketball · $100</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-ball-basketball"></i>4th Grade Basketball · $100</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-ball-basketball"></i>5th Grade Basketball · $100</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-ball-basketball"></i>6th Grade Basketball · $100</div>
+                    <div class="pr-prog-chip selected"><i class="ti ti-ball-basketball"></i>Recreational Basketball Open · $100</div>
+                    <div class="pr-prog-chip" style="border-style:dashed" onclick="showToast('Program selector opening...')"><i class="ti ti-plus"></i>Add program to group</div>
+                  </div>
+
+                  <div style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Sibling discount tiers — applied per individual, in registration order</div>
+                  <table class="pr-tier-table" style="margin-bottom:12px">
+                    <thead>
+                      <tr>
+                        <th>Individual #</th>
+                        <th>Who they are</th>
+                        <th>Discount type</th>
+                        <th>Discount amount</th>
+                        <th>Price paid</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="font-weight:700;color:var(--blue)">#1 (first sibling)</td>
+                        <td style="color:var(--text-secondary)">First household member to register</td>
+                        <td><select class="pr-tier-input" style="width:auto;opacity:0.5" disabled><option>No discount</option></select></td>
+                        <td><input class="pr-tier-input" type="text" value="$0.00" disabled style="opacity:0.5"></td>
+                        <td style="font-weight:600">$100.00</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:700;color:var(--blue)">#2 (second sibling)</td>
+                        <td style="color:var(--text-secondary)">Second household member in same program group</td>
+                        <td><select class="pr-tier-input" style="width:auto"><option selected>Fixed dollar ($)</option><option>Percentage (%)</option></select></td>
+                        <td><input class="pr-tier-input" type="text" value="$25.00"></td>
+                        <td style="font-weight:600;color:var(--green)">$75.00</td>
+                        <td><button class="pr-toggle-on" onclick="showToast('Tier removed')">Remove</button></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:700;color:var(--blue)">#3+ (third &amp; beyond)</td>
+                        <td style="color:var(--text-secondary)">Each additional household member</td>
+                        <td><select class="pr-tier-input" style="width:auto"><option selected>Fixed dollar ($)</option><option>Percentage (%)</option></select></td>
+                        <td><input class="pr-tier-input" type="text" value="$50.00"></td>
+                        <td style="font-weight:600;color:var(--green)">$50.00</td>
+                        <td><button class="pr-toggle-on" onclick="showToast('Tier removed')">Remove</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button class="pr-add-rule" style="padding:8px;font-size:12px;border-radius:var(--radius-md)" onclick="showToast('New tier row added')"><i class="ti ti-plus" style="font-size:13px"></i>Add sibling tier</button>
+
+                  <div class="pr-rule-grid" style="margin-top:14px">
+                    <div class="pr-field">
+                      <label>Maximum discount per individual</label>
+                      <input type="text" placeholder="e.g. $50 (leave blank for no cap)">
+                    </div>
+                    <div class="pr-field">
+                      <label>Applies across seasons?</label>
+                      <select>
+                        <option selected>Within same season / catalog period only</option>
+                        <option>Any time (cross-season)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="pr-preview-box">
+                    <div class="pr-preview-title">Live preview — how this appears at checkout for a household</div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label"><strong>Individual 1</strong> — registers to 3rd Grade Basketball</div>
+                      <span class="pr-after" style="color:var(--text-primary)">$100.00</span>
+                      <span style="font-size:11px;color:var(--text-tertiary)">Full price (first sibling)</span>
+                    </div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label"><strong>Individual 2</strong> (sibling) — registers to 4th Grade Basketball</div>
+                      <span class="pr-before">$100.00</span>
+                      <i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i>
+                      <span class="pr-after">$75.00</span>
+                      <span class="pr-saving">Sibling #2 · Save $25</span>
+                    </div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label"><strong>Individual 3</strong> (sibling) — registers to 5th Grade Basketball</div>
+                      <span class="pr-before">$100.00</span>
+                      <i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i>
+                      <span class="pr-after">$50.00</span>
+                      <span class="pr-saving">Sibling #3 · Save $50</span>
+                    </div>
+                    <div class="pr-preview-scenario">
+                      <div class="pr-label"><strong>Individual 4+</strong> — any additional basketball program</div>
+                      <span class="pr-before">$100.00</span>
+                      <i class="ti ti-arrow-right" style="font-size:13px;color:var(--text-tertiary)"></i>
+                      <span class="pr-after">$50.00</span>
+                      <span class="pr-saving">Sibling #4+ · Same as #3</span>
+                    </div>
+                    <div style="padding-top:10px;border-top:1px solid var(--border);margin-top:4px;display:flex;justify-content:space-between;font-size:13px">
+                      <span style="color:var(--text-secondary)">4-sibling household total:</span>
+                      <div><span class="pr-before" style="margin-right:8px">$400.00</span><strong style="color:var(--green)">$275.00</strong> <span class="pr-saving">Save $125 total</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="pr-add-rule" onclick="prNewRule('sibling')"><i class="ti ti-plus"></i>Add sibling / multi-individual rule</button>
+            </div>
+          </div>
+
+          <!-- ══ SECTION 4: EARLY BIRD / TIME-BASED ══ -->
+          <div class="pr-section">
+            <div class="pr-section-header" onclick="prToggle('earlybird')">
+              <div class="pr-section-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-clock"></i></div>
+              <div style="flex:1">
+                <div class="pr-section-title">Early bird &amp; time-based discounts</div>
+                <div class="pr-section-desc">Discounted pricing for registrations completed before a set date — rewards early commitment and helps fill sessions faster</div>
+              </div>
+              <span class="pr-section-badge" style="background:var(--bg-tertiary);color:var(--text-secondary)">0 active</span>
+              <i class="ti ti-chevron-right pr-section-chevron" id="pr-chev-earlybird"></i>
+            </div>
+            <div class="pr-body" id="pr-body-earlybird">
+              <div style="text-align:center;padding:24px;color:var(--text-secondary)"><i class="ti ti-clock" style="font-size:36px;display:block;margin-bottom:8px;color:var(--text-tertiary)"></i>No early bird rules configured. Add one to automatically discount registrations before a cutoff date.</div>
+              <button class="pr-add-rule" onclick="prNewRule('earlybird')"><i class="ti ti-plus"></i>Add early bird rule</button>
+            </div>
+          </div>
+
+          <!-- ══ SECTION 5: FEE ASSISTANCE / SCHOLARSHIP ══ -->
+          <div class="pr-section">
+            <div class="pr-section-header" onclick="prToggle('feeassist')">
+              <div class="pr-section-icon" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-heart"></i></div>
+              <div style="flex:1">
+                <div class="pr-section-title">Fee assistance &amp; scholarship pricing</div>
+                <div class="pr-section-desc">Reduced or waived fees for qualifying accounts — applied manually by staff or automatically based on account flags</div>
+              </div>
+              <span class="pr-section-badge" style="background:var(--bg-tertiary);color:var(--text-secondary)">See account settings</span>
+              <i class="ti ti-chevron-right pr-section-chevron" id="pr-chev-feeassist"></i>
+            </div>
+            <div class="pr-body" id="pr-body-feeassist">
+              <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;color:var(--blue-dark);margin-bottom:16px">Fee assistance is applied per-account by staff. Global fee assistance pricing templates can be created here for staff to select at checkout rather than entering amounts manually each time.</div>
+              <button class="pr-add-rule" onclick="prNewRule('feeassist')"><i class="ti ti-plus"></i>Add fee assistance template</button>
+            </div>
+          </div>
+
+          <!-- Pricing rule priority explanation -->
+          <div class="card" style="margin-top:4px">
+            <div class="card-header"><h3>Rule priority &amp; stacking behavior</h3></div>
+            <div style="padding:16px 20px">
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="background:var(--bg-secondary)"><th style="padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px">Priority</th><th style="padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px">Rule type</th><th style="padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px">Stacks with others?</th><th style="padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px">Applied to</th></tr></thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 14px;font-weight:700;color:var(--blue)">1st</td><td style="padding:10px 14px">Residency pricing (resident vs. non-resident rate)</td><td style="padding:10px 14px"><span style="color:var(--green)">✓ Yes — all other discounts apply on top</span></td><td style="padding:10px 14px">Base price determination</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 14px;font-weight:700;color:var(--blue)">2nd</td><td style="padding:10px 14px">Membership pricing (member rate)</td><td style="padding:10px 14px"><span style="color:var(--amber)">Configurable — can stack or replace</span></td><td style="padding:10px 14px">Each line item independently</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 14px;font-weight:700;color:var(--blue)">3rd</td><td style="padding:10px 14px">Early bird discount</td><td style="padding:10px 14px"><span style="color:var(--amber)">Configurable — can stack or replace</span></td><td style="padding:10px 14px">Each line item independently</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 14px;font-weight:700;color:var(--blue)">4th</td><td style="padding:10px 14px">Multi-program bundle discount</td><td style="padding:10px 14px"><span style="color:var(--green)">✓ Yes — applies after membership/early bird</span></td><td style="padding:10px 14px">Qualifying bundle as a whole</td></tr>
+                  <tr><td style="padding:10px 14px;font-weight:700;color:var(--blue)">5th</td><td style="padding:10px 14px">Sibling / multi-individual discount</td><td style="padding:10px 14px"><span style="color:var(--green)">✓ Yes — applies after all above</span></td><td style="padding:10px 14px">Per individual registration</td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:14px;padding:12px 14px;background:var(--bg-secondary);border-radius:var(--radius-md);font-size:12px;color:var(--text-secondary)">
+                <strong style="color:var(--text-primary)">Example — resident member, 3 siblings in basketball:</strong> Base price $100 → Resident rate $100 (no change, same as non-resident) → Member rate $80 → Sibling #1: $80 · Sibling #2: $80 − $25 = $55 · Sibling #3: $80 − $50 = $30.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div id="admin-memberships" class="admin-section">
         <div class="admin-topbar">
           <div class="topbar-title">Memberships</div>
@@ -13801,6 +14331,26 @@
 
     // Show receipt
     document.getElementById('pos-receipt-overlay').classList.add('open');
+  }
+
+  /* ── PRICING RULES ── */
+  function prToggle(section) {
+    var body = document.getElementById('pr-body-' + section);
+    var chev = document.getElementById('pr-chev-' + section);
+    if (!body) return;
+    var open = body.classList.toggle('open');
+    if (chev) chev.classList.toggle('open', open);
+  }
+
+  function prNewRule(type) {
+    var labels = {
+      membership: 'New Membership Pricing Rule',
+      bundle: 'New Multi-Program Bundle Rule',
+      sibling: 'New Sibling / Multi-Individual Rule',
+      earlybird: 'New Early Bird Rule',
+      feeassist: 'New Fee Assistance Template'
+    };
+    showToast((labels[type] || 'New pricing rule') + ' — editor opening...');
   }
 
   /* ── ACCOUNT MANAGER ── */
